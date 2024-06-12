@@ -4,6 +4,7 @@ import sys
 import os
 import json
 from datetime import datetime
+import pytz
 
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import (
@@ -238,6 +239,7 @@ class App(QWidget):
         self.datetime_picker = QDateTimeEdit(self)
         self.datetime_picker.setCalendarPopup(True)
         self.datetime_picker.setDateTime(QDateTime.currentDateTime())
+        self.datetime_picker.dateTimeChanged.connect(self.update_schedule_datetime)
         layout.addWidget(self.datetime_picker)
 
         self.submit_button2 = QPushButton("Submit", self)
@@ -276,6 +278,9 @@ class App(QWidget):
                 self.submit_button2.click()
             return True
         return super().eventFilter(obj, event)
+    
+    def update_schedule_datetime(self, datetime):
+        self.schedule_datetime = datetime.toPyDateTime()
 
     def schedule_task(self):
         current_tab = self.tab_widget.currentIndex()
@@ -287,6 +292,9 @@ class App(QWidget):
             raise ValueError(f"Invalid tab index: {current_tab}")
 
         schedule_datetime = self.datetime_picker.dateTime().toPyDateTime()
+
+        # Print the selected date and time
+        print(f"Selected date and time: {schedule_datetime}")
 
         task = {
             "task_type": task_type,
