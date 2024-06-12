@@ -107,7 +107,7 @@ class App(QWidget):
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
-        self.setWindowIcon(QIcon("robot_ai_icon_251431.ico"))
+        self.setWindowIcon(QIcon(r"C:\Users\Hafner\Desktop\Aaron_C\Files_Software\Buttonizer3000\Bautonizer\NIK Buttons 10 CH.ico"))
 
         layout = QVBoxLayout()
         tab_widget = QTabWidget()
