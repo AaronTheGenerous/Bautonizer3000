@@ -7,18 +7,29 @@ from datetime import datetime
 
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import (
-    QApplication, QWidget, QVBoxLayout, QComboBox, QLineEdit, QPushButton,
-    QLabel, QMessageBox, QCheckBox, QDateTimeEdit, QTabWidget,QDesktopWidget
+    QApplication,
+    QWidget,
+    QVBoxLayout,
+    QComboBox,
+    QLineEdit,
+    QPushButton,
+    QLabel,
+    QMessageBox,
+    QCheckBox,
+    QDateTimeEdit,
+    QTabWidget,
+    QDesktopWidget,
 )
 from PyQt5.QtCore import QDateTime, Qt
 from PyQt5.QtGui import QIcon
 
+
 class App(QWidget):
-    tasks_directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tasks')
+    tasks_directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tasks")
 
     def __init__(self):
         super().__init__()
-        self.title = 'Buttonizer3000'
+        self.title = "Buttonizer3000"
         self.left = 100
         self.top = 100
         self.width = 230
@@ -34,11 +45,60 @@ class App(QWidget):
 
         self.category_data = {
             "Kamerasysteme + Objektive": {
-                "Nikon": {"Nikon Z": {}, "Nikkor Z-Mount Objektive": {}, "Nikon DSLR": {}, "Nikkor F-Mount Objektive": {}, "Nikon Blitzgeräte": {}, "Nikon Coolpix": {}, "Nikon DSLR Zubehör": {}, "Nikon Objektivzubehör": {}},
-                "Sony": {"Sony E-Mount Kameras": {}, "Sony E-Mount Objektive": {}, "Sony E-Mount APS-C Kameras": {}, "Sony E-Mount APS-C Objektive": {}, "Sony E-Mount Zubehör": {}, "Sony Blitzgeräte": {}, "Sony Kompaktkameras": {}, "Sony XPERIA Smartphones": {}, "Sony A-Mount Kameras": {}, "Sony A-Mount Objektive": {}, "Sony A-Mount Zubehör": {}},
-                "Phase One": {"Phase One IQ Backs": {}, "Phase One XF Camera System": {}, "Phase One XT Camera System": {}, "CPO Phase One IQ Backs für Phase One XF": {}, "CPO Phase One XF Kamerasysteme": {}, "CPO Phase One IQ Backs für Hasselblad": {}, "Phase One XF Kamerasysteme": {}, "Phase One XT Kamera und Objektive": {}, "Schneider Kreuznach Objektive (Blue Ring)": {}, "CPO Schneider Kreuznach Objektive": {}, "Capture One": {}},
-                "Cambo": {"Cambo Wide RS": {}, "Cambo ACTUS": {}, "Cambo Zubehör zu Phase One XT": {}, "Cambo Adapter": {}, "Cambo ACTUS DB": {}, "Cambo ACTUS-XL": {}},
-                "Leica": {"Leica M & Objektive": {}, "Leica Q": {}, "Leica SL & Objektive": {}, "Leica S & Objektive": {}, "Leica TL / CL & Objektive": {}, "Leica V": {}, "Leica X": {}, "Leica SOFORT": {}}
+                "Nikon": {
+                    "Nikon Z": {},
+                    "Nikkor Z-Mount Objektive": {},
+                    "Nikon DSLR": {},
+                    "Nikkor F-Mount Objektive": {},
+                    "Nikon Blitzgeräte": {},
+                    "Nikon Coolpix": {},
+                    "Nikon DSLR Zubehör": {},
+                    "Nikon Objektivzubehör": {},
+                },
+                "Sony": {
+                    "Sony E-Mount Kameras": {},
+                    "Sony E-Mount Objektive": {},
+                    "Sony E-Mount APS-C Kameras": {},
+                    "Sony E-Mount APS-C Objektive": {},
+                    "Sony E-Mount Zubehör": {},
+                    "Sony Blitzgeräte": {},
+                    "Sony Kompaktkameras": {},
+                    "Sony XPERIA Smartphones": {},
+                    "Sony A-Mount Kameras": {},
+                    "Sony A-Mount Objektive": {},
+                    "Sony A-Mount Zubehör": {},
+                },
+                "Phase One": {
+                    "Phase One IQ Backs": {},
+                    "Phase One XF Camera System": {},
+                    "Phase One XT Camera System": {},
+                    "CPO Phase One IQ Backs für Phase One XF": {},
+                    "CPO Phase One XF Kamerasysteme": {},
+                    "CPO Phase One IQ Backs für Hasselblad": {},
+                    "Phase One XF Kamerasysteme": {},
+                    "Phase One XT Kamera und Objektive": {},
+                    "Schneider Kreuznach Objektive (Blue Ring)": {},
+                    "CPO Schneider Kreuznach Objektive": {},
+                    "Capture One": {},
+                },
+                "Cambo": {
+                    "Cambo Wide RS": {},
+                    "Cambo ACTUS": {},
+                    "Cambo Zubehör zu Phase One XT": {},
+                    "Cambo Adapter": {},
+                    "Cambo ACTUS DB": {},
+                    "Cambo ACTUS-XL": {},
+                },
+                "Leica": {
+                    "Leica M & Objektive": {},
+                    "Leica Q": {},
+                    "Leica SL & Objektive": {},
+                    "Leica S & Objektive": {},
+                    "Leica TL / CL & Objektive": {},
+                    "Leica V": {},
+                    "Leica X": {},
+                    "Leica SOFORT": {},
+                },
             }
         }
 
@@ -47,7 +107,7 @@ class App(QWidget):
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
-        self.setWindowIcon(QIcon('robot_ai_icon_251431.ico'))
+        self.setWindowIcon(QIcon("robot_ai_icon_251431.ico"))
 
         layout = QVBoxLayout()
         tab_widget = QTabWidget()
@@ -68,7 +128,9 @@ class App(QWidget):
         self.marken_label_hinzufugen = QLabel("Marke", self)
         layout.addWidget(self.marken_label_hinzufugen)
         self.marken_hinzufugen = QComboBox(self)
-        self.marken_hinzufugen.addItems(self.category_data["Kamerasysteme + Objektive"].keys())
+        self.marken_hinzufugen.addItems(
+            self.category_data["Kamerasysteme + Objektive"].keys()
+        )
         layout.addWidget(self.marken_hinzufugen)
 
         self.categories_label_hinzufugen = QLabel("Kategorie", self)
@@ -109,13 +171,13 @@ class App(QWidget):
         layout.addWidget(self.link_label_de)
         self.link_input_de = QLineEdit(self)
         self.link_input_de.setDisabled(True)
-        layout.addWidget(self.link_input_de) 
+        layout.addWidget(self.link_input_de)
 
         self.link_label_fr = QLabel("Link (Französisch)", self)
         layout.addWidget(self.link_label_fr)
         self.link_input_fr = QLineEdit(self)
         self.link_input_fr.setDisabled(True)
-        layout.addWidget(self.link_input_fr) 
+        layout.addWidget(self.link_input_fr)
 
         self.link_checkbox.stateChanged.connect(self.toggle_link_input)
 
@@ -131,7 +193,7 @@ class App(QWidget):
         self.submit_button = QPushButton("Submit", self)
         layout.addWidget(self.submit_button)
         self.submit_button.clicked.connect(self.schedule_task)
-        
+
         layout.addStretch()
         main_layout.addStretch()
         main_layout.addLayout(layout)
@@ -139,7 +201,11 @@ class App(QWidget):
         hinzufugen_tab.setLayout(main_layout)
 
         self.update_subcategories(self.marken_hinzufugen, self.categories_hinzufugen)
-        self.marken_hinzufugen.currentTextChanged.connect(lambda: self.update_subcategories(self.marken_hinzufugen, self.categories_hinzufugen))
+        self.marken_hinzufugen.currentTextChanged.connect(
+            lambda: self.update_subcategories(
+                self.marken_hinzufugen, self.categories_hinzufugen
+            )
+        )
 
         return hinzufugen_tab
 
@@ -151,7 +217,9 @@ class App(QWidget):
         self.marken_label_entfernen = QLabel("Marke", self)
         layout.addWidget(self.marken_label_entfernen)
         self.marken_entfernen = QComboBox(self)
-        self.marken_entfernen.addItems(self.category_data["Kamerasysteme + Objektive"].keys())
+        self.marken_entfernen.addItems(
+            self.category_data["Kamerasysteme + Objektive"].keys()
+        )
         layout.addWidget(self.marken_entfernen)
 
         self.categories_label_entfernen = QLabel("Kategorie", self)
@@ -182,7 +250,11 @@ class App(QWidget):
         entfernen_tab.setLayout(main_layout)
 
         self.update_subcategories(self.marken_entfernen, self.categories_entfernen)
-        self.marken_entfernen.currentTextChanged.connect(lambda: self.update_subcategories(self.marken_entfernen, self.categories_entfernen))
+        self.marken_entfernen.currentTextChanged.connect(
+            lambda: self.update_subcategories(
+                self.marken_entfernen, self.categories_entfernen
+            )
+        )
 
         return entfernen_tab
 
@@ -194,7 +266,9 @@ class App(QWidget):
         msg_box.exec_()
 
     def eventFilter(self, obj, event):
-        if event.type() == QtCore.QEvent.KeyPress and (event.key() == Qt.Key_Enter or event.key() == Qt.Key_Return):
+        if event.type() == QtCore.QEvent.KeyPress and (
+            event.key() == Qt.Key_Enter or event.key() == Qt.Key_Return
+        ):
             current_tab_index = self.tab_widget.currentIndex()
             if current_tab_index == 0:
                 self.submit_button.click()
@@ -210,33 +284,47 @@ class App(QWidget):
         elif current_tab == 1:
             task_type = "remove_articles_images"
         else:
-            raise ValueError(f'Invalid tab index: {current_tab}')
+            raise ValueError(f"Invalid tab index: {current_tab}")
 
         schedule_datetime = self.datetime_picker.dateTime().toPyDateTime()
 
         task = {
             "task_type": task_type,
-            "schedule_datetime": schedule_datetime.strftime('%Y-%m-%d %H:%M:%S'),
+            "schedule_datetime": schedule_datetime.strftime("%Y-%m-%d %H:%M:%S"),
             "data": {
-                "marke": self.marken_hinzufugen.currentText() if task_type == "process_articles" else self.marken_entfernen.currentText(),
-                "kategorie": self.categories_hinzufugen.currentText() if task_type == "process_articles" else self.categories_entfernen.currentText(),
-                "article_numbers": self.articles1.text() if task_type == "process_articles" else self.articles2.text(),
+                "marke": (
+                    self.marken_hinzufugen.currentText()
+                    if task_type == "process_articles"
+                    else self.marken_entfernen.currentText()
+                ),
+                "kategorie": (
+                    self.categories_hinzufugen.currentText()
+                    if task_type == "process_articles"
+                    else self.categories_entfernen.currentText()
+                ),
+                "article_numbers": (
+                    self.articles1.text()
+                    if task_type == "process_articles"
+                    else self.articles2.text()
+                ),
                 "img1_url": self.img1.text(),
                 "img2_url": self.img2.text(),
                 "width": self.width_box.text(),
                 "height": self.height_box.text(),
                 "link_checkbox": self.link_checkbox.isChecked(),
                 "link_input_de": self.link_input_de.text(),
-                "link_input_fr": self.link_input_fr.text()
-            }
+                "link_input_fr": self.link_input_fr.text(),
+            },
         }
 
-        task_filename = os.path.join(self.tasks_directory, f'task_{datetime.now().strftime("%Y%m%d%H%M%S")}.json')
+        task_filename = os.path.join(
+            self.tasks_directory, f'task_{datetime.now().strftime("%Y%m%d%H%M%S")}.json'
+        )
 
         os.makedirs(self.tasks_directory, exist_ok=True)
 
         try:
-            with open(task_filename, 'w') as file:
+            with open(task_filename, "w") as file:
                 json.dump(task, file)
             print(f"Task written to file successfully: {task_filename}")
             self.schedule_in_task_scheduler(task_filename, schedule_datetime)
@@ -249,7 +337,7 @@ class App(QWidget):
         import subprocess
 
         command = f'SchTasks /Create /SC ONCE /TN "ButtonizerTask_{os.path.basename(task_filename)}" /TR "python {os.path.abspath(__file__).replace("main.py", "execute_task.py")} {task_filename}" /ST {schedule_datetime.strftime("%H:%M")}'
-        
+
         print(f"Scheduling command: {command}")
 
         try:
@@ -278,7 +366,9 @@ class App(QWidget):
         self.categories.clear()
         self.categories.addItem("Kategorie wählen")
         if selected_brand in self.category_data["Kamerasysteme + Objektive"]:
-            self.categories.addItems(self.category_data["Kamerasysteme + Objektive"][selected_brand].keys())
+            self.categories.addItems(
+                self.category_data["Kamerasysteme + Objektive"][selected_brand].keys()
+            )
             self.categories.setDisabled(False)
         else:
             self.categories.setDisabled(True)
@@ -288,7 +378,11 @@ class App(QWidget):
         if current_brand:
             categories_box.clear()
             if current_brand in self.category_data["Kamerasysteme + Objektive"]:
-                categories_box.addItems(self.category_data["Kamerasysteme + Objektive"][current_brand].keys())
+                categories_box.addItems(
+                    self.category_data["Kamerasysteme + Objektive"][
+                        current_brand
+                    ].keys()
+                )
                 categories_box.setCurrentIndex(0)
             else:
                 categories_box.addItem("Keine Kategorien verfügbar")
@@ -296,7 +390,8 @@ class App(QWidget):
         else:
             categories_box.setDisabled(True)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     app = QApplication(sys.argv)
     ex = App()
     sys.exit(app.exec_())
