@@ -3,9 +3,7 @@
 import sys
 import os
 import json
-from datetime import datetime
-import pytz
-
+from datetime import datetime, time
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import (
     QApplication,
@@ -18,11 +16,34 @@ from PyQt5.QtWidgets import (
     QMessageBox,
     QCheckBox,
     QDateTimeEdit,
+    QTimeEdit,
     QTabWidget,
-    QDesktopWidget,
+    QDialog,
+    QHBoxLayout,
+    QDesktopWidget
 )
 from PyQt5.QtCore import QDateTime, Qt
 from PyQt5.QtGui import QIcon
+
+
+class TimePickerDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle('Select Time')
+        self.layout = QVBoxLayout()
+        self.time_edit = QTimeEdit(self)
+        self.time_edit.setDisplayFormat('HH:mm:ss')
+        self.time_edit.setTime(QtCore.QTime.currentTime())
+        self.layout.addWidget(self.time_edit)
+
+        self.ok_button = QPushButton('OK', self)
+        self.ok_button.clicked.connect(self.accept)
+        self.layout.addWidget(self.ok_button)
+
+        self.setLayout(self.layout)
+
+    def get_time(self):
+        return self.time_edit.time()
 
 
 class App(QWidget):
@@ -43,6 +64,8 @@ class App(QWidget):
         self.width_box = None
         self.height_box = None
         self.link_checkbox = None
+
+        self.selected_time = QtCore.QTime.currentTime()
 
         self.category_data = {
             "Kamerasysteme + Objektive": {
@@ -184,12 +207,17 @@ class App(QWidget):
 
         layout.addStretch()
 
-        self.datetime_label = QLabel("Schedule Date and Time", self)
+        self.datetime_label = QLabel("Schedule Date", self)
         layout.addWidget(self.datetime_label)
         self.datetime_picker = QDateTimeEdit(self)
         self.datetime_picker.setCalendarPopup(True)
         self.datetime_picker.setDateTime(QDateTime.currentDateTime())
+        self.datetime_picker.setDisplayFormat("yyyy-MM-dd")
         layout.addWidget(self.datetime_picker)
+
+        self.time_button = QPushButton("Select Time", self)
+        self.time_button.clicked.connect(self.open_time_picker)
+        layout.addWidget(self.time_button)
 
         self.submit_button = QPushButton("Submit", self)
         layout.addWidget(self.submit_button)
@@ -234,13 +262,17 @@ class App(QWidget):
         layout.addWidget(self.articles2)
 
         layout.addStretch()
-        self.datetime_label = QLabel("Schedule Date and Time", self)
+        self.datetime_label = QLabel("Schedule Date", self)
         layout.addWidget(self.datetime_label)
         self.datetime_picker = QDateTimeEdit(self)
         self.datetime_picker.setCalendarPopup(True)
         self.datetime_picker.setDateTime(QDateTime.currentDateTime())
-        self.datetime_picker.dateTimeChanged.connect(self.update_schedule_datetime)
+        self.datetime_picker.setDisplayFormat("yyyy-MM-dd")
         layout.addWidget(self.datetime_picker)
+
+        self.time_button = QPushButton("Select Time", self)
+        self.time_button.clicked.connect(self.open_time_picker)
+        layout.addWidget(self.time_button)
 
         self.submit_button2 = QPushButton("Submit", self)
         self.submit_button2.clicked.connect(self.schedule_task)
@@ -278,9 +310,11 @@ class App(QWidget):
                 self.submit_button2.click()
             return True
         return super().eventFilter(obj, event)
-    
-    def update_schedule_datetime(self, datetime):
-        self.schedule_datetime = datetime.toPyDateTime()
+
+    def open_time_picker(self):
+        dialog = TimePickerDialog(self)
+        if dialog.exec_():
+            self.selected_time = dialog.get_time()
 
     def schedule_task(self):
         current_tab = self.tab_widget.currentIndex()
@@ -291,7 +325,10 @@ class App(QWidget):
         else:
             raise ValueError(f"Invalid tab index: {current_tab}")
 
-        schedule_datetime = self.datetime_picker.dateTime().toPyDateTime()
+        schedule_date = self.datetime_picker.date().toPyDate()
+        schedule_time = self.selected_time
+
+        schedule_datetime = datetime.combine(schedule_date, schedule_time.toPyTime())
 
         # Print the selected date and time
         print(f"Selected date and time: {schedule_datetime}")
@@ -344,7 +381,7 @@ class App(QWidget):
     def schedule_in_task_scheduler(self, task_filename, schedule_datetime):
         import subprocess
 
-        command = f'SchTasks /Create /SC ONCE /TN "ButtonizerTask_{os.path.basename(task_filename)}" /TR "python {os.path.abspath(__file__).replace("main.py", "execute_task.py")} {task_filename}" /ST {schedule_datetime.strftime("%H:%M")}'
+        command = f'SchTasks /Create /SC ONCE /TN "ButtonizerTask_{os.path.basename(task_filename)}" /TR "python {os.path.abspath(__file__).replace("main.py", "execute_task.py")} {task_filename}" /ST {schedule_datetime.strftime("%H:%M")} /SD {schedule_datetime.strftime("%Y-%m-%d")} /F'
 
         print(f"Scheduling command: {command}")
 
