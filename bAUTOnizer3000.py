@@ -28,14 +28,14 @@ from PyQt5.QtGui import QIcon
 class TimePickerDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle('Select Time')
+        self.setWindowTitle("Select Time")
         self.layout = QVBoxLayout()
         self.time_edit = QTimeEdit(self)
-        self.time_edit.setDisplayFormat('HH:mm:ss')
+        self.time_edit.setDisplayFormat("HH:mm:ss")
         self.time_edit.setTime(QtCore.QTime.currentTime())
         self.layout.addWidget(self.time_edit)
 
-        self.ok_button = QPushButton('OK', self)
+        self.ok_button = QPushButton("OK", self)
         self.ok_button.clicked.connect(self.accept)
         self.layout.addWidget(self.ok_button)
 
@@ -130,7 +130,11 @@ class App(QWidget):
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
-        self.setWindowIcon(QIcon(r"C:\Users\Hafner\Desktop\Aaron_C\Files_Software\Buttonizer3000\Bautonizer\NIK Buttons 10 CH.ico"))
+        self.setWindowIcon(
+            QIcon(
+                r"C:\Users\Hafner\Desktop\Aaron_C\Files_Software\Buttonizer3000\Bautonizer\NIK Buttons 10 CH.ico"
+            )
+        )
 
         layout = QVBoxLayout()
         tab_widget = QTabWidget()
