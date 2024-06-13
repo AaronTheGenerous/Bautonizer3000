@@ -56,14 +56,6 @@ class App(QWidget):
         self.width = 230
         self.height = 550
 
-        self.articles1 = None
-        self.articles2 = None
-        self.img1 = None
-        self.img2 = None
-        self.width_box = None
-        self.height_box = None
-        self.link_checkbox = None
-
         self.selected_time = QtCore.QTime.currentTime()
 
         self.category_data = {
@@ -146,18 +138,24 @@ class App(QWidget):
         self.center_on_screen()
         self.show()
 
+    def create_label_and_combobox(self, label_text, items):
+        label = QLabel(label_text, self)
+        combobox = QComboBox(self)
+        combobox.addItems(items)
+        return label, combobox
+
     def init_hinzufugen_tab(self):
         hinzufugen_tab = QWidget()
         main_layout = QVBoxLayout()
         layout = QVBoxLayout()
         layout.addStretch()
 
-        self.marken_label_hinzufugen = QLabel("Marke", self)
-        layout.addWidget(self.marken_label_hinzufugen)
-        self.marken_hinzufugen = QComboBox(self)
-        self.marken_hinzufugen.addItems(
-            self.category_data["Kamerasysteme + Objektive"].keys()
+        self.marken_label_hinzufugen, self.marken_hinzufugen = (
+            self.create_label_and_combobox(
+                "Marke", self.category_data["Kamerasysteme + Objektive"].keys()
+            )
         )
+        layout.addWidget(self.marken_label_hinzufugen)
         layout.addWidget(self.marken_hinzufugen)
 
         self.categories_label_hinzufugen = QLabel("Kategorie", self)
@@ -246,12 +244,12 @@ class App(QWidget):
         main_layout = QVBoxLayout()
         layout = QVBoxLayout()
 
-        self.marken_label_entfernen = QLabel("Marke", self)
-        layout.addWidget(self.marken_label_entfernen)
-        self.marken_entfernen = QComboBox(self)
-        self.marken_entfernen.addItems(
-            self.category_data["Kamerasysteme + Objektive"].keys()
+        self.marken_label_entfernen, self.marken_entfernen = (
+            self.create_label_and_combobox(
+                "Marke", self.category_data["Kamerasysteme + Objektive"].keys()
+            )
         )
+        layout.addWidget(self.marken_label_entfernen)
         layout.addWidget(self.marken_entfernen)
 
         self.categories_label_entfernen = QLabel("Kategorie", self)
@@ -303,9 +301,10 @@ class App(QWidget):
         msg_box.exec_()
 
     def eventFilter(self, obj, event):
-        if event.type() == QtCore.QEvent.KeyPress and (
-            event.key() == Qt.Key_Enter or event.key() == Qt.Key_Return
-        ):
+        if event.type() == QtCore.QEvent.KeyPress and event.key() in [
+            Qt.Key_Enter,
+            Qt.Key_Return,
+        ]:
             current_tab_index = self.tab_widget.currentIndex()
             if current_tab_index == 0:
                 self.submit_button.click()
@@ -321,12 +320,25 @@ class App(QWidget):
 
     def schedule_task(self):
         current_tab = self.tab_widget.currentIndex()
-        if current_tab == 0:
-            task_type = "process_articles"
-        elif current_tab == 1:
-            task_type = "remove_articles_images"
-        else:
+        task_type_map = {
+            0: (
+                "process_articles",
+                self.marken_hinzufugen,
+                self.categories_hinzufugen,
+                self.articles1,
+            ),
+            1: (
+                "remove_articles_images",
+                self.marken_entfernen,
+                self.categories_entfernen,
+                self.articles2,
+            ),
+        }
+
+        if current_tab not in task_type_map:
             raise ValueError(f"Invalid tab index: {current_tab}")
+
+        task_type, marken_box, categories_box, articles_box = task_type_map[current_tab]
 
         schedule_date = self.datetime_picker.date().toPyDate()
         schedule_time = self.selected_time
@@ -340,21 +352,9 @@ class App(QWidget):
             "task_type": task_type,
             "schedule_datetime": schedule_datetime.strftime("%Y-%m-%d %H:%M:%S"),
             "data": {
-                "marke": (
-                    self.marken_hinzufugen.currentText()
-                    if task_type == "process_articles"
-                    else self.marken_entfernen.currentText()
-                ),
-                "kategorie": (
-                    self.categories_hinzufugen.currentText()
-                    if task_type == "process_articles"
-                    else self.categories_entfernen.currentText()
-                ),
-                "article_numbers": (
-                    self.articles1.text()
-                    if task_type == "process_articles"
-                    else self.articles2.text()
-                ),
+                "marke": marken_box.currentText(),
+                "kategorie": categories_box.currentText(),
+                "article_numbers": articles_box.text(),
                 "img1_url": self.img1.text(),
                 "img2_url": self.img2.text(),
                 "width": self.width_box.text(),
@@ -398,12 +398,9 @@ class App(QWidget):
             print(f"Failed to schedule task: {e}")
 
     def toggle_link_input(self, state):
-        if state == Qt.Checked:
-            self.link_input_de.setDisabled(False)
-            self.link_input_fr.setDisabled(False)
-        else:
-            self.link_input_de.setDisabled(True)
-            self.link_input_fr.setDisabled(True)
+        is_enabled = state == Qt.Checked
+        self.link_input_de.setDisabled(not is_enabled)
+        self.link_input_fr.setDisabled(not is_enabled)
 
     def center_on_screen(self):
         qr = self.frameGeometry()
@@ -413,32 +410,17 @@ class App(QWidget):
         qr.moveCenter(cp)
         self.move(qr.topLeft())
 
-    def update_categories(self, selected_brand):
-        self.categories.clear()
-        self.categories.addItem("Kategorie wählen")
-        if selected_brand in self.category_data["Kamerasysteme + Objektive"]:
-            self.categories.addItems(
-                self.category_data["Kamerasysteme + Objektive"][selected_brand].keys()
-            )
-            self.categories.setDisabled(False)
-        else:
-            self.categories.setDisabled(True)
-
     def update_subcategories(self, marken_box, categories_box):
         current_brand = marken_box.currentText()
-        if current_brand:
-            categories_box.clear()
-            if current_brand in self.category_data["Kamerasysteme + Objektive"]:
-                categories_box.addItems(
-                    self.category_data["Kamerasysteme + Objektive"][
-                        current_brand
-                    ].keys()
-                )
-                categories_box.setCurrentIndex(0)
-            else:
-                categories_box.addItem("Keine Kategorien verfügbar")
-                categories_box.setDisabled(True)
+        categories_box.clear()
+        if current_brand in self.category_data["Kamerasysteme + Objektive"]:
+            categories_box.addItems(
+                self.category_data["Kamerasysteme + Objektive"][current_brand].keys()
+            )
+            categories_box.setCurrentIndex(0)
+            categories_box.setDisabled(False)
         else:
+            categories_box.addItem("Keine Kategorien verfügbar")
             categories_box.setDisabled(True)
 
 
