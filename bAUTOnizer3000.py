@@ -3,7 +3,7 @@
 import sys
 import os
 import json
-from datetime import datetime, time
+from datetime import datetime
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import (
     QApplication,
@@ -16,11 +16,10 @@ from PyQt5.QtWidgets import (
     QMessageBox,
     QCheckBox,
     QDateTimeEdit,
-    QTimeEdit,
     QTabWidget,
+    QDesktopWidget,
     QDialog,
-    QHBoxLayout,
-    QDesktopWidget
+    QTimeEdit,
 )
 from PyQt5.QtCore import QDateTime, Qt
 from PyQt5.QtGui import QIcon
@@ -212,7 +211,7 @@ class App(QWidget):
         self.datetime_picker = QDateTimeEdit(self)
         self.datetime_picker.setCalendarPopup(True)
         self.datetime_picker.setDateTime(QDateTime.currentDateTime())
-        self.datetime_picker.setDisplayFormat("yyyy-MM-dd")
+        self.datetime_picker.setDisplayFormat("dd.MM.yyyy HH:mm:ss")
         layout.addWidget(self.datetime_picker)
 
         self.time_button = QPushButton("Select Time", self)
@@ -267,7 +266,7 @@ class App(QWidget):
         self.datetime_picker = QDateTimeEdit(self)
         self.datetime_picker.setCalendarPopup(True)
         self.datetime_picker.setDateTime(QDateTime.currentDateTime())
-        self.datetime_picker.setDisplayFormat("yyyy-MM-dd")
+        self.datetime_picker.setDisplayFormat("dd.MM.yyyy HH:mm:ss")
         layout.addWidget(self.datetime_picker)
 
         self.time_button = QPushButton("Select Time", self)
@@ -381,7 +380,10 @@ class App(QWidget):
     def schedule_in_task_scheduler(self, task_filename, schedule_datetime):
         import subprocess
 
-        command = f'SchTasks /Create /SC ONCE /TN "ButtonizerTask_{os.path.basename(task_filename)}" /TR "python {os.path.abspath(__file__).replace("main.py", "execute_task.py")} {task_filename}" /ST {schedule_datetime.strftime("%H:%M")} /SD {schedule_datetime.strftime("%Y-%m-%d")} /F'
+        date_str = schedule_datetime.strftime("%d/%m/%Y")
+        time_str = schedule_datetime.strftime("%H:%M")
+
+        command = f'SchTasks /Create /SC ONCE /TN "ButtonizerTask_{os.path.basename(task_filename)}" /TR "python {os.path.abspath(__file__).replace("main.py", "execute_task.py")} {task_filename}" /ST {time_str} /SD {date_str} /F'
 
         print(f"Scheduling command: {command}")
 
