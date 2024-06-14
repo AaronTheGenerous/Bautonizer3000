@@ -255,9 +255,9 @@ class App(QWidget):
         layout.addWidget(categories_combobox)
 
         layout.addStretch()
-        articles_label = QLabel("Artikelnummern (getrennt mit kommas)", self)
-        layout.addWidget(articles_label)
-        articles_input = QLineEdit(self)
+        articles_input = self._extracted_from_add_image_and_link_fields_19(
+            "Artikelnummern (getrennt mit kommas)", layout
+        )
         layout.addWidget(articles_input)
 
         if tab_name == "Hinzufügen":
@@ -283,44 +283,52 @@ class App(QWidget):
         return tab
 
     def add_image_and_link_fields(self, layout):
-        img1_label = QLabel("Bild 1 URL (Deutsch)", self)
-        layout.addWidget(img1_label)
-        img1_input = QLineEdit(self)
+        img1_input = self._extracted_from_add_image_and_link_fields_19(
+            "Bild 1 URL (Deutsch)", layout
+        )
         layout.addWidget(img1_input)
 
-        img2_label = QLabel("Bild 2 URL (Französisch)", self)
-        layout.addWidget(img2_label)
-        img2_input = QLineEdit(self)
+        img2_input = self._extracted_from_add_image_and_link_fields_19(
+            "Bild 2 URL (Französisch)", layout
+        )
         layout.addWidget(img2_input)
 
-        height_label = QLabel("Bild Höhe", self)
-        layout.addWidget(height_label)
-        height_input = QLineEdit(self)
+        height_input = self._extracted_from_add_image_and_link_fields_19(
+            "Bild Höhe", layout
+        )
         layout.addWidget(height_input)
 
-        width_label = QLabel("Bildbreite", self)
-        layout.addWidget(width_label)
-        width_input = QLineEdit(self)
+        width_input = self._extracted_from_add_image_and_link_fields_19(
+            "Bildbreite", layout
+        )
         layout.addWidget(width_input)
 
         link_checkbox = QCheckBox("Link hinzufügen?", self)
         layout.addWidget(link_checkbox)
 
-        link_label_de = QLabel("Link (Deutsch)", self)
-        layout.addWidget(link_label_de)
-        link_input_de = QLineEdit(self)
-        link_input_de.setDisabled(True)
-        layout.addWidget(link_input_de)
-
-        link_label_fr = QLabel("Link (Französisch)", self)
-        layout.addWidget(link_label_fr)
-        link_input_fr = QLineEdit(self)
-        link_input_fr.setDisabled(True)
-        layout.addWidget(link_input_fr)
-
+        link_input_de = self._extracted_from_add_image_and_link_fields_25(
+            "Link (Deutsch)", layout
+        )
+        link_input_fr = self._extracted_from_add_image_and_link_fields_25(
+            "Link (Französisch)", layout
+        )
         link_checkbox.stateChanged.connect(
             lambda state: self.toggle_link_input(state, link_input_de, link_input_fr)
         )
+
+    # TODO Rename this here and in `create_tab` and `add_image_and_link_fields`
+    def _extracted_from_add_image_and_link_fields_25(self, arg0, layout):
+        result = self._extracted_from_add_image_and_link_fields_19(arg0, layout)
+        result.setDisabled(True)
+        layout.addWidget(result)
+
+        return result
+
+    # TODO Rename this here and in `create_tab` and `add_image_and_link_fields`
+    def _extracted_from_add_image_and_link_fields_19(self, arg0, layout):
+        articles_label = QLabel(arg0, self)
+        layout.addWidget(articles_label)
+        return QLineEdit(self)
 
     def add_datetime_fields(self, layout):
         dateTime_title_label = QLabel("Schedule Date", self)
