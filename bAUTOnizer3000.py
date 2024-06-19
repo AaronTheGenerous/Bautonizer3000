@@ -34,11 +34,10 @@ from PyQt5.QtWidgets import (
     QDesktopWidget,
     QDialog,
     QTimeEdit,
-    QDateEdit,
-    QCalendarWidget,
+    QCalendarWidget
 )
 from PyQt5.QtCore import Qt, QDate, QDateTime, QTime
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QFont
 
 
 class TimePickerDialog(QDialog):
@@ -165,11 +164,16 @@ class App(QWidget):
         }
 
         self.display_label_title = QLabel("Geplantes Datum und Uhrzeit")
+        font2 = QFont()
+        font2.setPointSize(10)
+        self.display_label_title.setFont(font2)
         self.display_label_title.setStyleSheet(
             """
             QLabel {
-                background-color: #b7dfea;
+                background-color: #f9f9f9;
                 font-weight: bold;
+                border: 2px solid #ffdd00;  /* Set a 2px solid black border */
+                padding: 5px;  /* Add padding around the text */
             }
         """
         )
@@ -180,11 +184,15 @@ class App(QWidget):
 
         # Initialize datetime_label here
         self.datetime_label = QLabel(self)
+        font = QFont()
+        font.setPointSize(15)
+        self.datetime_label.setFont(font)
         self.datetime_label.setStyleSheet(
             """
             QLabel {
-                background-color: #d5e6ec;
-                font-weight: bold;    
+                background-color: #f9f9f9;
+                border: 2px solid #ffdd00;  /* Set a 2px solid black border */
+                padding: 5px;  /* Add padding around the text */
             }
         """
         )
@@ -278,7 +286,7 @@ class App(QWidget):
 
         self.add_datetime_fields(layout)
 
-        submit_button = QPushButton("Submit", self)
+        submit_button = QPushButton("Bestätigen", self)
         submit_button.clicked.connect(submit_action)
         layout.addWidget(submit_button)
 
@@ -344,7 +352,15 @@ class App(QWidget):
         return QLineEdit(self)
 
     def add_datetime_fields(self, layout):
-        dateTime_title_label = QLabel("Schedule Date", self)
+        dateTime_title_label = QLabel("Datum & Uhrzeit planen", self)
+        dateTime_title_label.setAlignment(Qt.AlignCenter)
+        dateTime_title_label.setStyleSheet(
+            """
+            QLabel{
+                font-weight: bold;
+            }
+        """
+        )
         layout.addWidget(dateTime_title_label)
 
         # current_dateTime = QDateTime.currentDateTime()
@@ -361,18 +377,18 @@ class App(QWidget):
         # datetime_label.setAlignment(Qt.AlignCenter)
         # layout.addWidget(datetime_label)
 
-        date_button = QPushButton("Select Date", self)
+        date_button = QPushButton("Datum wählen", self)
         date_button.clicked.connect(self.open_date_picker)
         layout.addWidget(date_button)
 
-        time_button = QPushButton("Select Time", self)
+        time_button = QPushButton("Uhrzeit wählen", self)
         time_button.clicked.connect(self.open_time_picker)
         layout.addWidget(time_button)
 
     def show_message(self):
         msg_box = QMessageBox(self)
-        msg_box.setWindowTitle("Success")
-        msg_box.setText("Task scheduled successfully!")
+        msg_box.setWindowTitle("Geschafft")
+        msg_box.setText("Task erfolgreich geplant. \nDu siehst heute übrigens mal wieder super aus <3")
         msg_box.setIcon(QMessageBox.Information)
         msg_box.exec_()
 
