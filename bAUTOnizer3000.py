@@ -164,6 +164,17 @@ class App(QWidget):
             }
         }
 
+        self.display_label_title = QLabel("Geplantes Datum und Uhrzeit")
+        self.display_label_title.setStyleSheet(
+            """
+            QLabel {
+                background-color: #b7dfea;
+                font-weight: bold;
+            }
+        """
+        )
+        self.display_label_title.setAlignment(Qt.AlignCenter)
+
         self.selected_date = QDate.currentDate()  # Initialize selected_date attribute
         self.selected_time = QTime.currentTime()  # Initialize selected_time attribute
 
@@ -199,6 +210,8 @@ class App(QWidget):
         layout.addWidget(tab_widget)
 
         # Add the datetime_label to the layout
+
+        layout.addWidget(self.display_label_title)
         layout.addWidget(self.datetime_label)
 
         self.setLayout(layout)
@@ -334,19 +347,19 @@ class App(QWidget):
         dateTime_title_label = QLabel("Schedule Date", self)
         layout.addWidget(dateTime_title_label)
 
-        current_dateTime = QDateTime.currentDateTime()
-        datetime_label = QLabel(self)
-        datetime_label.setText(current_dateTime.toString())
-        datetime_label.setStyleSheet(
-            """
-            QLabel {
-                background-color: #d5e6ec;
-                font-weight: bold;    
-            }
-        """
-        )
-        datetime_label.setAlignment(Qt.AlignCenter)
-        layout.addWidget(datetime_label)
+        # current_dateTime = QDateTime.currentDateTime()
+        # datetime_label = QLabel(self)
+        # datetime_label.setText(current_dateTime.toString())
+        # datetime_label.setStyleSheet(
+        #    """
+        #    QLabel {
+        #        background-color: #d5e6ec;
+        #        font-weight: bold;
+        #    }
+        # """
+        # )
+        # datetime_label.setAlignment(Qt.AlignCenter)
+        # layout.addWidget(datetime_label)
 
         date_button = QPushButton("Select Date", self)
         date_button.clicked.connect(self.open_date_picker)
