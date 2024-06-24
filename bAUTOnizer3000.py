@@ -1,20 +1,3 @@
-# main.py
-
-"""
-TODO
-
-Task: 
-    Implement queue mechanism for consecutive task execution in exe_tasks.py script.
-Steps:
-    Update task data structure with unique identifiers for queue management.
-    Develop queue management system to store and execute tasks consecutively.
-    Enhance script logic to handle script restarts with the next task in the queue.
-    Ensure tasks are executed in the correct order based on the queue identifiers.
-    Implement error handling for task failures and queue issues.
-Goal: 
-    Enable tasks to run consecutively based on user-defined scheduling and queueing.
-"""
-
 import sys
 import os
 import json
@@ -34,7 +17,7 @@ from PyQt5.QtWidgets import (
     QDesktopWidget,
     QDialog,
     QTimeEdit,
-    QCalendarWidget
+    QCalendarWidget,
 )
 from PyQt5.QtCore import Qt, QDate, QDateTime, QTime
 from PyQt5.QtGui import QIcon, QFont
@@ -276,8 +259,8 @@ class App(QWidget):
         layout.addWidget(categories_combobox)
 
         layout.addStretch()
-        articles_input = self.extract_article_numbers(
-            "Artikelnummern (getrennt mit kommas)", layout
+        articles_input = self.create_line_edit_with_label(
+            "Artikelnummern (getrennt mit Kommas)", layout
         )
         layout.addWidget(articles_input)
 
@@ -287,7 +270,11 @@ class App(QWidget):
         self.add_datetime_fields(layout)
 
         submit_button = QPushButton("Bestätigen", self)
-        submit_button.clicked.connect(submit_action)
+        submit_button.clicked.connect(
+            lambda: submit_action(
+                marken_combobox, categories_combobox, articles_input, tab_name
+            )
+        )
         layout.addWidget(submit_button)
 
         layout.addStretch()
@@ -304,52 +291,46 @@ class App(QWidget):
         return tab
 
     def add_image_and_link_fields(self, layout):
-        img1_input = self.extract_article_numbers(
+        self.img1_input = self.create_line_edit_with_label(
             "Bild 1 URL (Deutsch)", layout
         )
-        layout.addWidget(img1_input)
+        layout.addWidget(self.img1_input)
 
-        img2_input = self.extract_article_numbers(
+        self.img2_input = self.create_line_edit_with_label(
             "Bild 2 URL (Französisch)", layout
         )
-        layout.addWidget(img2_input)
+        layout.addWidget(self.img2_input)
 
-        height_input = self.extract_article_numbers(
-            "Bild Höhe", layout
-        )
-        layout.addWidget(height_input)
+        self.height_input = self.create_line_edit_with_label("Bild Höhe", layout)
+        layout.addWidget(self.height_input)
 
-        width_input = self.extract_article_numbers(
-            "Bildbreite", layout
-        )
-        layout.addWidget(width_input)
+        self.width_input = self.create_line_edit_with_label("Bildbreite", layout)
+        layout.addWidget(self.width_input)
 
-        link_checkbox = QCheckBox("Link hinzufügen?", self)
-        layout.addWidget(link_checkbox)
+        self.link_checkbox = QCheckBox("Link hinzufügen?", self)
+        layout.addWidget(self.link_checkbox)
 
-        link_input_de = self._extracted_from_add_image_and_link_fields_25(
-            "Link (Deutsch)", layout
-        )
-        link_input_fr = self._extracted_from_add_image_and_link_fields_25(
+        self.link_input_de = self.create_line_edit_with_label("Link (Deutsch)", layout)
+        self.link_input_de.setDisabled(True)
+        layout.addWidget(self.link_input_de)
+
+        self.link_input_fr = self.create_line_edit_with_label(
             "Link (Französisch)", layout
         )
-        link_checkbox.stateChanged.connect(
-            lambda state: self.toggle_link_input(state, link_input_de, link_input_fr)
+        self.link_input_fr.setDisabled(True)
+        layout.addWidget(self.link_input_fr)
+
+        self.link_checkbox.stateChanged.connect(
+            lambda state: self.toggle_link_input(
+                state, self.link_input_de, self.link_input_fr
+            )
         )
 
-    # TODO Rename this here and in `create_tab` and `add_image_and_link_fields`
-    def _extracted_from_add_image_and_link_fields_25(self, arg0, layout):
-        result = self.extract_article_numbers(arg0, layout)
-        result.setDisabled(True)
-        layout.addWidget(result)
-
-        return result
-
-    # TODO Rename this here and in `create_tab` and `add_image_and_link_fields`
-    def extract_article_numbers(self, arg0, layout):
-        articles_label = QLabel(arg0, self)
-        layout.addWidget(articles_label)
-        return QLineEdit(self)
+    def create_line_edit_with_label(self, label_text, layout):
+        label = QLabel(label_text, self)
+        layout.addWidget(label)
+        line_edit = QLineEdit(self)
+        return line_edit
 
     def add_datetime_fields(self, layout):
         dateTime_title_label = QLabel("Datum & Uhrzeit planen", self)
@@ -363,20 +344,6 @@ class App(QWidget):
         )
         layout.addWidget(dateTime_title_label)
 
-        # current_dateTime = QDateTime.currentDateTime()
-        # datetime_label = QLabel(self)
-        # datetime_label.setText(current_dateTime.toString())
-        # datetime_label.setStyleSheet(
-        #    """
-        #    QLabel {
-        #        background-color: #d5e6ec;
-        #        font-weight: bold;
-        #    }
-        # """
-        # )
-        # datetime_label.setAlignment(Qt.AlignCenter)
-        # layout.addWidget(datetime_label)
-
         date_button = QPushButton("Datum wählen", self)
         date_button.clicked.connect(self.open_date_picker)
         layout.addWidget(date_button)
@@ -388,7 +355,9 @@ class App(QWidget):
     def show_message(self):
         msg_box = QMessageBox(self)
         msg_box.setWindowTitle("Geschafft")
-        msg_box.setText("Task erfolgreich geplant. \nDu siehst heute übrigens mal wieder super aus <3")
+        msg_box.setText(
+            "Task erfolgreich geplant. \nDu siehst heute übrigens mal wieder super aus <3"
+        )
         msg_box.setIcon(QMessageBox.Information)
         msg_box.exec_()
 
@@ -405,28 +374,8 @@ class App(QWidget):
             return True
         return super().eventFilter(obj, event)
 
-    def schedule_task(self):
-        current_tab = self.tab_widget.currentIndex()
-        task_type_map = {
-            0: (
-                "process_articles",
-                self.marken_hinzufugen,
-                self.categories_hinzufugen,
-                self.articles1,
-            ),
-            1: (
-                "remove_articles_images",
-                self.marken_entfernen,
-                self.categories_entfernen,
-                self.articles2,
-            ),
-        }
 
-        if current_tab not in task_type_map:
-            raise ValueError(f"Invalid tab index: {current_tab}")
-
-        task_type, marken_box, categories_box, articles_box = task_type_map[current_tab]
-
+    def schedule_task(self, marken_box, categories_box, articles_input, tab_name):
         # Separate date and time components
         schedule_date = self.selected_date
         schedule_time = self.selected_time
@@ -440,20 +389,30 @@ class App(QWidget):
             schedule_time.second(),
         )
 
+        task_type = (
+            "process_articles" if tab_name == "Hinzufügen" else "remove_articles_images"
+        )
+
         task = {
             "task_type": task_type,
-            "schedule_datetime": schedule_datetime,
+            "schedule_datetime": schedule_datetime.isoformat(),  # Convert datetime to string
             "data": {
                 "marke": marken_box.currentText(),
                 "kategorie": categories_box.currentText(),
-                "article_numbers": articles_box.text(),
-                "img1_url": self.img1.text(),
-                "img2_url": self.img2.text(),
-                "width": self.width_box.text(),
-                "height": self.height_box.text(),
-                "link_checkbox": self.link_checkbox.isChecked(),
-                "link_input_de": self.link_input_de.text(),
-                "link_input_fr": self.link_input_fr.text(),
+                "article_numbers": articles_input.text(),
+                "img1_url": self.img1_input.text() if tab_name == "Hinzufügen" else None,
+                "img2_url": self.img2_input.text() if tab_name == "Hinzufügen" else None,
+                "width": self.width_input.text() if tab_name == "Hinzufügen" else None,
+                "height": self.height_input.text() if tab_name == "Hinzufügen" else None,
+                "link_checkbox": (
+                    self.link_checkbox.isChecked() if tab_name == "Hinzufügen" else None
+                ),
+                "link_input_de": (
+                    self.link_input_de.text() if tab_name == "Hinzufügen" else None
+                ),
+                "link_input_fr": (
+                    self.link_input_fr.text() if tab_name == "Hinzufügen" else None
+                ),
             },
         }
 
