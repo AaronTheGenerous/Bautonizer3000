@@ -250,7 +250,7 @@ class App(QWidget):
         selected_date = self.selected_date.toString("dd/MM/yyyy")
         selected_time = self.selected_time.toString("HH:mm:ss")
         print(f"Updating Label with: {selected_date} {selected_time}")
-        self.datetime_label.setText(f"{selected_date} {selected_time}")
+        self.datetime_label.setText(f"{selected_date} \n{selected_time}")
 
     def init_hinzufugen_tab(self):
         return self.create_tab("Hinzufügen", self.schedule_task)
@@ -276,7 +276,7 @@ class App(QWidget):
         layout.addWidget(categories_combobox)
 
         layout.addStretch()
-        articles_input = self._extracted_from_add_image_and_link_fields_19(
+        articles_input = self.extract_article_numbers(
             "Artikelnummern (getrennt mit kommas)", layout
         )
         layout.addWidget(articles_input)
@@ -304,22 +304,22 @@ class App(QWidget):
         return tab
 
     def add_image_and_link_fields(self, layout):
-        img1_input = self._extracted_from_add_image_and_link_fields_19(
+        img1_input = self.extract_article_numbers(
             "Bild 1 URL (Deutsch)", layout
         )
         layout.addWidget(img1_input)
 
-        img2_input = self._extracted_from_add_image_and_link_fields_19(
+        img2_input = self.extract_article_numbers(
             "Bild 2 URL (Französisch)", layout
         )
         layout.addWidget(img2_input)
 
-        height_input = self._extracted_from_add_image_and_link_fields_19(
+        height_input = self.extract_article_numbers(
             "Bild Höhe", layout
         )
         layout.addWidget(height_input)
 
-        width_input = self._extracted_from_add_image_and_link_fields_19(
+        width_input = self.extract_article_numbers(
             "Bildbreite", layout
         )
         layout.addWidget(width_input)
@@ -339,14 +339,14 @@ class App(QWidget):
 
     # TODO Rename this here and in `create_tab` and `add_image_and_link_fields`
     def _extracted_from_add_image_and_link_fields_25(self, arg0, layout):
-        result = self._extracted_from_add_image_and_link_fields_19(arg0, layout)
+        result = self.extract_article_numbers(arg0, layout)
         result.setDisabled(True)
         layout.addWidget(result)
 
         return result
 
     # TODO Rename this here and in `create_tab` and `add_image_and_link_fields`
-    def _extracted_from_add_image_and_link_fields_19(self, arg0, layout):
+    def extract_article_numbers(self, arg0, layout):
         articles_label = QLabel(arg0, self)
         layout.addWidget(articles_label)
         return QLineEdit(self)
