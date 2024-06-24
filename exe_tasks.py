@@ -87,7 +87,11 @@ def insert_image_text_editor(
             if "DE" in img_url
             else '//input[contains(@class, "cke_dialog_ui_input_text") and @aria-labelledby="cke_701_label"]'
         ),
-        "ausrichtung_input": '//select[contains(@class, "cke_dialog_ui_input_select") and @aria-labelledby[contains(., "_label")] and @style="width:90px"]',
+        "ausrichtung_input": (
+            '//select[contains(@class, "cke_dialog_ui_input_select") and @aria-labelledby[contains(., "_label")] and @style="width:90px"]'
+            if "DE" in img_url
+            else "//tr[4]/td[@role='presentation']/div[@role='presentation']//select[@safeclass~'\bcke_dialog_ui_input_select\b']"
+        ),
         "ok_button": '//a[contains(@class, "cke_dialog_ui_button_ok") and @title="OK"]',
         "link_tab": (
             '//*[@id="cke_Link_595"]' if "DE" in img_url else '//*[@id="cke_Link_734"]'
