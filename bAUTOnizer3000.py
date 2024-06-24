@@ -19,7 +19,7 @@ from PyQt5.QtWidgets import (
     QTimeEdit,
     QCalendarWidget,
 )
-from PyQt5.QtCore import Qt, QDate, QDateTime, QTime
+from PyQt5.QtCore import Qt, QDate, QTime
 from PyQt5.QtGui import QIcon, QFont
 
 
@@ -60,15 +60,13 @@ class DatePickerDialog(QDialog):
         confirm_button.clicked.connect(self.confirm_date)
         self.layout.addWidget(confirm_button)
 
-        self.selected_date = QDate.currentDate()  # Initialize selected_date attribute
+        self.selected_date = QDate.currentDate()
 
         self.setLayout(self.layout)
 
     def confirm_date(self):
-        self.selected_date = (
-            self.calendar_widget.selectedDate()
-        )  # Get the selected date
-        self.accept()  # Close the dialog and return the selected date
+        self.selected_date = self.calendar_widget.selectedDate()
+        self.accept()
 
     def get_date(self):
         return self.selected_date
@@ -85,7 +83,8 @@ class App(QWidget):
         self.width = 230
         self.height = 550
 
-        self.selected_time = QtCore.QTime.currentTime()
+        self.selected_date = QDate.currentDate()
+        self.selected_time = QTime.currentTime()
 
         self.category_data = {
             "Kamerasysteme + Objektive": {
@@ -155,17 +154,13 @@ class App(QWidget):
             QLabel {
                 background-color: #f9f9f9;
                 font-weight: bold;
-                border: 2px solid #ffdd00;  /* Set a 2px solid black border */
-                padding: 5px;  /* Add padding around the text */
+                border: 2px solid #ffdd00;
+                padding: 5px;
             }
         """
         )
         self.display_label_title.setAlignment(Qt.AlignCenter)
 
-        self.selected_date = QDate.currentDate()  # Initialize selected_date attribute
-        self.selected_time = QTime.currentTime()  # Initialize selected_time attribute
-
-        # Initialize datetime_label here
         self.datetime_label = QLabel(self)
         font = QFont()
         font.setPointSize(15)
@@ -174,13 +169,13 @@ class App(QWidget):
             """
             QLabel {
                 background-color: #f9f9f9;
-                border: 2px solid #ffdd00;  /* Set a 2px solid black border */
-                padding: 5px;  /* Add padding around the text */
+                border: 2px solid #ffdd00;
+                padding: 5px;
             }
         """
         )
         self.datetime_label.setAlignment(Qt.AlignCenter)
-        self.update_datetime_label()  # Initialize the label text
+        self.update_datetime_label()
 
         self.initUI()
 
@@ -196,11 +191,9 @@ class App(QWidget):
         layout = QVBoxLayout()
         tab_widget = QTabWidget()
         self.tab_widget = tab_widget
-        tab_widget.addTab(self.init_hinzufugen_tab(), "Hinzufügen")
-        tab_widget.addTab(self.init_entfernen_tab(), "Entfernen")
+        tab_widget.addTab(self.create_tab("Hinzufügen", self.schedule_task), "Hinzufügen")
+        tab_widget.addTab(self.create_tab("Entfernen", self.schedule_task), "Entfernen")
         layout.addWidget(tab_widget)
-
-        # Add the datetime_label to the layout
 
         layout.addWidget(self.display_label_title)
         layout.addWidget(self.datetime_label)
@@ -234,12 +227,6 @@ class App(QWidget):
         selected_time = self.selected_time.toString("HH:mm:ss")
         print(f"Updating Label with: {selected_date} {selected_time}")
         self.datetime_label.setText(f"{selected_date} \n{selected_time}")
-
-    def init_hinzufugen_tab(self):
-        return self.create_tab("Hinzufügen", self.schedule_task)
-
-    def init_entfernen_tab(self):
-        return self.create_tab("Entfernen", self.schedule_task)
 
     def create_tab(self, tab_name, submit_action):
         tab = QWidget()
@@ -291,21 +278,15 @@ class App(QWidget):
         return tab
 
     def add_image_and_link_fields(self, layout):
-        self.img1_input = self.create_line_edit_with_label(
-            "Bild 1 URL (Deutsch)", layout
-        )
-        layout.addWidget(self.img1_input)
-
-        self.img2_input = self.create_line_edit_with_label(
-            "Bild 2 URL (Französisch)", layout
-        )
-        layout.addWidget(self.img2_input)
-
-        self.height_input = self.create_line_edit_with_label("Bild Höhe", layout)
-        layout.addWidget(self.height_input)
-
-        self.width_input = self.create_line_edit_with_label("Bildbreite", layout)
-        layout.addWidget(self.width_input)
+        fields = [
+            ("Bild 1 URL (Deutsch)", "img1_input"),
+            ("Bild 2 URL (Französisch)", "img2_input"),
+            ("Bild Höhe", "height_input"),
+            ("Bildbreite", "width_input"),
+        ]
+        for label_text, attr_name in fields:
+            setattr(self, attr_name, self.create_line_edit_with_label(label_text, layout))
+            layout.addWidget(getattr(self, attr_name))
 
         self.link_checkbox = QCheckBox("Link hinzufügen?", self)
         layout.addWidget(self.link_checkbox)
@@ -314,9 +295,7 @@ class App(QWidget):
         self.link_input_de.setDisabled(True)
         layout.addWidget(self.link_input_de)
 
-        self.link_input_fr = self.create_line_edit_with_label(
-            "Link (Französisch)", layout
-        )
+        self.link_input_fr = self.create_line_edit_with_label("Link (Französisch)", layout)
         self.link_input_fr.setDisabled(True)
         layout.addWidget(self.link_input_fr)
 
@@ -329,8 +308,7 @@ class App(QWidget):
     def create_line_edit_with_label(self, label_text, layout):
         label = QLabel(label_text, self)
         layout.addWidget(label)
-        line_edit = QLineEdit(self)
-        return line_edit
+        return QLineEdit(self)
 
     def add_datetime_fields(self, layout):
         dateTime_title_label = QLabel("Datum & Uhrzeit planen", self)
@@ -344,13 +322,14 @@ class App(QWidget):
         )
         layout.addWidget(dateTime_title_label)
 
-        date_button = QPushButton("Datum wählen", self)
-        date_button.clicked.connect(self.open_date_picker)
-        layout.addWidget(date_button)
-
-        time_button = QPushButton("Uhrzeit wählen", self)
-        time_button.clicked.connect(self.open_time_picker)
-        layout.addWidget(time_button)
+        buttons = [
+            ("Datum wählen", self.open_date_picker),
+            ("Uhrzeit wählen", self.open_time_picker),
+        ]
+        for text, handler in buttons:
+            button = QPushButton(text, self)
+            button.clicked.connect(handler)
+            layout.addWidget(button)
 
     def show_message(self):
         msg_box = QMessageBox(self)
@@ -374,19 +353,14 @@ class App(QWidget):
             return True
         return super().eventFilter(obj, event)
 
-
     def schedule_task(self, marken_box, categories_box, articles_input, tab_name):
-        # Separate date and time components
-        schedule_date = self.selected_date
-        schedule_time = self.selected_time
-
         schedule_datetime = datetime.datetime(
-            schedule_date.year(),
-            schedule_date.month(),
-            schedule_date.day(),
-            schedule_time.hour(),
-            schedule_time.minute(),
-            schedule_time.second(),
+            self.selected_date.year(),
+            self.selected_date.month(),
+            self.selected_date.day(),
+            self.selected_time.hour(),
+            self.selected_time.minute(),
+            self.selected_time.second(),
         )
 
         task_type = (
@@ -395,7 +369,7 @@ class App(QWidget):
 
         task = {
             "task_type": task_type,
-            "schedule_datetime": schedule_datetime.isoformat(),  # Convert datetime to string
+            "schedule_datetime": schedule_datetime.isoformat(),
             "data": {
                 "marke": marken_box.currentText(),
                 "kategorie": categories_box.currentText(),
