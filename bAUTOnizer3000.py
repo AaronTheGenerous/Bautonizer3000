@@ -240,9 +240,10 @@ class App(QWidget):
         layout.addWidget(marken_label)
         layout.addWidget(marken_combobox)
 
-        categories_label = QLabel("Kategorie", self)
+        categories_label, categories_combobox = self.create_label_and_combobox(
+            "Kategorie", []
+        )
         layout.addWidget(categories_label)
-        categories_combobox = QComboBox(self)
         layout.addWidget(categories_combobox)
 
         layout.addStretch()
