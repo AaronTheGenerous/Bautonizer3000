@@ -88,11 +88,15 @@ def insert_image_text_editor(
             else '//input[contains(@class, "cke_dialog_ui_input_text") and @aria-labelledby="cke_701_label"]'
         ),
         "ausrichtung_input": (
-            '//select[contains(@class, "cke_dialog_ui_input_select") and @aria-labelledby[contains(., "_label")] and @style="width:90px"]'
+            '//select[@class="cke_dialog_ui_input_select" and starts-with(@aria-labelledby, "cke_")]'
             if "DE" in img_url
-            else "//tr[4]/td[@role='presentation']/div[@role='presentation']//select[@safeclass~'\bcke_dialog_ui_input_select\b']"
+            else '//*[@id="cke_715_select"]'
         ),
-        "ok_button": '//a[contains(@class, "cke_dialog_ui_button_ok") and @title="OK"]',
+        "ok_button": (
+            '//a[contains(@class, "cke_dialog_ui_button cke_dialog_ui_button_ok") and @title="OK"]'
+            if "DE" in img_url
+            else '//*[@id="cke_768_label"]'
+        ),
         "link_tab": (
             '//*[@id="cke_Link_595"]' if "DE" in img_url else '//*[@id="cke_Link_734"]'
         ),
@@ -166,6 +170,9 @@ def insert_image_text_editor(
         actions.perform()
 
     time.sleep(0.5)
+
+    """if "FR" in img_url:
+        input("Press any Key to continue...")"""
 
     ok_button = WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.XPATH, xpaths["ok_button"]))
