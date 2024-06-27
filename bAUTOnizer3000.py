@@ -7,17 +7,20 @@ from PyQt5.QtWidgets import (
     QApplication,
     QWidget,
     QVBoxLayout,
+    QHBoxLayout,
     QComboBox,
     QLineEdit,
     QPushButton,
     QLabel,
     QMessageBox,
-    QCheckBox,
     QTabWidget,
     QDesktopWidget,
     QDialog,
     QTimeEdit,
     QCalendarWidget,
+    QRadioButton,
+    QButtonGroup,
+    QCheckBox,
 )
 from PyQt5.QtCore import Qt, QDate, QTime
 from PyQt5.QtGui import QIcon, QFont
@@ -34,7 +37,7 @@ class App(QWidget):
         self.left = 100
         self.top = 100
         self.width = 230
-        self.height = 550
+        self.height = 600  # Increased height to accommodate the switch and banner
 
         self.selected_date = QDate.currentDate()
         self.selected_time = QTime.currentTime()
@@ -103,44 +106,122 @@ class App(QWidget):
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
-        self.setWindowIcon(QIcon(r"C:\path\to\icon.ico"))
+        self.setWindowIcon(
+            QIcon(
+                r"C:\Users\Hafner\Desktop\Aaron_C\Files_Software\Buttonizer3000\Bautonizer3000\NIK Buttons 10 CH.ico"
+            )
+        )
 
-        layout = QVBoxLayout()
+        self.main_layout = QVBoxLayout()
+
+        # Create the switch for Single-Task Mode and Multi-Task Mode
+        self.create_mode_switch(self.main_layout)
+
         self.banner_label = QLabel("", self)
         font = QFont()
-        font.setPointSize(15)
+        font.setPointSize(10)  # Smaller font size to fit the window
         self.banner_label.setFont(font)
         self.banner_label.setAlignment(Qt.AlignCenter)
-        layout.addWidget(self.banner_label)
+        self.main_layout.addWidget(self.banner_label)
 
-        tab_widget = QTabWidget()
-        self.tab_widget = tab_widget
-        tab_widget.addTab(
+        self.tab_widget = QTabWidget()
+        self.tab_widget.setStyleSheet("QTabWidget::pane { border: 2px solid #ffffff; }")
+        self.tab_widget.addTab(
             self.create_tab("Hinzufügen", self.schedule_task), "Hinzufügen"
         )
-        tab_widget.addTab(self.create_tab("Entfernen", self.schedule_task), "Entfernen")
-        layout.addWidget(tab_widget)
+        self.tab_widget.addTab(
+            self.create_tab("Entfernen", self.schedule_task), "Entfernen"
+        )
+        self.main_layout.addWidget(self.tab_widget)
 
-        self.setLayout(layout)
+        self.display_label_title = QLabel("Geplantes Datum und Uhrzeit")
+        font2 = QFont()
+        font2.setPointSize(10)
+        self.display_label_title.setFont(font2)
+        self.display_label_title.setStyleSheet(
+            """
+            QLabel {
+                background-color: #f9f9f9;
+                font-weight: bold;
+                border: 2px solid #ffdd00;
+                padding: 5px;
+            }
+        """
+        )
+        self.display_label_title.setAlignment(Qt.AlignCenter)
+
+        self.datetime_label = QLabel(self)
+        font = QFont()
+        font.setPointSize(15)
+        self.datetime_label.setFont(font)
+        self.datetime_label.setStyleSheet(
+            """
+            QLabel {
+                background-color: #f9f9f9;
+                border: 2px solid #ffdd00;
+                padding: 5px;
+            }
+        """
+        )
+        self.datetime_label.setAlignment(Qt.AlignCenter)
+        self.update_datetime_label()
+
+        self.main_layout.addWidget(self.display_label_title)
+        self.main_layout.addWidget(self.datetime_label)
+
+        self.setLayout(self.main_layout)
         self.center_on_screen()
         self.show()
 
-    def toggle_multi_mode(self, state):
-        self.multi_mode = state == Qt.Checked
-        if self.multi_mode:
-            self.banner_label.setText("Multi-Task Mode / Set Start Date and Time")
-            self.setStyleSheet("background-color: #ffdd00;")
+    def create_mode_switch(self, layout):
+        self.single_task_radio = QRadioButton("Single-Task Modus")
+        self.multi_task_radio = QRadioButton("Multi-Task Modus")
+
+        self.button_group = QButtonGroup(self)
+        self.button_group.addButton(self.single_task_radio)
+        self.button_group.addButton(self.multi_task_radio)
+        self.single_task_radio.setChecked(True)  # Default to Single-Task Mode
+
+        self.single_task_radio.toggled.connect(self.toggle_multi_mode)
+        self.multi_task_radio.toggled.connect(self.toggle_multi_mode)
+
+        switch_layout = QHBoxLayout()
+        switch_layout.addWidget(self.single_task_radio)
+        switch_layout.addWidget(self.multi_task_radio)
+        layout.addLayout(switch_layout)
+
+    def toggle_multi_mode(self):
+        if self.multi_task_radio.isChecked():
+            self.tab_widget.setStyleSheet(
+                "QTabWidget::pane { border: 2px solid #ffdd00; }"
+            )
+            self.banner_label.setStyleSheet(
+                """
+                QLabel {
+                    background-color: #f9f9f9;
+                    border: 2px solid #ffdd00;
+                    padding: 5px;
+                }
+            """
+            )
+            self.banner_label.setText(
+                "Multi-Task Modus\nDatum und Uhrzeit des ersten Tasks wählen"
+            )
         else:
+            self.tab_widget.setStyleSheet(
+                "QTabWidget::pane { border: 2px solid #ffffff; }"
+            )
+            self.banner_label.setStyleSheet(
+                """
+                QLabel {
+                }
+            """
+            )
             self.banner_label.setText("")
-            self.setStyleSheet("")
 
     def create_tab(self, tab_name, submit_action):
         tab = QWidget()
         layout = QVBoxLayout()
-
-        self.multi_mode_switch = QCheckBox("Multi-Task Mode", self)
-        self.multi_mode_switch.stateChanged.connect(self.toggle_multi_mode)
-        layout.addWidget(self.multi_mode_switch)
 
         marken_label, marken_combobox = self.create_label_and_combobox(
             "Marke", self.category_data["Kamerasysteme + Objektive"].keys()
@@ -164,9 +245,6 @@ class App(QWidget):
             self.add_image_and_link_fields(layout)
 
         self.add_datetime_fields(layout)
-
-        self.run_after_previous_checkbox = QCheckBox("Run after previous task", self)
-        layout.addWidget(self.run_after_previous_checkbox)
 
         submit_button = QPushButton("Bestätigen", self)
         submit_button.clicked.connect(
@@ -264,7 +342,7 @@ class App(QWidget):
     def update_datetime_label(self):
         selected_date = self.selected_date.toString("dd/MM/yyyy")
         selected_time = self.selected_time.toString("HH:mm:ss")
-        self.banner_label.setText(f"{selected_date} \n{selected_time}")
+        self.datetime_label.setText(f"{selected_date} \n{selected_time}")
 
     def show_message(self):
         msg_box = QMessageBox(self)
@@ -320,8 +398,7 @@ class App(QWidget):
                     self.link_input_fr.text() if tab_name == "Hinzufügen" else None
                 ),
             },
-            "follow_up": self.run_after_previous_checkbox.isChecked(),
-            "multi_mode": self.multi_mode,
+            "follow_up": self.multi_mode,
         }
 
         task_filename = os.path.join(
@@ -334,7 +411,7 @@ class App(QWidget):
         with open(task_filename, "w") as file:
             json.dump(task, file)
 
-        if not self.multi_mode or not self.run_after_previous_checkbox.isChecked():
+        if not self.multi_mode:
             self.schedule_in_task_scheduler(task_filename, task["schedule_datetime"])
 
         QMessageBox.information(self, "Success", "Task scheduled successfully!")
@@ -390,7 +467,7 @@ class App(QWidget):
 class TimePickerDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("Select Time")
+        self.setWindowTitle("Zeit wählen")
         self.layout = QVBoxLayout()
         self.time_edit = QTimeEdit(self)
         self.time_edit.setDisplayFormat("HH:mm:ss")
@@ -414,7 +491,7 @@ class TimePickerDialog(QDialog):
 class DatePickerDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("Select Date")
+        self.setWindowTitle("Datum wählen")
         self.layout = QVBoxLayout()
 
         self.calendar_widget = QCalendarWidget()
