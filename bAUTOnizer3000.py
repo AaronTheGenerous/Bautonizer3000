@@ -1,5 +1,3 @@
-# bAUTOnizer3000.py
-
 import sys
 import os
 import json
@@ -25,58 +23,10 @@ from PyQt5.QtCore import Qt, QDate, QTime
 from PyQt5.QtGui import QIcon, QFont
 
 
-class TimePickerDialog(QDialog):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle("Select Time")
-        self.layout = QVBoxLayout()
-        self.time_edit = QTimeEdit(self)
-        self.time_edit.setDisplayFormat("HH:mm:ss")
-        self.time_edit.setTime(QtCore.QTime.currentTime())
-        self.layout.addWidget(self.time_edit)
-
-        self.ok_button = QPushButton("OK", self)
-        self.ok_button.clicked.connect(self.confirm_time)
-        self.layout.addWidget(self.ok_button)
-
-        self.setLayout(self.layout)
-
-    def confirm_time(self):
-        self.selected_time = self.time_edit.time()
-        self.accept()
-
-    def get_time(self):
-        return self.selected_time
-
-
-class DatePickerDialog(QDialog):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle("Select Date")
-        self.layout = QVBoxLayout()
-
-        self.calendar_widget = QCalendarWidget()
-        self.layout.addWidget(self.calendar_widget)
-
-        confirm_button = QPushButton("OK")
-        confirm_button.clicked.connect(self.confirm_date)
-        self.layout.addWidget(confirm_button)
-
-        self.selected_date = QDate.currentDate()
-
-        self.setLayout(self.layout)
-
-    def confirm_date(self):
-        self.selected_date = self.calendar_widget.selectedDate()
-        self.accept()
-
-    def get_date(self):
-        return self.selected_date
-
-
 class App(QWidget):
     tasks_directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tasks")
     last_task_end_time_file = os.path.join(tasks_directory, "last_task_end_time.json")
+    multi_mode = False  # Track if multi-mode is enabled
 
     def __init__(self):
         super().__init__()
@@ -148,50 +98,21 @@ class App(QWidget):
             }
         }
 
-        self.display_label_title = QLabel("Geplantes Datum und Uhrzeit")
-        font2 = QFont()
-        font2.setPointSize(10)
-        self.display_label_title.setFont(font2)
-        self.display_label_title.setStyleSheet(
-            """
-            QLabel {
-                background-color: #f9f9f9;
-                font-weight: bold;
-                border: 2px solid #ffdd00;
-                padding: 5px;
-            }
-        """
-        )
-        self.display_label_title.setAlignment(Qt.AlignCenter)
-
-        self.datetime_label = QLabel(self)
-        font = QFont()
-        font.setPointSize(15)
-        self.datetime_label.setFont(font)
-        self.datetime_label.setStyleSheet(
-            """
-            QLabel {
-                background-color: #f9f9f9;
-                border: 2px solid #ffdd00;
-                padding: 5px;
-            }
-        """
-        )
-        self.datetime_label.setAlignment(Qt.AlignCenter)
-        self.update_datetime_label()
-
         self.initUI()
 
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
-        self.setWindowIcon(
-            QIcon(
-                r"C:\Users\Hafner\Desktop\Aaron_C\Files_Software\Buttonizer3000\Bautonizer\NIK Buttons 10 CH.ico"
-            )
-        )
+        self.setWindowIcon(QIcon(r"C:\path\to\icon.ico"))
 
         layout = QVBoxLayout()
+        self.banner_label = QLabel("", self)
+        font = QFont()
+        font.setPointSize(15)
+        self.banner_label.setFont(font)
+        self.banner_label.setAlignment(Qt.AlignCenter)
+        layout.addWidget(self.banner_label)
+
         tab_widget = QTabWidget()
         self.tab_widget = tab_widget
         tab_widget.addTab(
@@ -200,44 +121,26 @@ class App(QWidget):
         tab_widget.addTab(self.create_tab("Entfernen", self.schedule_task), "Entfernen")
         layout.addWidget(tab_widget)
 
-        layout.addWidget(self.display_label_title)
-        layout.addWidget(self.datetime_label)
-
         self.setLayout(layout)
         self.center_on_screen()
         self.show()
 
-    def create_label_and_combobox(self, label_text, items):
-        label = QLabel(label_text, self)
-        combobox = QComboBox(self)
-        combobox.addItems(items)
-        return label, combobox
-
-    def open_date_picker(self):
-        dialog = DatePickerDialog(self)
-        if dialog.exec_():
-            self.selected_date = dialog.get_date()
-            print(f"Selected Date: {self.selected_date.toString('dd/MM/yyyy')}")
-            self.update_datetime_label()
-
-    def open_time_picker(self):
-        dialog = TimePickerDialog(self)
-        if dialog.exec_():
-            self.selected_time = dialog.get_time()
-            print(f"Selected Time: {self.selected_time.toString('HH:mm:ss')}")
-            self.update_datetime_label()
-
-    def update_datetime_label(self):
-        selected_date = self.selected_date.toString("dd/MM/yyyy")
-        selected_time = self.selected_time.toString("HH:mm:ss")
-        print(f"Updating Label with: {selected_date} {selected_time}")
-        self.datetime_label.setText(f"{selected_date} \n{selected_time}")
+    def toggle_multi_mode(self, state):
+        self.multi_mode = state == Qt.Checked
+        if self.multi_mode:
+            self.banner_label.setText("Multi-Task Mode / Set Start Date and Time")
+            self.setStyleSheet("background-color: #ffdd00;")
+        else:
+            self.banner_label.setText("")
+            self.setStyleSheet("")
 
     def create_tab(self, tab_name, submit_action):
         tab = QWidget()
-        main_layout = QVBoxLayout()
         layout = QVBoxLayout()
-        layout.addStretch()
+
+        self.multi_mode_switch = QCheckBox("Multi-Task Mode", self)
+        self.multi_mode_switch.stateChanged.connect(self.toggle_multi_mode)
+        layout.addWidget(self.multi_mode_switch)
 
         marken_label, marken_combobox = self.create_label_and_combobox(
             "Marke", self.category_data["Kamerasysteme + Objektive"].keys()
@@ -273,11 +176,7 @@ class App(QWidget):
         )
         layout.addWidget(submit_button)
 
-        layout.addStretch()
-        main_layout.addStretch()
-        main_layout.addLayout(layout)
-        main_layout.addStretch()
-        tab.setLayout(main_layout)
+        tab.setLayout(layout)
 
         self.update_subcategories(marken_combobox, categories_combobox)
         marken_combobox.currentTextChanged.connect(
@@ -285,6 +184,17 @@ class App(QWidget):
         )
 
         return tab
+
+    def create_label_and_combobox(self, label_text, items):
+        label = QLabel(label_text, self)
+        combobox = QComboBox(self)
+        combobox.addItems(items)
+        return label, combobox
+
+    def create_line_edit_with_label(self, label_text, layout):
+        label = QLabel(label_text, self)
+        layout.addWidget(label)
+        return QLineEdit(self)
 
     def add_image_and_link_fields(self, layout):
         fields = [
@@ -318,11 +228,6 @@ class App(QWidget):
             )
         )
 
-    def create_line_edit_with_label(self, label_text, layout):
-        label = QLabel(label_text, self)
-        layout.addWidget(label)
-        return QLineEdit(self)
-
     def add_datetime_fields(self, layout):
         dateTime_title_label = QLabel("Datum & Uhrzeit planen", self)
         dateTime_title_label.setAlignment(Qt.AlignCenter)
@@ -343,6 +248,23 @@ class App(QWidget):
             button = QPushButton(text, self)
             button.clicked.connect(handler)
             layout.addWidget(button)
+
+    def open_date_picker(self):
+        dialog = DatePickerDialog(self)
+        if dialog.exec_():
+            self.selected_date = dialog.get_date()
+            self.update_datetime_label()
+
+    def open_time_picker(self):
+        dialog = TimePickerDialog(self)
+        if dialog.exec_():
+            self.selected_time = dialog.get_time()
+            self.update_datetime_label()
+
+    def update_datetime_label(self):
+        selected_date = self.selected_date.toString("dd/MM/yyyy")
+        selected_time = self.selected_time.toString("HH:mm:ss")
+        self.banner_label.setText(f"{selected_date} \n{selected_time}")
 
     def show_message(self):
         msg_box = QMessageBox(self)
@@ -373,6 +295,7 @@ class App(QWidget):
 
         task = {
             "task_type": task_type,
+            "schedule_datetime": self.get_scheduled_time().isoformat(),
             "data": {
                 "marke": marken_box.currentText(),
                 "kategorie": categories_box.currentText(),
@@ -397,6 +320,8 @@ class App(QWidget):
                     self.link_input_fr.text() if tab_name == "Hinzufügen" else None
                 ),
             },
+            "follow_up": self.run_after_previous_checkbox.isChecked(),
+            "multi_mode": self.multi_mode,
         }
 
         task_filename = os.path.join(
@@ -406,62 +331,32 @@ class App(QWidget):
 
         os.makedirs(self.tasks_directory, exist_ok=True)
 
-        try:
-            with open(task_filename, "w") as file:
-                json.dump(task, file)
-            print(f"Task written to file successfully: {task_filename}")
+        with open(task_filename, "w") as file:
+            json.dump(task, file)
 
-            if self.run_after_previous_checkbox.isChecked():
-                start_time = self.get_last_task_end_time() + datetime.timedelta(
-                    seconds=1
-                )
-            else:
-                start_time = datetime.datetime(
-                    self.selected_date.year(),
-                    self.selected_date.month(),
-                    self.selected_date.day(),
-                    self.selected_time.hour(),
-                    self.selected_time.minute(),
-                    self.selected_time.second(),
-                )
-
-            task_duration = datetime.timedelta(
-                minutes=5
-            )  # Assuming each task takes 5 minutes
-            self.set_last_task_end_time(start_time + task_duration)
-
-            self.schedule_in_task_scheduler(task_filename, start_time)
-        except Exception as e:
-            print(f"Failed to write task to file: {e}")
+        if not self.multi_mode or not self.run_after_previous_checkbox.isChecked():
+            self.schedule_in_task_scheduler(task_filename, task["schedule_datetime"])
 
         QMessageBox.information(self, "Success", "Task scheduled successfully!")
 
-    def get_last_task_end_time(self):
-        if os.path.exists(self.last_task_end_time_file):
-            with open(self.last_task_end_time_file, "r") as file:
-                last_task_end_time = datetime.datetime.fromisoformat(file.read())
-        else:
-            last_task_end_time = datetime.datetime.now()
-
-        return last_task_end_time
-
-    def set_last_task_end_time(self, end_time):
-        with open(self.last_task_end_time_file, "w") as file:
-            file.write(end_time.isoformat())
+    def get_scheduled_time(self):
+        return datetime.datetime(
+            self.selected_date.year(),
+            self.selected_date.month(),
+            self.selected_date.day(),
+            self.selected_time.hour(),
+            self.selected_time.minute(),
+            self.selected_time.second(),
+        )
 
     def schedule_in_task_scheduler(self, task_filename, schedule_datetime):
         import subprocess
 
         date_str = schedule_datetime.strftime("%d/%m/%Y")
         time_str = schedule_datetime.strftime("%H:%M")
-
-        command = f'SchTasks /Create /SC ONCE /TN "ButtonizerTask_{os.path.basename(task_filename)}" /TR "python {os.path.abspath(__file__).replace("main.py", "execute_task.py")} {task_filename}" /ST {time_str} /SD {date_str} /F'
-
-        print(f"Scheduling command: {command}")
-
+        command = f'SchTasks /Create /SC ONCE /TN "ButtonizerTask_{os.path.basename(task_filename)}" /TR "python {os.path.abspath(__file__).replace("bAUTOnizer3000.py", "exe_tasks.py")} {task_filename}" /ST {time_str} /SD {date_str} /F'
         try:
             subprocess.run(command, check=True, shell=True)
-            print("Scheduled task successfully.")
         except subprocess.CalledProcessError as e:
             print(f"Failed to schedule task: {e}")
 
@@ -490,6 +385,55 @@ class App(QWidget):
         else:
             categories_box.addItem("Keine Kategorien verfügbar")
             categories_box.setDisabled(True)
+
+
+class TimePickerDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Select Time")
+        self.layout = QVBoxLayout()
+        self.time_edit = QTimeEdit(self)
+        self.time_edit.setDisplayFormat("HH:mm:ss")
+        self.time_edit.setTime(QtCore.QTime.currentTime())
+        self.layout.addWidget(self.time_edit)
+
+        self.ok_button = QPushButton("OK", self)
+        self.ok_button.clicked.connect(self.confirm_time)
+        self.layout.addWidget(self.ok_button)
+
+        self.setLayout(self.layout)
+
+    def confirm_time(self):
+        self.selected_time = self.time_edit.time()
+        self.accept()
+
+    def get_time(self):
+        return self.selected_time
+
+
+class DatePickerDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Select Date")
+        self.layout = QVBoxLayout()
+
+        self.calendar_widget = QCalendarWidget()
+        self.layout.addWidget(self.calendar_widget)
+
+        confirm_button = QPushButton("OK")
+        confirm_button.clicked.connect(self.confirm_date)
+        self.layout.addWidget(confirm_button)
+
+        self.selected_date = QDate.currentDate()
+
+        self.setLayout(self.layout)
+
+    def confirm_date(self):
+        self.selected_date = self.calendar_widget.selectedDate()
+        self.accept()
+
+    def get_date(self):
+        return self.selected_date
 
 
 if __name__ == "__main__":
