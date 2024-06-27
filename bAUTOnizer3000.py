@@ -1,3 +1,5 @@
+# bAUTOnizer3000.py
+
 import sys
 import os
 import json
@@ -74,6 +76,7 @@ class DatePickerDialog(QDialog):
 
 class App(QWidget):
     tasks_directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tasks")
+    last_task_end_time_file = os.path.join(tasks_directory, "last_task_end_time.json")
 
     def __init__(self):
         super().__init__()
@@ -191,7 +194,9 @@ class App(QWidget):
         layout = QVBoxLayout()
         tab_widget = QTabWidget()
         self.tab_widget = tab_widget
-        tab_widget.addTab(self.create_tab("Hinzufügen", self.schedule_task), "Hinzufügen")
+        tab_widget.addTab(
+            self.create_tab("Hinzufügen", self.schedule_task), "Hinzufügen"
+        )
         tab_widget.addTab(self.create_tab("Entfernen", self.schedule_task), "Entfernen")
         layout.addWidget(tab_widget)
 
@@ -257,6 +262,9 @@ class App(QWidget):
 
         self.add_datetime_fields(layout)
 
+        self.run_after_previous_checkbox = QCheckBox("Run after previous task", self)
+        layout.addWidget(self.run_after_previous_checkbox)
+
         submit_button = QPushButton("Bestätigen", self)
         submit_button.clicked.connect(
             lambda: submit_action(
@@ -286,7 +294,9 @@ class App(QWidget):
             ("Bildbreite", "width_input"),
         ]
         for label_text, attr_name in fields:
-            setattr(self, attr_name, self.create_line_edit_with_label(label_text, layout))
+            setattr(
+                self, attr_name, self.create_line_edit_with_label(label_text, layout)
+            )
             layout.addWidget(getattr(self, attr_name))
 
         self.link_checkbox = QCheckBox("Link hinzufügen?", self)
@@ -296,7 +306,9 @@ class App(QWidget):
         self.link_input_de.setDisabled(True)
         layout.addWidget(self.link_input_de)
 
-        self.link_input_fr = self.create_line_edit_with_label("Link (Französisch)", layout)
+        self.link_input_fr = self.create_line_edit_with_label(
+            "Link (Französisch)", layout
+        )
         self.link_input_fr.setDisabled(True)
         layout.addWidget(self.link_input_fr)
 
@@ -355,30 +367,26 @@ class App(QWidget):
         return super().eventFilter(obj, event)
 
     def schedule_task(self, marken_box, categories_box, articles_input, tab_name):
-        schedule_datetime = datetime.datetime(
-            self.selected_date.year(),
-            self.selected_date.month(),
-            self.selected_date.day(),
-            self.selected_time.hour(),
-            self.selected_time.minute(),
-            self.selected_time.second(),
-        )
-
         task_type = (
             "process_articles" if tab_name == "Hinzufügen" else "remove_articles_images"
         )
 
         task = {
             "task_type": task_type,
-            "schedule_datetime": schedule_datetime.isoformat(),
             "data": {
                 "marke": marken_box.currentText(),
                 "kategorie": categories_box.currentText(),
                 "article_numbers": articles_input.text(),
-                "img1_url": self.img1_input.text() if tab_name == "Hinzufügen" else None,
-                "img2_url": self.img2_input.text() if tab_name == "Hinzufügen" else None,
+                "img1_url": (
+                    self.img1_input.text() if tab_name == "Hinzufügen" else None
+                ),
+                "img2_url": (
+                    self.img2_input.text() if tab_name == "Hinzufügen" else None
+                ),
                 "width": self.width_input.text() if tab_name == "Hinzufügen" else None,
-                "height": self.height_input.text() if tab_name == "Hinzufügen" else None,
+                "height": (
+                    self.height_input.text() if tab_name == "Hinzufügen" else None
+                ),
                 "link_checkbox": (
                     self.link_checkbox.isChecked() if tab_name == "Hinzufügen" else None
                 ),
@@ -402,11 +410,44 @@ class App(QWidget):
             with open(task_filename, "w") as file:
                 json.dump(task, file)
             print(f"Task written to file successfully: {task_filename}")
-            self.schedule_in_task_scheduler(task_filename, schedule_datetime)
+
+            if self.run_after_previous_checkbox.isChecked():
+                start_time = self.get_last_task_end_time() + datetime.timedelta(
+                    seconds=1
+                )
+            else:
+                start_time = datetime.datetime(
+                    self.selected_date.year(),
+                    self.selected_date.month(),
+                    self.selected_date.day(),
+                    self.selected_time.hour(),
+                    self.selected_time.minute(),
+                    self.selected_time.second(),
+                )
+
+            task_duration = datetime.timedelta(
+                minutes=5
+            )  # Assuming each task takes 5 minutes
+            self.set_last_task_end_time(start_time + task_duration)
+
+            self.schedule_in_task_scheduler(task_filename, start_time)
         except Exception as e:
             print(f"Failed to write task to file: {e}")
 
         QMessageBox.information(self, "Success", "Task scheduled successfully!")
+
+    def get_last_task_end_time(self):
+        if os.path.exists(self.last_task_end_time_file):
+            with open(self.last_task_end_time_file, "r") as file:
+                last_task_end_time = datetime.datetime.fromisoformat(file.read())
+        else:
+            last_task_end_time = datetime.datetime.now()
+
+        return last_task_end_time
+
+    def set_last_task_end_time(self, end_time):
+        with open(self.last_task_end_time_file, "w") as file:
+            file.write(end_time.isoformat())
 
     def schedule_in_task_scheduler(self, task_filename, schedule_datetime):
         import subprocess
