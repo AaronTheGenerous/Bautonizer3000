@@ -2,8 +2,8 @@ import sys
 import os
 import json
 import datetime
-from PyQt5 import QtCore
-from PyQt5.QtWidgets import (
+from PyQt6 import QtCore
+from PyQt6.QtWidgets import (
     QApplication,
     QWidget,
     QVBoxLayout,
@@ -14,7 +14,6 @@ from PyQt5.QtWidgets import (
     QLabel,
     QMessageBox,
     QTabWidget,
-    QDesktopWidget,
     QDialog,
     QTimeEdit,
     QCalendarWidget,
@@ -22,8 +21,8 @@ from PyQt5.QtWidgets import (
     QButtonGroup,
     QCheckBox,
 )
-from PyQt5.QtCore import Qt, QDate, QTime
-from PyQt5.QtGui import QIcon, QFont
+from PyQt6.QtCore import Qt, QDate, QTime
+from PyQt6.QtGui import QIcon, QFont
 
 
 class App(QWidget):
@@ -119,7 +118,7 @@ class App(QWidget):
         font = QFont()
         font.setPointSize(10)  # Smaller font size to fit the window
         self.banner_label.setFont(font)
-        self.banner_label.setAlignment(Qt.AlignCenter)
+        self.banner_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.main_layout.addWidget(self.banner_label)
 
         self.tab_widget = QTabWidget()
@@ -146,7 +145,7 @@ class App(QWidget):
             }
         """
         )
-        self.display_label_title.setAlignment(Qt.AlignCenter)
+        self.display_label_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.datetime_label = QLabel(self)
         font = QFont()
@@ -161,7 +160,7 @@ class App(QWidget):
             }
         """
         )
-        self.datetime_label.setAlignment(Qt.AlignCenter)
+        self.datetime_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.update_datetime_label()
 
         self.main_layout.addWidget(self.display_label_title)
@@ -191,24 +190,27 @@ class App(QWidget):
     def toggle_multi_mode(self):
         print(
             f"Toggled Multi-Mode, multi_task_radio.isChecked(): {self.multi_task_radio.isChecked()}"
-        )  # Debug statement
+        )
         if self.multi_task_radio.isChecked():
+            self.multi_mode = True
+            print("Multi-mode enabled")
             self.tab_widget.setStyleSheet(
                 "QTabWidget::pane { border: 2px solid #ffdd00; }"
             )
             self.banner_label.setText("Multi-Task Mode / Set Start Date and Time")
-            self.multi_mode = True
             self.update_buttons_for_multi_task_mode()
         else:
+            self.multi_mode = False
+            print("Multi-mode disabled")
             self.tab_widget.setStyleSheet(
                 "QTabWidget::pane { border: 2px solid #ffffff; }"
             )
             self.banner_label.setText("")
-            self.multi_mode = False
             self.update_buttons_for_single_task_mode()
+        self.update_ui_elements()
 
     def update_buttons_for_multi_task_mode(self):
-        print("Updating buttons for multi-task mode")  # Debug statement
+        print("Updating buttons for multi-task mode")
         self.clear_layout(self.button_layout)
         self.next_task_button = QPushButton("Next Task", self)
         self.next_task_button.clicked.connect(self.save_task_temporarily)
@@ -219,7 +221,7 @@ class App(QWidget):
         self.button_layout.addWidget(self.plan_tasks_button)
 
     def update_buttons_for_single_task_mode(self):
-        print("Updating buttons for single-task mode")  # Debug statement
+        print("Updating buttons for single-task mode")
         self.clear_layout(self.button_layout)
         self.submit_button = QPushButton("Bestätigen", self)
         self.submit_button.clicked.connect(
@@ -327,7 +329,7 @@ class App(QWidget):
 
     def add_datetime_fields(self, layout):
         self.dateTime_title_label = QLabel("Datum & Uhrzeit planen", self)
-        self.dateTime_title_label.setAlignment(Qt.AlignCenter)
+        self.dateTime_title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.dateTime_title_label.setStyleSheet(
             """
             QLabel{
@@ -350,13 +352,13 @@ class App(QWidget):
 
     def open_date_picker(self):
         dialog = DatePickerDialog(self)
-        if dialog.exec_():
+        if dialog.exec():
             self.selected_date = dialog.get_date()
             self.update_datetime_label()
 
     def open_time_picker(self):
         dialog = TimePickerDialog(self)
-        if dialog.exec_():
+        if dialog.exec():
             self.selected_time = dialog.get_time()
             self.update_datetime_label()
 
@@ -371,13 +373,13 @@ class App(QWidget):
         msg_box.setText(
             "Task erfolgreich geplant. \nDu siehst heute übrigens mal wieder super aus <3"
         )
-        msg_box.setIcon(QMessageBox.Information)
-        msg_box.exec_()
+        msg_box.setIcon(QMessageBox.Icon.Information)
+        msg_box.exec()
 
     def eventFilter(self, obj, event):
-        if event.type() == QtCore.QEvent.KeyPress and event.key() in [
-            Qt.Key_Enter,
-            Qt.Key_Return,
+        if event.type() == QtCore.QEvent.Type.KeyPress and event.key() in [
+            Qt.Key.Key_Enter,
+            Qt.Key.Key_Return,
         ]:
             current_tab_index = self.tab_widget.currentIndex()
             if current_tab_index == 0:
@@ -388,18 +390,19 @@ class App(QWidget):
         return super().eventFilter(obj, event)
 
     def save_task_temporarily(self):
-        print("Saving task temporarily")  # Debug statement
+        print("Saving task temporarily")
         task = self.create_task()
+        print(f"Created task: {task}")
         self.temp_tasks.append(task)
-        print(f"Created task: {task}")  # Debug statement
-        print(f"Current temporary tasks: {self.temp_tasks}")  # Debug statement
+        print(f"Current temporary tasks: {self.temp_tasks}")
         self.clear_input_fields()
         if len(self.temp_tasks) == 1:
             self.banner_label.setText("Multi-Task Mode / Nach erstem Task ausführen")
             self.hide_datetime_fields()
-        self.print_temp_tasks()  # Debug statement
+        self.debug_temporary_tasks()
 
     def save_all_tasks(self):
+        print("Saving all tasks")
         task_directory = self.tasks_directory
         os.makedirs(task_directory, exist_ok=True)
 
@@ -480,11 +483,10 @@ class App(QWidget):
             },
             "follow_up": self.multi_mode,
         }
-        print(f"Created task: {task}")  # Debug statement
         return task
 
     def clear_input_fields(self):
-        print("Clearing input fields")  # Debug statement
+        print("Clearing input fields")
         self.marken_combobox.setCurrentIndex(0)
         self.categories_combobox.setCurrentIndex(0)
         self.articles_input.clear()
@@ -498,15 +500,16 @@ class App(QWidget):
             self.link_input_fr.clear()
 
     def hide_datetime_fields(self):
-        print("Hiding date and time fields")  # Debug statement
+        print("Hiding date and time fields")
         self.dateTime_title_label.hide()
         for button in self.datetime_buttons:
             button.hide()
 
-    def print_temp_tasks(self):
-        print("Temporary tasks stored:")  # Debug statement
-        for idx, task in enumerate(self.temp_tasks):
-            print(f"Task {idx + 1}: {task}")
+    def show_datetime_fields(self):
+        print("Showing date and time fields")
+        self.dateTime_title_label.show()
+        for button in self.datetime_buttons:
+            button.show()
 
     def get_scheduled_time(self):
         return datetime.datetime(
@@ -519,22 +522,27 @@ class App(QWidget):
         )
 
     def schedule_task(self, marken_box, categories_box, articles_input, tab_name):
-        if self.multi_mode:
-            self.save_task_temporarily()
-        else:
-            task = self.create_task()
-            task_filename = os.path.join(
-                self.tasks_directory,
-                f'task_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}.json',
-            )
-            os.makedirs(self.tasks_directory, exist_ok=True)
-            with open(task_filename, "w") as file:
-                json.dump(task, file)
+        print("Scheduling task")
+        task = self.create_task()
+
+        task_filename = os.path.join(
+            self.tasks_directory,
+            f'task_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}.json',
+        )
+
+        os.makedirs(self.tasks_directory, exist_ok=True)
+
+        with open(task_filename, "w") as file:
+            json.dump(task, file)
+
+        if not self.multi_mode:
+            # Convert schedule_datetime from string to datetime object
             schedule_datetime = datetime.datetime.fromisoformat(
                 task["schedule_datetime"]
             )
             self.schedule_in_task_scheduler(task_filename, schedule_datetime)
-            QMessageBox.information(self, "Success", "Task scheduled successfully!")
+
+        QMessageBox.information(self, "Success", "Task scheduled successfully!")
 
     def schedule_in_task_scheduler(self, task_filename, schedule_datetime):
         import subprocess
@@ -548,13 +556,13 @@ class App(QWidget):
             print(f"Failed to schedule task: {e}")
 
     def toggle_link_input(self, state, link_input_de, link_input_fr):
-        is_enabled = state == Qt.Checked
+        is_enabled = state == Qt.CheckState.Checked
         link_input_de.setDisabled(not is_enabled)
         link_input_fr.setDisabled(not is_enabled)
 
     def center_on_screen(self):
         qr = self.frameGeometry()
-        screen_geometry = QDesktopWidget().availableGeometry()
+        screen_geometry = QApplication.primaryScreen().availableGeometry()
         cp = screen_geometry.center()
         cp.setX(int(screen_geometry.width() * 3 / 4 - qr.width() / 4))
         qr.moveCenter(cp)
@@ -572,6 +580,18 @@ class App(QWidget):
         else:
             categories_box.addItem("Keine Kategorien verfügbar")
             categories_box.setDisabled(True)
+
+    def update_ui_elements(self):
+        print("Updating UI elements based on mode")
+        if self.multi_mode:
+            self.hide_datetime_fields()
+        else:
+            self.show_datetime_fields()
+
+    def debug_temporary_tasks(self):
+        print("Temporary tasks stored:")
+        for idx, task in enumerate(self.temp_tasks):
+            print(f"Task {idx + 1}: {task}")
 
 
 class TimePickerDialog(QDialog):
@@ -626,4 +646,4 @@ class DatePickerDialog(QDialog):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     ex = App()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
