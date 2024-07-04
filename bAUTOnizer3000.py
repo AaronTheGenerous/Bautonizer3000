@@ -2,7 +2,6 @@ import sys
 import os
 import json
 import datetime
-from PyQt6 import QtCore
 from PyQt6.QtWidgets import (
     QApplication,
     QWidget,
@@ -21,17 +20,27 @@ from PyQt6.QtWidgets import (
     QButtonGroup,
     QCheckBox,
 )
-from PyQt6.QtCore import Qt, QDate, QTime
+from PyQt6.QtCore import Qt, QDate, QTime, QEvent
 from PyQt6.QtGui import QIcon, QFont
 
 
 class App(QWidget):
     tasks_directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tasks")
-    last_task_end_time_file = os.path.join(tasks_directory, "last_task_end_time.json")
     multi_mode = False  # Track if multi-mode is enabled
 
     def __init__(self):
         super().__init__()
+        self.current_tab_name = None
+        self.marken_combobox = None
+        self.categories_combobox = None
+        self.articles_input = None
+        self.img1_input = None
+        self.img2_input = None
+        self.width_input = None
+        self.height_input = None
+        self.link_checkbox = None
+        self.link_input_de = None
+        self.link_input_fr = None
         self.title = "Buttonizer3000"
         self.left = 100
         self.top = 100
@@ -119,18 +128,15 @@ class App(QWidget):
         font.setPointSize(10)  # Smaller font size to fit the window
         self.banner_label.setFont(font)
         self.banner_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.main_layout.addWidget(self.single_task_tabs)
+
+        self.single_task_tabs = self.create_single_task_tabs()
+        self.multi_task_tabs = self.create_multi_task_tabs()
+
         self.main_layout.addWidget(self.banner_label)
 
-        self.tab_widget = QTabWidget()
-        self.tab_widget.setStyleSheet("QTabWidget::pane { border: 2px solid #ffffff; }")
-        self.tab_widget.addTab(
-            self.create_tab("Hinzufügen", self.schedule_task), "Hinzufügen"
-        )
-        self.tab_widget.addTab(
-            self.create_tab("Entfernen", self.schedule_task), "Entfernen"
-        )
-        self.main_layout.addWidget(self.tab_widget)
-
+        # Move the date and time labels to the bottom
         self.display_label_title = QLabel("Geplantes Datum und Uhrzeit")
         font2 = QFont()
         font2.setPointSize(10)
@@ -163,6 +169,9 @@ class App(QWidget):
         self.datetime_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.update_datetime_label()
 
+        # Add other widgets to the main layout here...
+
+        # Finally, add the date and time labels to the bottom of the layout
         self.main_layout.addWidget(self.display_label_title)
         self.main_layout.addWidget(self.datetime_label)
 
@@ -194,92 +203,159 @@ class App(QWidget):
         if self.multi_task_radio.isChecked():
             self.multi_mode = True
             print("Multi-mode enabled")
-            self.tab_widget.setStyleSheet(
-                "QTabWidget::pane { border: 2px solid #ffdd00; }"
+            self.single_task_tabs.setParent(None)  # Remove the current tabs
+            self.main_layout.addWidget(self.multi_task_tabs)
+            self.banner_label.setText(
+                "Multi-Task Mode<br><span style='color:#ffdd00;'>Set Start Date and Time</span>"
             )
-            self.banner_label.setText("Multi-Task Mode / Set Start Date and Time")
-            self.update_buttons_for_multi_task_mode()
         else:
             self.multi_mode = False
             print("Multi-mode disabled")
-            self.tab_widget.setStyleSheet(
-                "QTabWidget::pane { border: 2px solid #ffffff; }"
-            )
+            self.multi_task_tabs.setParent(None)  # Remove the current tabs
+            self.main_layout.addWidget(self.single_task_tabs)
             self.banner_label.setText("")
-            self.update_buttons_for_single_task_mode()
+
+        # Re-add the date and time labels to ensure they are at the bottom
+        self.main_layout.addWidget(self.display_label_title)
+        self.main_layout.addWidget(self.datetime_label)
+
         self.update_ui_elements()
 
-    def update_buttons_for_multi_task_mode(self):
-        print("Updating buttons for multi-task mode")
-        self.clear_layout(self.button_layout)
-        self.next_task_button = QPushButton("Next Task", self)
-        self.next_task_button.clicked.connect(self.save_task_temporarily)
-        self.button_layout.addWidget(self.next_task_button)
+    def update_ui_elements(self):
+        print("Updating UI elements based on mode")
+        if self.multi_mode:
+            if len(self.temp_tasks) == 0:
+                print("Showing date and time fields")
+                self.datetime_label.show()
+            else:
+                print("Hiding date and time fields")
+                self.datetime_label.hide()
+        else:
+            print("Showing date and time fields")
+            self.datetime_label.show()
 
-        self.plan_tasks_button = QPushButton("Tasks Planen", self)
-        self.plan_tasks_button.clicked.connect(self.save_all_tasks)
-        self.button_layout.addWidget(self.plan_tasks_button)
+    def create_single_task_tabs(self):
+        tabs = QTabWidget()
+        tabs.addTab(self.create_single_task_tab("Hinzufügen"), "Hinzufügen")
+        tabs.addTab(self.create_single_task_tab("Entfernen"), "Entfernen")
+        tabs.currentChanged.connect(
+            self.update_current_tab_name
+        )  # Connect tab change signal
+        return tabs
 
-    def update_buttons_for_single_task_mode(self):
-        print("Updating buttons for single-task mode")
-        self.clear_layout(self.button_layout)
-        self.submit_button = QPushButton("Bestätigen", self)
-        self.submit_button.clicked.connect(
-            lambda: self.schedule_task(
-                self.marken_combobox,
-                self.categories_combobox,
-                self.articles_input,
-                self.current_tab_name,
-            )
-        )
-        self.button_layout.addWidget(self.submit_button)
+    def create_multi_task_tabs(self):
+        tabs = QTabWidget()
+        tabs.addTab(self.create_multi_task_tab("Hinzufügen"), "Hinzufügen")
+        tabs.addTab(self.create_multi_task_tab("Entfernen"), "Entfernen")
+        tabs.currentChanged.connect(
+            self.update_current_tab_name
+        )  # Connect tab change signal
+        return tabs
 
-    def clear_layout(self, layout):
-        while layout.count():
-            child = layout.takeAt(0)
-            if child.widget():
-                child.widget().deleteLater()
+    def update_current_tab_name(self, index):
+        if self.single_task_tabs.currentIndex() == index:
+            self.current_tab_name = self.single_task_tabs.tabText(index)
+        elif self.multi_task_tabs.currentIndex() == index:
+            self.current_tab_name = self.multi_task_tabs.tabText(index)
 
-    def create_tab(self, tab_name, submit_action):
+    def create_single_task_tab(self, tab_name):
         tab = QWidget()
         layout = QVBoxLayout()
 
-        self.current_tab_name = tab_name
-        marken_label, marken_combobox = self.create_label_and_combobox(
+        marken_label, self.marken_combobox = self.create_label_and_combobox(
             "Marke", self.category_data["Kamerasysteme + Objektive"].keys()
         )
         layout.addWidget(marken_label)
-        layout.addWidget(marken_combobox)
-        self.marken_combobox = marken_combobox
+        layout.addWidget(self.marken_combobox)
 
-        categories_label, categories_combobox = self.create_label_and_combobox(
+        categories_label, self.categories_combobox = self.create_label_and_combobox(
             "Kategorie", []
         )
         layout.addWidget(categories_label)
-        layout.addWidget(categories_combobox)
-        self.categories_combobox = categories_combobox
+        layout.addWidget(self.categories_combobox)
 
         layout.addStretch()
-        articles_input = self.create_line_edit_with_label(
+        self.articles_input = self.create_line_edit_with_label(
             "Artikelnummern (getrennt mit Kommas)", layout
         )
-        layout.addWidget(articles_input)
-        self.articles_input = articles_input
+        layout.addWidget(self.articles_input)
 
         if tab_name == "Hinzufügen":
             self.add_image_and_link_fields(layout)
 
         self.add_datetime_fields(layout)
 
-        self.button_layout = QVBoxLayout()
-        self.update_buttons_for_single_task_mode()
-        layout.addLayout(self.button_layout)
+        submit_button = QPushButton("Bestätigen", self)
+        submit_button.clicked.connect(
+            lambda: self.schedule_task(
+                self.marken_combobox,
+                self.categories_combobox,
+                self.articles_input,
+                tab_name,
+            )
+        )
+        layout.addWidget(submit_button)
 
         tab.setLayout(layout)
 
-        self.update_subcategories(marken_combobox, categories_combobox)
-        marken_combobox.currentTextChanged.connect(
-            lambda: self.update_subcategories(marken_combobox, categories_combobox)
+        self.update_subcategories(self.marken_combobox, self.categories_combobox)
+        self.marken_combobox.currentTextChanged.connect(
+            lambda: self.update_subcategories(
+                self.marken_combobox, self.categories_combobox
+            )
+        )
+
+        return tab
+
+    def create_multi_task_tab(self, tab_name):
+        tab = QWidget()
+        layout = QVBoxLayout()
+
+        marken_label, self.marken_combobox = self.create_label_and_combobox(
+            "Marke", self.category_data["Kamerasysteme + Objektive"].keys()
+        )
+        layout.addWidget(marken_label)
+        layout.addWidget(self.marken_combobox)
+
+        categories_label, self.categories_combobox = self.create_label_and_combobox(
+            "Kategorie", []
+        )
+        layout.addWidget(categories_label)
+        layout.addWidget(self.categories_combobox)
+
+        layout.addStretch()
+        self.articles_input = self.create_line_edit_with_label(
+            "Artikelnummern (getrennt mit Kommas)", layout
+        )
+        layout.addWidget(self.articles_input)
+
+        if tab_name == "Hinzufügen":
+            self.add_image_and_link_fields(layout)
+
+        self.add_datetime_fields(layout)
+
+        next_task_button = QPushButton("Next Task", self)
+        next_task_button.clicked.connect(
+            lambda: self.save_task_temporarily(
+                self.marken_combobox,
+                self.categories_combobox,
+                self.articles_input,
+                tab_name,
+            )
+        )
+        layout.addWidget(next_task_button)
+
+        plan_tasks_button = QPushButton("Tasks Planen", self)
+        plan_tasks_button.clicked.connect(self.save_all_tasks)
+        layout.addWidget(plan_tasks_button)
+
+        tab.setLayout(layout)
+
+        self.update_subcategories(self.marken_combobox, self.categories_combobox)
+        self.marken_combobox.currentTextChanged.connect(
+            lambda: self.update_subcategories(
+                self.marken_combobox, self.categories_combobox
+            )
         )
 
         return tab
@@ -328,27 +404,25 @@ class App(QWidget):
         )
 
     def add_datetime_fields(self, layout):
-        self.dateTime_title_label = QLabel("Datum & Uhrzeit planen", self)
-        self.dateTime_title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.dateTime_title_label.setStyleSheet(
+        dateTime_title_label = QLabel("Datum & Uhrzeit planen", self)
+        dateTime_title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        dateTime_title_label.setStyleSheet(
             """
             QLabel{
                 font-weight: bold;
             }
         """
         )
-        layout.addWidget(self.dateTime_title_label)
+        layout.addWidget(dateTime_title_label)
 
         buttons = [
             ("Datum wählen", self.open_date_picker),
             ("Uhrzeit wählen", self.open_time_picker),
         ]
-        self.datetime_buttons = []
         for text, handler in buttons:
             button = QPushButton(text, self)
             button.clicked.connect(handler)
             layout.addWidget(button)
-            self.datetime_buttons.append(button)
 
     def open_date_picker(self):
         dialog = DatePickerDialog(self)
@@ -377,7 +451,7 @@ class App(QWidget):
         msg_box.exec()
 
     def eventFilter(self, obj, event):
-        if event.type() == QtCore.QEvent.Type.KeyPress and event.key() in [
+        if event.type() == Qt.QEvent.Type.KeyPress and event.key() in [
             Qt.Key.Key_Enter,
             Qt.Key.Key_Return,
         ]:
@@ -389,17 +463,29 @@ class App(QWidget):
             return True
         return super().eventFilter(obj, event)
 
-    def save_task_temporarily(self):
+    def show_temporary_tasks(self):
+        """
+        Display the temporary tasks stored in self.temp_tasks.
+        This method can be customized to show the tasks in a specific UI element.
+        """
+        print("Displaying temporary tasks:")
+        for task in self.temp_tasks:
+            print(task)
+
+
+    def save_task_temporarily(self, marken_box, categories_box, articles_input, tab_name):
         print("Saving task temporarily")
-        task = self.create_task()
-        print(f"Created task: {task}")
+        task = self.create_task(marken_box, categories_box, articles_input, tab_name)
         self.temp_tasks.append(task)
-        print(f"Current temporary tasks: {self.temp_tasks}")
         self.clear_input_fields()
+        print(f"Current temporary tasks: {self.temp_tasks}")
         if len(self.temp_tasks) == 1:
-            self.banner_label.setText("Multi-Task Mode / Nach erstem Task ausführen")
+            self.banner_label.setText(
+                "Multi-Task Mode<br><span style='color:#ffdd00;'>Nach erstem Task ausführen</span>"
+            )
             self.hide_datetime_fields()
-        self.debug_temporary_tasks()
+        self.show_temporary_tasks()  # Call the newly defined method
+        self.update_ui_elements()
 
     def save_all_tasks(self):
         print("Saving all tasks")
@@ -430,55 +516,41 @@ class App(QWidget):
         QMessageBox.information(
             self, "Success", "All tasks have been scheduled successfully!"
         )
+        self.temp_tasks.clear()
+        self.update_ui_elements()
 
-    def create_task(self):
+    def create_task(self, marken_box, categories_box, articles_input, tab_name):
         task_type = (
-            "process_articles"
-            if self.current_tab_name == "Hinzufügen"
-            else "remove_articles_images"
+            "process_articles" if tab_name == "Hinzufügen" else "remove_articles_images"
         )
 
         task = {
             "task_type": task_type,
             "schedule_datetime": self.get_scheduled_time().isoformat(),
             "data": {
-                "marke": self.marken_combobox.currentText(),
-                "kategorie": self.categories_combobox.currentText(),
-                "article_numbers": self.articles_input.text(),
+                "marke": marken_box.currentText(),
+                "kategorie": categories_box.currentText(),
+                "article_numbers": articles_input.text(),
                 "img1_url": (
-                    self.img1_input.text()
-                    if self.current_tab_name == "Hinzufügen"
-                    else None
+                    self.img1_input.text() if tab_name == "Hinzufügen" else None
                 ),
                 "img2_url": (
-                    self.img2_input.text()
-                    if self.current_tab_name == "Hinzufügen"
-                    else None
+                    self.img2_input.text() if tab_name == "Hinzufügen" else None
                 ),
                 "width": (
-                    self.width_input.text()
-                    if self.current_tab_name == "Hinzufügen"
-                    else None
+                    self.width_input.text() if tab_name == "Hinzufügen" else None
                 ),
                 "height": (
-                    self.height_input.text()
-                    if self.current_tab_name == "Hinzufügen"
-                    else None
+                    self.height_input.text() if tab_name == "Hinzufügen" else None
                 ),
                 "link_checkbox": (
-                    self.link_checkbox.isChecked()
-                    if self.current_tab_name == "Hinzufügen"
-                    else None
+                    self.link_checkbox.isChecked() if tab_name == "Hinzufügen" else None
                 ),
                 "link_input_de": (
-                    self.link_input_de.text()
-                    if self.current_tab_name == "Hinzufügen"
-                    else None
+                    self.link_input_de.text() if tab_name == "Hinzufügen" else None
                 ),
                 "link_input_fr": (
-                    self.link_input_fr.text()
-                    if self.current_tab_name == "Hinzufügen"
-                    else None
+                    self.link_input_fr.text() if tab_name == "Hinzufügen" else None
                 ),
             },
             "follow_up": self.multi_mode,
@@ -486,7 +558,6 @@ class App(QWidget):
         return task
 
     def clear_input_fields(self):
-        print("Clearing input fields")
         self.marken_combobox.setCurrentIndex(0)
         self.categories_combobox.setCurrentIndex(0)
         self.articles_input.clear()
@@ -500,16 +571,8 @@ class App(QWidget):
             self.link_input_fr.clear()
 
     def hide_datetime_fields(self):
-        print("Hiding date and time fields")
-        self.dateTime_title_label.hide()
-        for button in self.datetime_buttons:
-            button.hide()
-
-    def show_datetime_fields(self):
-        print("Showing date and time fields")
-        self.dateTime_title_label.show()
-        for button in self.datetime_buttons:
-            button.show()
+        self.display_label_title.hide()
+        self.datetime_label.hide()
 
     def get_scheduled_time(self):
         return datetime.datetime(
@@ -523,7 +586,8 @@ class App(QWidget):
 
     def schedule_task(self, marken_box, categories_box, articles_input, tab_name):
         print("Scheduling task")
-        task = self.create_task()
+        task = self.create_task(marken_box, categories_box, articles_input, tab_name)
+        print(f"Created task: {task}")
 
         task_filename = os.path.join(
             self.tasks_directory,
@@ -581,18 +645,6 @@ class App(QWidget):
             categories_box.addItem("Keine Kategorien verfügbar")
             categories_box.setDisabled(True)
 
-    def update_ui_elements(self):
-        print("Updating UI elements based on mode")
-        if self.multi_mode:
-            self.hide_datetime_fields()
-        else:
-            self.show_datetime_fields()
-
-    def debug_temporary_tasks(self):
-        print("Temporary tasks stored:")
-        for idx, task in enumerate(self.temp_tasks):
-            print(f"Task {idx + 1}: {task}")
-
 
 class TimePickerDialog(QDialog):
     def __init__(self, parent=None):
@@ -601,7 +653,7 @@ class TimePickerDialog(QDialog):
         self.layout = QVBoxLayout()
         self.time_edit = QTimeEdit(self)
         self.time_edit.setDisplayFormat("HH:mm:ss")
-        self.time_edit.setTime(QtCore.QTime.currentTime())
+        self.time_edit.setTime(QTime.currentTime())
         self.layout.addWidget(self.time_edit)
 
         self.ok_button = QPushButton("OK", self)
