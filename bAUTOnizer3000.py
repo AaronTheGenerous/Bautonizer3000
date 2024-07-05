@@ -114,11 +114,7 @@ class App(QWidget):
         # Create the switch for Single-Task Mode and Multi-Task Mode
         self.create_mode_switch(self.main_layout)
 
-        self.banner_label = QLabel("", self)
-        font = QFont()
-        font.setPointSize(10)  # Smaller font size to fit the window
-        self.banner_label.setFont(font)
-        self.banner_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.banner_label = self.create_label("", 10, Qt.AlignmentFlag.AlignCenter)
         self.main_layout.addWidget(self.banner_label)
 
         self.tab_widget = QTabWidget()
@@ -131,39 +127,13 @@ class App(QWidget):
         )
         self.main_layout.addWidget(self.tab_widget)
 
-        self.display_label_title = QLabel("Geplantes Datum und Uhrzeit")
-        font2 = QFont()
-        font2.setPointSize(10)
-        self.display_label_title.setFont(font2)
-        self.display_label_title.setStyleSheet(
-            """
-            QLabel {
-                background-color: #f9f9f9;
-                font-weight: bold;
-                border: 2px solid #ffdd00;
-                padding: 5px;
-            }
-        """
+        self.display_label_title = self.create_label(
+            "Geplantes Datum und Uhrzeit", 10, Qt.AlignmentFlag.AlignCenter, True
         )
-        self.display_label_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        self.datetime_label = QLabel(self)
-        font = QFont()
-        font.setPointSize(15)
-        self.datetime_label.setFont(font)
-        self.datetime_label.setStyleSheet(
-            """
-            QLabel {
-                background-color: #f9f9f9;
-                border: 2px solid #ffdd00;
-                padding: 5px;
-            }
-        """
-        )
-        self.datetime_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.update_datetime_label()
-
         self.main_layout.addWidget(self.display_label_title)
+
+        self.datetime_label = self.create_label("", 15, Qt.AlignmentFlag.AlignCenter)
+        self.update_datetime_label()
         self.main_layout.addWidget(self.datetime_label)
 
         self.setLayout(self.main_layout)
@@ -188,51 +158,33 @@ class App(QWidget):
         layout.addLayout(switch_layout)
 
     def toggle_multi_mode(self):
-        print(
-            f"Toggled Multi-Mode, multi_task_radio.isChecked(): {self.multi_task_radio.isChecked()}"
+        self.multi_mode = self.multi_task_radio.isChecked()
+        self.tab_widget.setStyleSheet(
+            "QTabWidget::pane { border: 2px solid #ffdd00; }"
+            if self.multi_mode
+            else "QTabWidget::pane { border: 2px solid #ffffff; }"
         )
-        if self.multi_task_radio.isChecked():
-            self.multi_mode = True
-            print("Multi-mode enabled")
-            self.tab_widget.setStyleSheet(
-                "QTabWidget::pane { border: 2px solid #ffdd00; }"
-            )
-            self.banner_label.setText("Multi-Task Mode / Set Start Date and Time")
-            self.update_buttons_for_multi_task_mode()
-        else:
-            self.multi_mode = False
-            print("Multi-mode disabled")
-            self.tab_widget.setStyleSheet(
-                "QTabWidget::pane { border: 2px solid #ffffff; }"
-            )
-            self.banner_label.setText("")
-            self.update_buttons_for_single_task_mode()
+        self.banner_label.setText(
+            "Multi-Task Mode / Set Start Date and Time" if self.multi_mode else ""
+        )
+        self.update_buttons()
         self.update_ui_elements()
 
-    def update_buttons_for_multi_task_mode(self):
-        print("Updating buttons for multi-task mode")
+    def update_buttons(self):
         self.clear_layout(self.button_layout)
-        self.next_task_button = QPushButton("Next Task", self)
-        self.next_task_button.clicked.connect(self.save_task_temporarily)
-        self.button_layout.addWidget(self.next_task_button)
-
-        self.plan_tasks_button = QPushButton("Tasks Planen", self)
-        self.plan_tasks_button.clicked.connect(self.save_all_tasks)
-        self.button_layout.addWidget(self.plan_tasks_button)
-
-    def update_buttons_for_single_task_mode(self):
-        print("Updating buttons for single-task mode")
-        self.clear_layout(self.button_layout)
-        self.submit_button = QPushButton("Bestätigen", self)
-        self.submit_button.clicked.connect(
-            lambda: self.schedule_task(
+        if self.multi_mode:
+            self.next_task_button = self.create_button("Next Task", self.save_task_temporarily)
+            self.plan_tasks_button = self.create_button("Tasks Planen", self.save_all_tasks)
+            self.button_layout.addWidget(self.next_task_button)
+            self.button_layout.addWidget(self.plan_tasks_button)
+        else:
+            self.submit_button = self.create_button("Bestätigen", lambda: self.schedule_task(
                 self.marken_combobox,
                 self.categories_combobox,
                 self.articles_input,
                 self.current_tab_name,
-            )
-        )
-        self.button_layout.addWidget(self.submit_button)
+            ))
+            self.button_layout.addWidget(self.submit_button)
 
     def clear_layout(self, layout):
         while layout.count():
@@ -272,15 +224,15 @@ class App(QWidget):
         self.add_datetime_fields(layout)
 
         self.button_layout = QVBoxLayout()
-        self.update_buttons_for_single_task_mode()
+        self.update_buttons()
         layout.addLayout(self.button_layout)
-
-        tab.setLayout(layout)
 
         self.update_subcategories(marken_combobox, categories_combobox)
         marken_combobox.currentTextChanged.connect(
             lambda: self.update_subcategories(marken_combobox, categories_combobox)
         )
+
+        tab.setLayout(layout)
 
         return tab
 
@@ -294,6 +246,21 @@ class App(QWidget):
         label = QLabel(label_text, self)
         layout.addWidget(label)
         return QLineEdit(self)
+    
+    def create_label(self, text, font_size, alignment, with_border=False):
+        label = QLabel(text, self)
+        font = QFont()
+        font.setPointSize(font_size)
+        label.setFont(font)
+        label.setAlignment(alignment)
+        if with_border:
+            label.setStyleSheet("border: 2px solid #ffdd00;")
+        return label
+    
+    def create_button(self, text, click_handler):
+        button = QPushButton(text, self)
+        button.clicked.connect(click_handler)
+        return button
 
     def add_image_and_link_fields(self, layout):
         fields = [
@@ -390,19 +357,14 @@ class App(QWidget):
         return super().eventFilter(obj, event)
 
     def save_task_temporarily(self):
-        print("Saving task temporarily")
         task = self.create_task()
-        print(f"Created task: {task}")
         self.temp_tasks.append(task)
-        print(f"Current temporary tasks: {self.temp_tasks}")
         self.clear_input_fields()
         if len(self.temp_tasks) == 1:
             self.banner_label.setText("Multi-Task Mode / Nach erstem Task ausführen")
             self.hide_datetime_fields()
-        self.debug_temporary_tasks()
 
     def save_all_tasks(self):
-        print("Saving all tasks")
         task_directory = self.tasks_directory
         os.makedirs(task_directory, exist_ok=True)
 
@@ -486,7 +448,6 @@ class App(QWidget):
         return task
 
     def clear_input_fields(self):
-        print("Clearing input fields")
         self.marken_combobox.setCurrentIndex(0)
         self.categories_combobox.setCurrentIndex(0)
         self.articles_input.clear()
@@ -500,13 +461,11 @@ class App(QWidget):
             self.link_input_fr.clear()
 
     def hide_datetime_fields(self):
-        print("Hiding date and time fields")
         self.dateTime_title_label.hide()
         for button in self.datetime_buttons:
             button.hide()
 
     def show_datetime_fields(self):
-        print("Showing date and time fields")
         self.dateTime_title_label.show()
         for button in self.datetime_buttons:
             button.show()
@@ -522,7 +481,6 @@ class App(QWidget):
         )
 
     def schedule_task(self, marken_box, categories_box, articles_input, tab_name):
-        print("Scheduling task")
         task = self.create_task()
 
         task_filename = os.path.join(
@@ -582,7 +540,6 @@ class App(QWidget):
             categories_box.setDisabled(True)
 
     def update_ui_elements(self):
-        print("Updating UI elements based on mode")
         if self.multi_mode:
             self.hide_datetime_fields()
         else:
@@ -647,3 +604,4 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     ex = App()
     sys.exit(app.exec())
+
