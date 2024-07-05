@@ -217,7 +217,6 @@ class App(QWidget):
         self.button_layout.addWidget(self.next_task_button)
 
         self.plan_tasks_button = QPushButton("Tasks Planen", self)
-        self.plan_tasks_button.clicked.connect(self.save_task_temporarily)
         self.plan_tasks_button.clicked.connect(self.save_all_tasks)
         self.button_layout.addWidget(self.plan_tasks_button)
 
