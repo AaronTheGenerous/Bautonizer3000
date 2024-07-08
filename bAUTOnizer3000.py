@@ -43,6 +43,8 @@ class App(QWidget):
 
         self.temp_tasks = []  # Temporary storage for tasks in multi-task mode
 
+        self.button_layouts = {} #Temporary storage for each button layout
+
         self.category_data = {
             "Kamerasysteme + Objektive": {
                 "Nikon": {
@@ -128,11 +130,13 @@ class App(QWidget):
         self.main_layout.addWidget(self.tab_widget)
 
         self.display_label_title = self.create_label(
-            "Geplantes Datum und Uhrzeit", 10, Qt.AlignmentFlag.AlignCenter, True
+            "<b>Geplantes Datum und Uhrzeit</b>", 10, Qt.AlignmentFlag.AlignCenter, True
         )
         self.main_layout.addWidget(self.display_label_title)
 
-        self.datetime_label = self.create_label("", 15, Qt.AlignmentFlag.AlignCenter)
+        self.datetime_label = self.create_label(
+            "", 15, Qt.AlignmentFlag.AlignCenter, True
+        )
         self.update_datetime_label()
         self.main_layout.addWidget(self.datetime_label)
 
@@ -165,26 +169,36 @@ class App(QWidget):
             else "QTabWidget::pane { border: 2px solid #ffffff; }"
         )
         self.banner_label.setText(
-            "Multi-Task Mode / Set Start Date and Time" if self.multi_mode else ""
+            "<b>Multi-Task Mode</b>" + "<br>" + "Startzeit und Datum Wählen"
+            if self.multi_mode
+            else ""
         )
-        self.update_buttons()
+
+        for tab_name in self.button_layouts:
+            self.update_buttons(tab_name)
         self.update_ui_elements()
 
-    def update_buttons(self):
-        self.clear_layout(self.button_layout)
+    def update_buttons(self, tab_name):
+        button_layout = self.button_layouts[tab_name]
+        self.clear_layout(button_layout)
         if self.multi_mode:
-            self.next_task_button = self.create_button("Next Task", self.save_task_temporarily)
-            self.plan_tasks_button = self.create_button("Tasks Planen", self.save_all_tasks)
-            self.button_layout.addWidget(self.next_task_button)
-            self.button_layout.addWidget(self.plan_tasks_button)
+            next_task_button = self.create_button(
+                "Next Task", self.save_task_temporarily
+            )
+            plan_tasks_button = self.create_button("Tasks Planen", self.save_all_tasks)
+            button_layout.addWidget(next_task_button)
+            button_layout.addWidget(plan_tasks_button)
         else:
-            self.submit_button = self.create_button("Bestätigen", lambda: self.schedule_task(
-                self.marken_combobox,
-                self.categories_combobox,
-                self.articles_input,
-                self.current_tab_name,
-            ))
-            self.button_layout.addWidget(self.submit_button)
+            submit_button = self.create_button(
+                "Bestätigen",
+                lambda: self.schedule_task(
+                    self.marken_combobox,
+                    self.categories_combobox,
+                    self.articles_input,
+                    tab_name,
+                ),
+            )
+            button_layout.addWidget(submit_button)
 
     def clear_layout(self, layout):
         while layout.count():
@@ -223,9 +237,10 @@ class App(QWidget):
 
         self.add_datetime_fields(layout)
 
-        self.button_layout = QVBoxLayout()
-        self.update_buttons()
-        layout.addLayout(self.button_layout)
+        button_layout = QVBoxLayout()
+        self.button_layouts[tab_name] = button_layout  # Store the button layout
+        self.update_buttons(tab_name)
+        layout.addLayout(button_layout)
 
         self.update_subcategories(marken_combobox, categories_combobox)
         marken_combobox.currentTextChanged.connect(
@@ -246,7 +261,7 @@ class App(QWidget):
         label = QLabel(label_text, self)
         layout.addWidget(label)
         return QLineEdit(self)
-    
+
     def create_label(self, text, font_size, alignment, with_border=False):
         label = QLabel(text, self)
         font = QFont()
@@ -256,7 +271,7 @@ class App(QWidget):
         if with_border:
             label.setStyleSheet("border: 2px solid #ffdd00;")
         return label
-    
+
     def create_button(self, text, click_handler):
         button = QPushButton(text, self)
         button.clicked.connect(click_handler)
@@ -295,7 +310,7 @@ class App(QWidget):
         )
 
     def add_datetime_fields(self, layout):
-        self.dateTime_title_label = QLabel("Datum & Uhrzeit planen", self)
+        self.dateTime_title_label = QLabel("<b>Datum & Uhrzeit planen</b>", self)
         self.dateTime_title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.dateTime_title_label.setStyleSheet(
             """
@@ -361,7 +376,9 @@ class App(QWidget):
         self.temp_tasks.append(task)
         self.clear_input_fields()
         if len(self.temp_tasks) == 1:
-            self.banner_label.setText("Multi-Task Mode / Nach erstem Task ausführen")
+            self.banner_label.setText(
+                "<b>Multi-Task Mode</b>" + "<br>" + "Nach dem ersten Task ausführen"
+            )
             self.hide_datetime_fields()
 
     def save_all_tasks(self):
@@ -464,11 +481,15 @@ class App(QWidget):
         self.dateTime_title_label.hide()
         for button in self.datetime_buttons:
             button.hide()
+        self.display_label_title.hide()
+        self.datetime_label.hide()
 
     def show_datetime_fields(self):
         self.dateTime_title_label.show()
         for button in self.datetime_buttons:
             button.show()
+        self.display_label_title.show()
+        self.datetime_label.show()
 
     def get_scheduled_time(self):
         return datetime.datetime(
@@ -540,7 +561,9 @@ class App(QWidget):
             categories_box.setDisabled(True)
 
     def update_ui_elements(self):
-        if self.multi_mode:
+        if self.multi_mode and len(self.temp_tasks) == 0:
+            self.show_datetime_fields()
+        elif self.multi_mode and len(self.temp_tasks) > 0:
             self.hide_datetime_fields()
         else:
             self.show_datetime_fields()
@@ -604,4 +627,3 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     ex = App()
     sys.exit(app.exec())
-
