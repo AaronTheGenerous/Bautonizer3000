@@ -21,8 +21,50 @@ from PyQt6.QtWidgets import (
     QButtonGroup,
     QCheckBox,
 )
-from PyQt6.QtCore import Qt, QDate, QTime
-from PyQt6.QtGui import QIcon, QFont
+from PyQt6.QtCore import Qt, QDate, QTime, QEasingCurve, QPropertyAnimation
+from PyQt6.QtGui import QIcon, QFont, QColor, QPainter, QPen
+
+
+class DatePickerDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Datum wählen")
+        self.calendar = QCalendarWidget(self)
+        self.calendar.setGridVisible(True)
+        layout = QVBoxLayout(self)
+        layout.addWidget(self.calendar)
+        buttons = QHBoxLayout()
+        ok_button = QPushButton("OK", self)
+        ok_button.clicked.connect(self.accept)
+        cancel_button = QPushButton("Cancel", self)
+        cancel_button.clicked.connect(self.reject)
+        buttons.addWidget(ok_button)
+        buttons.addWidget(cancel_button)
+        layout.addLayout(buttons)
+
+    def get_date(self):
+        return self.calendar.selectedDate()
+
+
+class TimePickerDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Uhrzeit wählen")
+        self.time_edit = QTimeEdit(self)
+        self.time_edit.setDisplayFormat("HH:mm:ss")
+        layout = QVBoxLayout(self)
+        layout.addWidget(self.time_edit)
+        buttons = QHBoxLayout()
+        ok_button = QPushButton("OK", self)
+        ok_button.clicked.connect(self.accept)
+        cancel_button = QPushButton("Cancel", self)
+        cancel_button.clicked.connect(self.reject)
+        buttons.addWidget(ok_button)
+        buttons.addWidget(cancel_button)
+        layout.addLayout(buttons)
+
+    def get_time(self):
+        return self.time_edit.time()
 
 
 class App(QWidget):
@@ -35,8 +77,9 @@ class App(QWidget):
         self.title = "Buttonizer3000"
         self.left = 100
         self.top = 100
-        self.width = 230
-        self.height = 600  # Increased height to accommodate the switch and banner
+        self.window_width = 260
+        self.height = 850  # Increased height to accommodate the switch and banner
+        self.borderColor = QColor(255, 221, 0, 0)  # Initial border color (transparent yellow)
 
         self.selected_date = QDate.currentDate()
         self.selected_time = QTime.currentTime()
@@ -108,7 +151,8 @@ class App(QWidget):
 
     def initUI(self):
         self.setWindowTitle(self.title)
-        self.setGeometry(self.left, self.top, self.width, self.height)
+        self.setGeometry(self.left, self.top, self.window_width, self.height)
+        self.setFixedSize(self.window_width, self.height)
         self.setWindowIcon(QIcon(r"C:\path\to\icon.ico"))
 
         self.main_layout = QVBoxLayout()
@@ -148,6 +192,104 @@ class App(QWidget):
         self.center_on_screen()
         self.show()
 
+    def add_datetime_fields(self, layout):
+        self.dateTime_title_label = QLabel("<b>Datum & Uhrzeit planen</b>", self)
+        self.dateTime_title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.dateTime_title_label.setStyleSheet(
+            """
+            QLabel{
+                font-weight: bold;
+            }
+        """
+        )
+        layout.addWidget(self.dateTime_title_label)
+
+        buttons = [
+            ("Datum wählen", self.open_date_picker),
+            ("Uhrzeit wählen", self.open_time_picker),
+        ]
+        self.datetime_buttons = []
+        for text, handler in buttons:
+            button = QPushButton(text, self)
+            button.clicked.connect(handler)
+            layout.addWidget(button)
+            self.datetime_buttons.append(button)
+
+    def add_image_and_link_fields(self, layout):
+        fields = [
+            ("Bild 1 URL (Deutsch)", "img1_input"),
+            ("Bild 2 URL (Französisch)", "img2_input"),
+            ("Bild Höhe", "height_input"),
+            ("Bildbreite", "width_input"),
+        ]
+        for label_text, attr_name in fields:
+            setattr(
+                self, attr_name, self.create_line_edit_with_label(label_text, layout)
+            )
+            layout.addWidget(getattr(self, attr_name))
+
+        self.link_checkbox = QCheckBox("Link hinzufügen?", self)
+        layout.addWidget(self.link_checkbox)
+
+        self.link_input_de = self.create_line_edit_with_label("Link (Deutsch)", layout)
+        self.link_input_de.setDisabled(True)
+        layout.addWidget(self.link_input_de)
+
+        self.link_input_fr = self.create_line_edit_with_label(
+            "Link (Französisch)", layout
+        )
+        self.link_input_fr.setDisabled(True)
+        layout.addWidget(self.link_input_fr)
+
+        self.link_checkbox.stateChanged.connect(
+            lambda state: self.toggle_link_input(
+                state, self.link_input_de, self.link_input_fr
+            )
+        )
+
+    def center_on_screen(self):
+        resolution = QApplication.primaryScreen().geometry()
+        x = (resolution.width() - self.window_width) // 2
+        y = (resolution.height() - self.height) // 2
+        self.move(x, y)
+
+    def clear_input_fields(self):
+        self.marken_combobox.setCurrentIndex(0)
+        self.categories_combobox.setCurrentIndex(0)
+        self.articles_input.clear()
+
+    def clear_layout(self, layout):
+        while layout.count():
+            child = layout.takeAt(0)
+            if child.widget():
+                child.widget().deleteLater()
+
+    def create_button(self, text, click_handler):
+        button = QPushButton(text, self)
+        button.clicked.connect(click_handler)
+        return button
+
+    def create_label(self, text, font_size, alignment, with_border=False):
+        label = QLabel(text, self)
+        font = QFont()
+        font.setPointSize(font_size)
+        label.setFont(font)
+        label.setAlignment(alignment)
+        if with_border:
+            label.setStyleSheet("border: 2px solid #ffdd00;")
+        return label
+
+    def create_label_and_combobox(self, label_text, items):
+        label = QLabel(label_text, self)
+        combobox = QComboBox(self)
+        combobox.addItems(items)
+        return label, combobox
+
+    def create_line_edit_with_label(self, label_text, layout):
+        label = QLabel(label_text, self)
+        layout.addWidget(label)
+        return QLineEdit(self)
+
     def create_mode_switch(self, layout):
         self.single_task_radio = QRadioButton("Single-Task Mode")
         self.multi_task_radio = QRadioButton("Multi-Task Mode")
@@ -164,60 +306,6 @@ class App(QWidget):
         switch_layout.addWidget(self.single_task_radio)
         switch_layout.addWidget(self.multi_task_radio)
         layout.addLayout(switch_layout)
-
-    def toggle_multi_mode(self):
-        self.multi_mode = self.multi_task_radio.isChecked()
-        self.tab_widget.setStyleSheet(
-            "QTabWidget::pane { border: 2px solid #ffdd00; }"
-            if self.multi_mode
-            else "QTabWidget::pane { border: 2px solid #ffffff; }"
-        )
-        self.banner_label.setText(
-            "<b>Multi-Task Mode</b>" + "<br>" + "Startzeit und Datum Wählen"
-            if self.multi_mode
-            else ""
-        )
-        self.top_banner_label.hide()  # Hide the new top banner when switching modes
-
-        for tab_name in self.button_layouts:
-            self.update_buttons(tab_name)
-        self.update_ui_elements()
-
-    def update_buttons(self, tab_name):
-        button_layout = self.button_layouts[tab_name]
-        self.clear_layout(button_layout)
-        if self.multi_mode:
-            next_task_button = self.create_button(
-                "Next Task", self.save_task_temporarily
-            )
-            plan_tasks_button = self.create_button("Tasks Planen", self.save_all_tasks)
-            button_layout.addWidget(next_task_button)
-            button_layout.addWidget(plan_tasks_button)
-        else:
-            submit_button = self.create_button(
-                "Bestätigen",
-                lambda: self.schedule_task(
-                    self.marken_combobox,
-                    self.categories_combobox,
-                    self.articles_input,
-                    tab_name,
-                ),
-            )
-            button_layout.addWidget(submit_button)
-
-    def update_ui_elements(self):
-        if self.multi_mode and len(self.temp_tasks) == 0:
-            self.show_datetime_fields()
-        elif self.multi_mode and len(self.temp_tasks) > 0:
-            self.hide_datetime_fields()
-        else:
-            self.show_datetime_fields()
-
-    def clear_layout(self, layout):
-        while layout.count():
-            child = layout.takeAt(0)
-            if child.widget():
-                child.widget().deleteLater()
 
     def create_tab(self, tab_name, submit_action):
         tab = QWidget()
@@ -264,112 +352,59 @@ class App(QWidget):
 
         return tab
 
-    def create_label_and_combobox(self, label_text, items):
-        label = QLabel(label_text, self)
-        combobox = QComboBox(self)
-        combobox.addItems(items)
-        return label, combobox
-
-    def create_line_edit_with_label(self, label_text, layout):
-        label = QLabel(label_text, self)
-        layout.addWidget(label)
-        return QLineEdit(self)
-
-    def create_label(self, text, font_size, alignment, with_border=False):
-        label = QLabel(text, self)
-        font = QFont()
-        font.setPointSize(font_size)
-        label.setFont(font)
-        label.setAlignment(alignment)
-        if with_border:
-            label.setStyleSheet("border: 2px solid #ffdd00;")
-        return label
-
-    def create_button(self, text, click_handler):
-        button = QPushButton(text, self)
-        button.clicked.connect(click_handler)
-        return button
-
-    def add_image_and_link_fields(self, layout):
-        fields = [
-            ("Bild 1 URL (Deutsch)", "img1_input"),
-            ("Bild 2 URL (Französisch)", "img2_input"),
-            ("Bild Höhe", "height_input"),
-            ("Bildbreite", "width_input"),
-        ]
-        for label_text, attr_name in fields:
-            setattr(
-                self, attr_name, self.create_line_edit_with_label(label_text, layout)
-            )
-            layout.addWidget(getattr(self, attr_name))
-
-        self.link_checkbox = QCheckBox("Link hinzufügen?", self)
-        layout.addWidget(self.link_checkbox)
-
-        self.link_input_de = self.create_line_edit_with_label("Link (Deutsch)", layout)
-        self.link_input_de.setDisabled(True)
-        layout.addWidget(self.link_input_de)
-
-        self.link_input_fr = self.create_line_edit_with_label(
-            "Link (Französisch)", layout
-        )
-        self.link_input_fr.setDisabled(True)
-        layout.addWidget(self.link_input_fr)
-
-        self.link_checkbox.stateChanged.connect(
-            lambda state: self.toggle_link_input(
-                state, self.link_input_de, self.link_input_fr
-            )
+    def create_task(self):
+        task_type = (
+            "process_articles"
+            if self.current_tab_name == "Hinzufügen"
+            else "remove_articles_images"
         )
 
-    def add_datetime_fields(self, layout):
-        self.dateTime_title_label = QLabel("<b>Datum & Uhrzeit planen</b>", self)
-        self.dateTime_title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.dateTime_title_label.setStyleSheet(
-            """
-            QLabel{
-                font-weight: bold;
-            }
-        """
-        )
-        layout.addWidget(self.dateTime_title_label)
-
-        buttons = [
-            ("Datum wählen", self.open_date_picker),
-            ("Uhrzeit wählen", self.open_time_picker),
-        ]
-        self.datetime_buttons = []
-        for text, handler in buttons:
-            button = QPushButton(text, self)
-            button.clicked.connect(handler)
-            layout.addWidget(button)
-            self.datetime_buttons.append(button)
-
-    def open_date_picker(self):
-        dialog = DatePickerDialog(self)
-        if dialog.exec():
-            self.selected_date = dialog.get_date()
-            self.update_datetime_label()
-
-    def open_time_picker(self):
-        dialog = TimePickerDialog(self)
-        if dialog.exec():
-            self.selected_time = dialog.get_time()
-            self.update_datetime_label()
-
-    def update_datetime_label(self):
-        selected_date = self.selected_date.toString("dd/MM/yyyy")
-        selected_time = self.selected_time.toString("HH:mm:ss")
-        self.datetime_label.setText(f"{selected_date} \n{selected_time}")
-
-    def show_message(self):
-        msg_box = QMessageBox(self)
-        msg_box.setWindowTitle("Geschafft")
-        msg_box.setText(
-            "Task erfolgreich geplant. \nDu siehst heute übrigens mal wieder super aus <3"
-        )
-        msg_box.setIcon(QMessageBox.Icon.Information)
-        msg_box.exec()
+        task = {
+            "task_type": task_type,
+            "schedule_datetime": self.get_scheduled_time().isoformat(),
+            "data": {
+                "marke": self.marken_combobox.currentText(),
+                "kategorie": self.categories_combobox.currentText(),
+                "article_numbers": self.articles_input.text(),
+                "img1_url": (
+                    self.img1_input.text()
+                    if self.current_tab_name == "Hinzufügen"
+                    else None
+                ),
+                "img2_url": (
+                    self.img2_input.text()
+                    if self.current_tab_name == "Hinzufügen"
+                    else None
+                ),
+                "width": (
+                    self.width_input.text()
+                    if self.current_tab_name == "Hinzufügen"
+                    else None
+                ),
+                "height": (
+                    self.height_input.text()
+                    if self.current_tab_name == "Hinzufügen"
+                    else None
+                ),
+                "link_checkbox": (
+                    self.link_checkbox.isChecked()
+                    if self.current_tab_name == "Hinzufügen"
+                    else None
+                ),
+                "link_input_de": (
+                    self.link_input_de.text()
+                    if self.current_tab_name == "Hinzufügen"
+                    else None
+                ),
+                "link_input_fr": (
+                    self.link_input_fr.text()
+                    if self.current_tab_name == "Hinzufügen"
+                    else None
+                ),
+            },
+            "follow_up": self.multi_mode,
+        }
+        return task
 
     def eventFilter(self, obj, event):
         if event.type() == QtCore.QEvent.Type.KeyPress and event.key() in [
@@ -384,18 +419,22 @@ class App(QWidget):
             return True
         return super().eventFilter(obj, event)
 
-    def save_task_temporarily(self):
-        task = self.create_task()
-        self.temp_tasks.append(task)
-        self.clear_input_fields()
-        if len(self.temp_tasks) == 1:
-            self.banner_label.setText(
-                "<b>Multi-Task Mode</b>" + "<br>" + "Nach dem ersten Task ausführen"
-            )
-            self.hide_datetime_fields()
-        # Show the new top banner
-        self.top_banner_label.setText("Task saved! Click 'Next Task' to add another.")
-        self.top_banner_label.show()
+    def hide_datetime_fields(self):
+        self.dateTime_title_label.hide()
+        for button in self.datetime_buttons:
+            button.hide()
+
+    def open_date_picker(self):
+        dialog = DatePickerDialog(self)
+        if dialog.exec():
+            self.selected_date = dialog.get_date()
+            self.update_datetime_label()
+
+    def open_time_picker(self):
+        dialog = TimePickerDialog(self)
+        if dialog.exec():
+            self.selected_time = dialog.get_time()
+            self.update_datetime_label()
 
     def save_all_tasks(self):
         task_directory = self.tasks_directory
@@ -430,6 +469,29 @@ class App(QWidget):
         self.temp_tasks = []  # Clear the temporary tasks
         self.show_message()
 
+    def save_task_temporarily(self):
+        task = self.create_task()
+        self.temp_tasks.append(task)
+        self.clear_input_fields()
+        if len(self.temp_tasks) == 1:
+            self.banner_label.setText(
+                "<b>Multi-Task Mode</b>" + "<br>" + "Nach dem ersten Task ausführen"
+            )
+            self.hide_datetime_fields()
+        # Show the new top banner
+        self.show_confirmation_banner()
+
+    def schedule_in_task_scheduler(self, task_filename, schedule_datetime):
+        import subprocess
+
+        date_str = schedule_datetime.strftime("%d/%m/%Y")
+        time_str = schedule_datetime.strftime("%H:%M")
+        command = f'SchTasks /Create /SC ONCE /TN "ButtonizerTask_{os.path.basename(task_filename)}" /TR "python {os.path.abspath(__file__).replace("bAUTOnizer3000.py", "exe_tasks.py")} {task_filename}" /ST {time_str} /SD {date_str} /F'
+        try:
+            subprocess.run(command, check=True, shell=True)
+        except subprocess.CalledProcessError as e:
+            print(f"Failed to schedule task: {e}")
+
     def schedule_task(self, marken_box, categories_box, articles_input, tab_name):
         task = self.create_task()
 
@@ -455,61 +517,69 @@ class App(QWidget):
 
         QMessageBox.information(self, "Success", "Task scheduled successfully!")
 
-    def create_task(self):
-        task = {
-            "marken": self.marken_combobox.currentText(),
-            "categories": self.categories_combobox.currentText(),
-            "articles": self.articles_input.text(),
-            "schedule_datetime": f"{self.selected_date.toString('yyyy-MM-dd')}T{self.selected_time.toString('HH:mm:ss')}",
-        }
-        return task
+    @QtCore.pyqtProperty(QColor)
+    def borderColor(self):
+        return self._borderColor
 
-    def show_confirmation_banner(self, message):
-        self.banner_label.setText(message)
-        self.banner_label.show()
+    @borderColor.setter
+    def borderColor(self, color):
+        self._borderColor = color
+        self.update()  # Trigger a repaint
 
-        # Create the animation
-        self.animation = QPropertyAnimation(self.banner_label, b"geometry")
-        self.animation.setDuration(1000)  # Duration of the animation in milliseconds
-        self.animation.setStartValue(
-            QRect(-self.width(), 0, self.width(), 30)
-        )  # Start off-screen
-        self.animation.setEndValue(
-            QRect(0, 0, self.width(), 30)
-        )  # End at the top of the window
-        self.animation.start()
+    def paintEvent(self, event):
+        super().paintEvent(event)
+        painter = QPainter(self)
+        painter.setPen(QPen(self.borderColor, 15))  # Set pen with the current border color and width
+        painter.drawRect(self.rect())  # Draw the border around the window
 
-        # Hide the banner after a delay
-        QtCore.QTimer.singleShot(3000, self.banner_label.hide)  # Hide after 3 seconds
+    def show_confirmation_banner(self):
+        # Create the animation for the border
+        self.border_animation = QPropertyAnimation(self, b"borderColor")
+        self.border_animation.setDuration(
+            500
+        )  # Duration of the animation in milliseconds
+        self.border_animation.setLoopCount(
+            1
+        )  # Number of times the animation should loop
+        self.border_animation.setStartValue(
+            QColor(60, 143, 64, 0)
+        )  # Start with transparent green
+        self.border_animation.setKeyValueAt(
+            0.5, QColor(60, 143, 64, 190)
+        )  # Fully opaque green at midpoint
+        self.border_animation.setEndValue(
+            QColor(60, 143, 64, 0)
+        )  # End with transparent green
+        self.border_animation.setEasingCurve(
+            QEasingCurve.Type.InOutQuad
+        )  # Smooth easing curve
+        self.border_animation.start()
+    
+    def get_scheduled_time(self):
+        return datetime.datetime(
+            self.selected_date.year(),
+            self.selected_date.month(),
+            self.selected_date.day(),
+            self.selected_time.hour(),
+            self.selected_time.minute(),
+            self.selected_time.second(),
+        )
 
-    def schedule_in_task_scheduler(self, task_filename, schedule_datetime):
-        import subprocess
-
-        date_str = schedule_datetime.strftime("%d/%m/%Y")
-        time_str = schedule_datetime.strftime("%H:%M")
-        command = f'SchTasks /Create /SC ONCE /TN "ButtonizerTask_{os.path.basename(task_filename)}" /TR "python {os.path.abspath(__file__).replace("bAUTOnizer3000.py", "exe_tasks.py")} {task_filename}" /ST {time_str} /SD {date_str} /F'
-        try:
-            subprocess.run(command, check=True, shell=True)
-        except subprocess.CalledProcessError as e:
-            print(f"Failed to schedule task: {e}")
-
-    def clear_input_fields(self):
-        self.marken_combobox.setCurrentIndex(0)
-        self.categories_combobox.setCurrentIndex(0)
-        self.articles_input.clear()
-
-    def hide_datetime_fields(self):
-        self.dateTime_title_label.hide()
+    def show_datetime_fields(self):
+        self.dateTime_title_label.show()
         for button in self.datetime_buttons:
-            button.hide()
+            button.show()
+        self.display_label_title.show()
+        self.datetime_label.show()
 
-    def update_subcategories(self, marken_combobox, categories_combobox):
-        selected_marke = marken_combobox.currentText()
-        categories_combobox.clear()
-        if selected_marke in self.category_data["Kamerasysteme + Objektive"]:
-            categories_combobox.addItems(
-                self.category_data["Kamerasysteme + Objektive"][selected_marke].keys()
-            )
+    def show_message(self):
+        msg_box = QMessageBox(self)
+        msg_box.setWindowTitle("Geschafft")
+        msg_box.setText(
+            "Task erfolgreich geplant. \nDu siehst heute übrigens mal wieder super aus <3"
+        )
+        msg_box.setIcon(QMessageBox.Icon.Information)
+        msg_box.exec()
 
     def toggle_link_input(self, state, link_input_de, link_input_fr):
         if state == Qt.CheckState.Checked:
@@ -519,67 +589,66 @@ class App(QWidget):
             link_input_de.setDisabled(True)
             link_input_fr.setDisabled(True)
 
-    def center_on_screen(self):
-        resolution = QApplication.primaryScreen().geometry()
-        x = (resolution.width() - self.width) // 2
-        y = (resolution.height() - self.height) // 2
-        self.move(x, y)
+    def toggle_multi_mode(self):
+        self.multi_mode = self.multi_task_radio.isChecked()
+        self.tab_widget.setStyleSheet(
+            "QTabWidget::pane { border: 2px solid #ffdd00; }"
+            if self.multi_mode
+            else "QTabWidget::pane { border: 2px solid #ffffff; }"
+        )
+        self.banner_label.setText(
+            "<b>Multi-Task Mode</b>" + "<br>" + "Startzeit und Datum Wählen"
+            if self.multi_mode
+            else ""
+        )
+        self.top_banner_label.hide()  # Hide the new top banner when switching modes
 
-    def hide_datetime_fields(self):
-        self.dateTime_title_label.hide()
-        for button in self.datetime_buttons:
-            button.hide()
-        self.display_label_title.hide()
-        self.datetime_label.hide()
+        for tab_name in self.button_layouts:
+            self.update_buttons(tab_name)
+        self.update_ui_elements()
 
-    def show_datetime_fields(self):
-        self.dateTime_title_label.show()
-        for button in self.datetime_buttons:
-            button.show()
-        self.display_label_title.show()
-        self.datetime_label.show()
+    def update_buttons(self, tab_name):
+        button_layout = self.button_layouts[tab_name]
+        self.clear_layout(button_layout)
+        if self.multi_mode:
+            next_task_button = self.create_button(
+                "Next Task", self.save_task_temporarily
+            )
+            plan_tasks_button = self.create_button("Tasks Planen", self.save_all_tasks)
+            button_layout.addWidget(next_task_button)
+            button_layout.addWidget(plan_tasks_button)
+        else:
+            submit_button = self.create_button(
+                "Bestätigen",
+                lambda: self.schedule_task(
+                    self.marken_combobox,
+                    self.categories_combobox,
+                    self.articles_input,
+                    tab_name,
+                ),
+            )
+            button_layout.addWidget(submit_button)
 
+    def update_datetime_label(self):
+        selected_date = self.selected_date.toString("dd/MM/yyyy")
+        selected_time = self.selected_time.toString("HH:mm:ss")
+        self.datetime_label.setText(f"{selected_date} \n{selected_time}")
 
-class DatePickerDialog(QDialog):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle("Datum wählen")
-        self.calendar = QCalendarWidget(self)
-        self.calendar.setGridVisible(True)
-        layout = QVBoxLayout(self)
-        layout.addWidget(self.calendar)
-        buttons = QHBoxLayout()
-        ok_button = QPushButton("OK", self)
-        ok_button.clicked.connect(self.accept)
-        cancel_button = QPushButton("Cancel", self)
-        cancel_button.clicked.connect(self.reject)
-        buttons.addWidget(ok_button)
-        buttons.addWidget(cancel_button)
-        layout.addLayout(buttons)
+    def update_subcategories(self, marken_combobox, categories_combobox):
+        selected_marke = marken_combobox.currentText()
+        categories_combobox.clear()
+        if selected_marke in self.category_data["Kamerasysteme + Objektive"]:
+            categories_combobox.addItems(
+                self.category_data["Kamerasysteme + Objektive"][selected_marke].keys()
+            )
 
-    def get_date(self):
-        return self.calendar.selectedDate()
-
-
-class TimePickerDialog(QDialog):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle("Uhrzeit wählen")
-        self.time_edit = QTimeEdit(self)
-        self.time_edit.setDisplayFormat("HH:mm:ss")
-        layout = QVBoxLayout(self)
-        layout.addWidget(self.time_edit)
-        buttons = QHBoxLayout()
-        ok_button = QPushButton("OK", self)
-        ok_button.clicked.connect(self.accept)
-        cancel_button = QPushButton("Cancel", self)
-        cancel_button.clicked.connect(self.reject)
-        buttons.addWidget(ok_button)
-        buttons.addWidget(cancel_button)
-        layout.addLayout(buttons)
-
-    def get_time(self):
-        return self.time_edit.time()
+    def update_ui_elements(self):
+        if self.multi_mode and len(self.temp_tasks) == 0:
+            self.show_datetime_fields()
+        elif self.multi_mode and len(self.temp_tasks) > 0:
+            self.hide_datetime_fields()
+        else:
+            self.show_datetime_fields()
 
 
 if __name__ == "__main__":
