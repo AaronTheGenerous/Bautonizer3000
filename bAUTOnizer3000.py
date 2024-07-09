@@ -257,6 +257,14 @@ class App(QWidget):
         self.marken_combobox.setCurrentIndex(0)
         self.categories_combobox.setCurrentIndex(0)
         self.articles_input.clear()
+        if self.current_tab_name == "Hinzufügen":
+            self.img1_input.clear()
+            self.img2_input.clear()
+            self.width_input.clear()
+            self.height_input.clear()
+            self.link_checkbox.setChecked(False)
+            self.link_input_de.clear()
+            self.link_input_fr.clear()
 
     def clear_layout(self, layout):
         while layout.count():
