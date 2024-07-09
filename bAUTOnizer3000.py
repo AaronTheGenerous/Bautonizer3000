@@ -540,7 +540,7 @@ class App(QWidget):
         painter.setPen(QPen(self.borderColor, 15))  # Set pen with the current border color and width
         painter.drawRect(self.rect())  # Draw the border around the window
 
-    def show_confirmation_banner(self):
+    def show_confirmation_banner(self, message="Task created"):
         # Create the animation for the border
         self.border_animation = QPropertyAnimation(self, b"borderColor")
         self.border_animation.setDuration(
@@ -562,7 +562,9 @@ class App(QWidget):
             QEasingCurve.Type.InOutQuad
         )  # Smooth easing curve
         self.border_animation.start()
-    
+        self.top_banner_label.setText(message)
+        self.top_banner_label.show()
+
     def get_scheduled_time(self):
         return datetime.datetime(
             self.selected_date.year(),
