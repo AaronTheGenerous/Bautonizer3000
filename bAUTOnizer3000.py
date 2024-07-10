@@ -1,8 +1,10 @@
-import sys
-import os
-import json
 import datetime
+import json
+import os
+import sys
 from PyQt6 import QtCore
+from PyQt6.QtCore import Qt, QDate, QTime, QEasingCurve, QPropertyAnimation
+from PyQt6.QtGui import QIcon, QFont, QColor, QPainter, QPen
 from PyQt6.QtWidgets import (
     QApplication,
     QWidget,
@@ -21,8 +23,6 @@ from PyQt6.QtWidgets import (
     QButtonGroup,
     QCheckBox,
 )
-from PyQt6.QtCore import Qt, QDate, QTime, QEasingCurve, QPropertyAnimation
-from PyQt6.QtGui import QIcon, QFont, QColor, QPainter, QPen
 
 
 class DatePickerDialog(QDialog):
@@ -89,7 +89,7 @@ class App(QWidget):
         self.left = 100
         self.top = 100
         self.window_width = 260
-        self.height = 850  # Increased height to accommodate the switch and banner
+        self.height = 880  # Increased height to accommodate the switch and banner
         self.borderColor = QColor(255, 221, 0, 0)  # Initial border color (transparent yellow)
 
         self.selected_date = QDate.currentDate()
@@ -175,6 +175,14 @@ class App(QWidget):
         # Create the switch for Single-Task Mode and Multi-Task Mode
         self.create_mode_switch(self.main_layout)
 
+        self.clear_checkbox = QCheckBox('Clear Input', self)
+        self.clear_checkbox.setChecked(True)  # The checkbox is checked by default
+        # Create a QHBoxLayout for checkbox and add spacers to both sides.
+        checkbox_layout = QHBoxLayout()
+        checkbox_layout.addStretch(1)  # Add spacer on the left
+        checkbox_layout.addWidget(self.clear_checkbox)
+        checkbox_layout.addStretch(1)  # Add spacer on the right
+
         # New banner label at the very top
         self.top_banner_label = self.create_label("", 10, Qt.AlignmentFlag.AlignCenter)
         self.main_layout.addWidget(self.top_banner_label)
@@ -204,6 +212,8 @@ class App(QWidget):
         self.main_layout.addWidget(self.datetime_label)
 
         self.main_layout.addLayout(self.datetime_layout)
+
+        self.main_layout.addLayout(checkbox_layout)
 
         self.setLayout(self.main_layout)
         self.center_on_screen()
@@ -273,17 +283,19 @@ class App(QWidget):
         self.move(x, y)
 
     def clear_input_fields(self):
-        self.marken_combobox.setCurrentIndex(0)
-        self.categories_combobox.setCurrentIndex(0)
-        self.articles_input.clear()
-        if self.current_tab_name == "Hinzufügen":
-            self.img1_input.clear()
-            self.img2_input.clear()
-            self.width_input.clear()
-            self.height_input.clear()
-            self.link_checkbox.setChecked(False)
-            self.link_input_de.clear()
-            self.link_input_fr.clear()
+        clear_fields = self.clear_checkbox.isChecked()  # check the checkbox status
+        if clear_fields:
+            self.marken_combobox.setCurrentIndex(0)
+            self.categories_combobox.setCurrentIndex(0)
+            self.articles_input.clear()
+            if self.current_tab_name == "Hinzufügen":
+                self.img1_input.clear()
+                self.img2_input.clear()
+                self.width_input.clear()
+                self.height_input.clear()
+                self.link_checkbox.setChecked(False)
+                self.link_input_de.clear()
+                self.link_input_fr.clear()
 
     def clear_layout(self, layout):
         while layout.count():

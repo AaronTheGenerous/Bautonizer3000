@@ -4,8 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ae7ff266-455f-41b7-8c50-a22fbd8e171f" name="Changes" comment="Coders Note: Hiding buttons finally fucking works! But now each button is added multiple times, working on that next.&#10;&#10;Add field clear action and initial .idea config files&#10;&#10;The commit introduces a section to app's &quot;Hinzufügen&quot; tab to clear field inputs. The `.idea` config files necessary for a Python project setup in JetBrains IDE are also generated and added in the commit. The new files manage project settings, module information, VCS mappings, and ignored files, amongst other configurations.">
-      <change afterPath="$PROJECT_DIR$/bAUTOnizer3000_temp.py" afterDir="false" />
+    <list default="true" id="ae7ff266-455f-41b7-8c50-a22fbd8e171f" name="Changes" comment="gui is working as it should, try to reorder layout">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bAUTOnizer3000.py" beforeDir="false" afterPath="$PROJECT_DIR$/bAUTOnizer3000.py" afterDir="false" />
     </list>
@@ -137,7 +136,15 @@
       <option name="project" value="LOCAL" />
       <updated>1720618188284</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="gui is working as it should, try to reorder layout">
+      <option name="closed" value="true" />
+      <created>1720620591451</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1720620591451</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -155,6 +162,7 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Add field clear action and initial .idea config files&#10;&#10;The commit introduces a section to app's &quot;Hinzufügen&quot; tab to clear field inputs. The `.idea` config files necessary for a Python project setup in JetBrains IDE are also generated and added in the commit. The new files manage project settings, module information, VCS mappings, and ignored files, amongst other configurations." />
     <MESSAGE value="Coders Note: Hiding buttons finally fucking works! But now each button is added multiple times, working on that next.&#10;&#10;Add field clear action and initial .idea config files&#10;&#10;The commit introduces a section to app's &quot;Hinzufügen&quot; tab to clear field inputs. The `.idea` config files necessary for a Python project setup in JetBrains IDE are also generated and added in the commit. The new files manage project settings, module information, VCS mappings, and ignored files, amongst other configurations." />
-    <option name="LAST_COMMIT_MESSAGE" value="Coders Note: Hiding buttons finally fucking works! But now each button is added multiple times, working on that next.&#10;&#10;Add field clear action and initial .idea config files&#10;&#10;The commit introduces a section to app's &quot;Hinzufügen&quot; tab to clear field inputs. The `.idea` config files necessary for a Python project setup in JetBrains IDE are also generated and added in the commit. The new files manage project settings, module information, VCS mappings, and ignored files, amongst other configurations." />
+    <MESSAGE value="gui is working as it should, try to reorder layout" />
+    <option name="LAST_COMMIT_MESSAGE" value="gui is working as it should, try to reorder layout" />
   </component>
 </project>
