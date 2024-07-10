@@ -28,19 +28,30 @@ from PyQt6.QtGui import QIcon, QFont, QColor, QPainter, QPen
 class DatePickerDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.layout = None
+        self.calendar = None
         self.setWindowTitle("Datum wählen")
+        self.create_calendar_widget()
+        self.create_buttons()
+
+    def create_calendar_widget(self):
         self.calendar = QCalendarWidget(self)
         self.calendar.setGridVisible(True)
-        layout = QVBoxLayout(self)
-        layout.addWidget(self.calendar)
+        self.layout = QVBoxLayout(self)
+        self.layout.addWidget(self.calendar)
+
+    def create_buttons(self):
         buttons = QHBoxLayout()
-        ok_button = QPushButton("OK", self)
-        ok_button.clicked.connect(self.accept)
-        cancel_button = QPushButton("Cancel", self)
-        cancel_button.clicked.connect(self.reject)
+        ok_button = self.create_button("OK", self.accept)
+        cancel_button = self.create_button("Abbrechen", self.reject)
         buttons.addWidget(ok_button)
         buttons.addWidget(cancel_button)
-        layout.addLayout(buttons)
+        self.layout.addLayout(buttons)
+
+    def create_button(self, text, handler):
+        button = QPushButton(text, self)
+        button.clicked.connect(handler)
+        return button
 
     def get_date(self):
         return self.calendar.selectedDate()
@@ -87,6 +98,9 @@ class App(QWidget):
         self.temp_tasks = []  # Temporary storage for tasks in multi-task mode
 
         self.button_layouts = {}  # Temporary storage for each button layout
+
+        self.datetime_layout = QVBoxLayout()
+        self.datetime_widgets = []
 
         self.category_data = {
             "Kamerasysteme + Objektive": {
@@ -188,6 +202,8 @@ class App(QWidget):
         self.update_datetime_label()
         self.main_layout.addWidget(self.datetime_label)
 
+        self.main_layout.addLayout(self.datetime_layout)
+
         self.setLayout(self.main_layout)
         self.center_on_screen()
         self.show()
@@ -202,7 +218,7 @@ class App(QWidget):
             }
         """
         )
-        layout.addWidget(self.dateTime_title_label)
+        self.datetime_layout.addWidget(self.dateTime_title_label)
 
         buttons = [
             ("Datum wählen", self.open_date_picker),
@@ -212,8 +228,8 @@ class App(QWidget):
         for text, handler in buttons:
             button = QPushButton(text, self)
             button.clicked.connect(handler)
-            layout.addWidget(button)
-            self.datetime_buttons.append(button)
+            self.datetime_layout.addWidget(button)
+            self.datetime_widgets.append(button)
 
     def add_image_and_link_fields(self, layout):
         fields = [
@@ -257,6 +273,14 @@ class App(QWidget):
         self.marken_combobox.setCurrentIndex(0)
         self.categories_combobox.setCurrentIndex(0)
         self.articles_input.clear()
+        if self.current_tab_name == "Hinzufügen":
+            self.img1_input.clear()
+            self.img2_input.clear()
+            self.width_input.clear()
+            self.height_input.clear()
+            self.link_checkbox.setChecked(False)
+            self.link_input_de.clear()
+            self.link_input_fr.clear()
 
     def clear_layout(self, layout):
         while layout.count():
@@ -353,6 +377,7 @@ class App(QWidget):
         return tab
 
     def create_task(self):
+        print("create_task called")
         task_type = (
             "process_articles"
             if self.current_tab_name == "Hinzufügen"
@@ -420,9 +445,10 @@ class App(QWidget):
         return super().eventFilter(obj, event)
 
     def hide_datetime_fields(self):
-        self.dateTime_title_label.hide()
-        for button in self.datetime_buttons:
-            button.hide()
+        self.display_label_title.hide()
+        self.datetime_label.hide()
+        for widget in self.datetime_widgets:
+            widget.hide()
 
     def open_date_picker(self):
         dialog = DatePickerDialog(self)
@@ -470,16 +496,19 @@ class App(QWidget):
         self.show_message()
 
     def save_task_temporarily(self):
+        print("save_task_temporarily called")
         task = self.create_task()
         self.temp_tasks.append(task)
+        print(f"Added task to temp_tasks: {self.temp_tasks}")
+        print(f"len(self.temp_tasks) = {len(self.temp_tasks)}")
         self.clear_input_fields()
         if len(self.temp_tasks) == 1:
             self.banner_label.setText(
                 "<b>Multi-Task Mode</b>" + "<br>" + "Nach dem ersten Task ausführen"
             )
-            self.hide_datetime_fields()
         # Show the new top banner
         self.show_confirmation_banner()
+        self.update_ui_elements()
 
     def schedule_in_task_scheduler(self, task_filename, schedule_datetime):
         import subprocess
@@ -532,7 +561,7 @@ class App(QWidget):
         painter.setPen(QPen(self.borderColor, 15))  # Set pen with the current border color and width
         painter.drawRect(self.rect())  # Draw the border around the window
 
-    def show_confirmation_banner(self):
+    def show_confirmation_banner(self, message="TASK ERSTELLT"):
         # Create the animation for the border
         self.border_animation = QPropertyAnimation(self, b"borderColor")
         self.border_animation.setDuration(
@@ -554,7 +583,10 @@ class App(QWidget):
             QEasingCurve.Type.InOutQuad
         )  # Smooth easing curve
         self.border_animation.start()
-    
+        self.top_banner_label.setStyleSheet("color: rgb(60, 143, 64);")
+        self.top_banner_label.setText(f"<b>{message}</b>")
+        self.top_banner_label.show()
+
     def get_scheduled_time(self):
         return datetime.datetime(
             self.selected_date.year(),
@@ -566,11 +598,10 @@ class App(QWidget):
         )
 
     def show_datetime_fields(self):
-        self.dateTime_title_label.show()
-        for button in self.datetime_buttons:
-            button.show()
         self.display_label_title.show()
         self.datetime_label.show()
+        for widget in self.datetime_widgets:
+            widget.show()
 
     def show_message(self):
         msg_box = QMessageBox(self)
