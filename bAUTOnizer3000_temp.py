@@ -99,10 +99,6 @@ class App(QWidget):
 
         self.button_layouts = {}  # Temporary storage for each button layout
 
-        self.datetime_layout = QVBoxLayout()
-        self.datetime_widgets = []
-        self.datetime_fields_added = False
-
         self.category_data = {
             "Kamerasysteme + Objektive": {
                 "Nikon": {
@@ -203,36 +199,34 @@ class App(QWidget):
         self.update_datetime_label()
         self.main_layout.addWidget(self.datetime_label)
 
-        self.main_layout.addLayout(self.datetime_layout)
-
         self.setLayout(self.main_layout)
         self.center_on_screen()
         self.show()
 
     def add_datetime_fields(self, layout):
-        if not self.datetime_fields_added:
-            self.dateTime_title_label = QLabel("<b>Datum & Uhrzeit planen</b>", self)
-            self.dateTime_title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            self.dateTime_title_label.setStyleSheet(
-                """
-                QLabel{
-                    font-weight: bold;
-                }
+        self.dateTime_title_label = QLabel("<b>Datum & Uhrzeit planen</b>", self)
+        self.dateTime_title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.dateTime_title_label.setStyleSheet(
             """
-            )
-            self.datetime_layout.addWidget(self.dateTime_title_label)
+            QLabel{
+                font-weight: bold;
+            }
+        """
+        )
+        layout.addWidget(self.dateTime_title_label)
 
-            buttons = [
-                ("Datum wählen", self.open_date_picker),
-                ("Uhrzeit wählen", self.open_time_picker),
-            ]
-            self.datetime_buttons = []
-            for text, handler in buttons:
-                button = QPushButton(text, self)
-                button.clicked.connect(handler)
-                self.datetime_layout.addWidget(button)
-                self.datetime_widgets.append(button)
-            self.datetime_fields_added = True
+        buttons = [
+            ("Datum wählen", self.open_date_picker),
+            ("Uhrzeit wählen", self.open_time_picker),
+        ]
+        self.datetime_buttons = []
+        for text, handler in buttons:
+            button = QPushButton(text, self)
+            button.clicked.connect(handler)
+            self.datetime_buttons.append(button)
+
+        for button in self.datetime_buttons:
+            layout.addWidget(button)
 
     def add_image_and_link_fields(self, layout):
         fields = [
@@ -360,8 +354,6 @@ class App(QWidget):
         layout.addWidget(articles_input)
         self.articles_input = articles_input
 
-        self.current_tab_name = tab_name
-
         if tab_name == "Hinzufügen":
             self.add_image_and_link_fields(layout)
 
@@ -452,9 +444,10 @@ class App(QWidget):
     def hide_datetime_fields(self):
         self.display_label_title.hide()
         self.datetime_label.hide()
-        self.dateTime_title_label.hide()
-        for widget in self.datetime_widgets:
-            widget.hide()
+        for button in self.datetime_buttons:
+            if button not in [self.layout().itemAt(i).widget() for i in range(self.layout().count())]:
+                self.layout().removeWidget(button)
+                button.hide()
 
     def open_date_picker(self):
         dialog = DatePickerDialog(self)
@@ -605,10 +598,10 @@ class App(QWidget):
 
     def show_datetime_fields(self):
         self.display_label_title.show()
-        self.dateTime_title_label.show()
         self.datetime_label.show()
-        for widget in self.datetime_widgets:
-            widget.show()
+        for button in self.datetime_buttons:
+            if button not in [self.layout().itemAt(i).widget() for i in range(self.layout().count())]:
+                self.layout().addWidget(button)
 
     def show_message(self):
         msg_box = QMessageBox(self)
