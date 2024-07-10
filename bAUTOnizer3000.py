@@ -90,7 +90,9 @@ class App(QWidget):
         self.top = 100
         self.window_width = 260
         self.height = 880  # Increased height to accommodate the switch and banner
-        self.borderColor = QColor(255, 221, 0, 0)  # Initial border color (transparent yellow)
+        self.borderColor = QColor(
+            255, 221, 0, 0
+        )  # Initial border color (transparent yellow)
 
         self.selected_date = QDate.currentDate()
         self.selected_time = QTime.currentTime()
@@ -175,7 +177,7 @@ class App(QWidget):
         # Create the switch for Single-Task Mode and Multi-Task Mode
         self.create_mode_switch(self.main_layout)
 
-        self.clear_checkbox = QCheckBox('Clear Input', self)
+        self.clear_checkbox = QCheckBox("Clear Input", self)
         self.clear_checkbox.setChecked(True)  # The checkbox is checked by default
         # Create a QHBoxLayout for checkbox and add spacers to both sides.
         checkbox_layout = QHBoxLayout()
@@ -576,7 +578,9 @@ class App(QWidget):
     def paintEvent(self, event):
         super().paintEvent(event)
         painter = QPainter(self)
-        painter.setPen(QPen(self.borderColor, 15))  # Set pen with the current border color and width
+        painter.setPen(
+            QPen(self.borderColor, 15)
+        )  # Set pen with the current border color and width
         painter.drawRect(self.rect())  # Draw the border around the window
 
     def show_confirmation_banner(self, message="TASK ERSTELLT"):
