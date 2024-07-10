@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ae7ff266-455f-41b7-8c50-a22fbd8e171f" name="Changes" comment="Add field clear action and initial .idea config files&#10;&#10;The commit introduces a section to app's &quot;Hinzufügen&quot; tab to clear field inputs. The `.idea` config files necessary for a Python project setup in JetBrains IDE are also generated and added in the commit. The new files manage project settings, module information, VCS mappings, and ignored files, amongst other configurations.">
+      <change afterPath="$PROJECT_DIR$/bAUTOnizer3000_temp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bAUTOnizer3000.py" beforeDir="false" afterPath="$PROJECT_DIR$/bAUTOnizer3000.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="KEEP" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;AaronTheGenerous&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/AaronTheGenerous/Bautonizer3000.git&quot;,
+    &quot;accountId&quot;: &quot;5414c855-1642-4e3a-ab80-e1c4add36054&quot;
+  }
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="2izyivkYka9Ys1JvJSivx4qTMF8" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Python.bAUTOnizer3000.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "settings.editor.selected.configurable": "configurable.group.editor"
+  }
+}]]></component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings module-name="Bautonizer3000" is-module-sdk="true">
+        <option name="myUseModuleSdk" value="true" />
+        <option name="myModuleName" value="Bautonizer3000" />
+      </console-settings>
+    </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="bAUTOnizer3000" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="SDK_NAME" value="Python 3.11 (Bautonizer3000)" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/bAUTOnizer3000.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.bAUTOnizer3000" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-975db3bf15a3-31b6be0877a2-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-241.18034.82" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ae7ff266-455f-41b7-8c50-a22fbd8e171f" name="Changes" comment="" />
+      <created>1720507831392</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1720507831392</updated>
+    </task>
+    <task id="LOCAL-00001" summary="Add field clear action and initial .idea config files&#10;&#10;The commit introduces a section to app's &quot;Hinzufügen&quot; tab to clear field inputs. The `.idea` config files necessary for a Python project setup in JetBrains IDE are also generated and added in the commit. The new files manage project settings, module information, VCS mappings, and ignored files, amongst other configurations.">
+      <option name="closed" value="true" />
+      <created>1720509338412</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1720509338412</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Add field clear action and initial .idea config files&#10;&#10;The commit introduces a section to app's &quot;Hinzufügen&quot; tab to clear field inputs. The `.idea` config files necessary for a Python project setup in JetBrains IDE are also generated and added in the commit. The new files manage project settings, module information, VCS mappings, and ignored files, amongst other configurations.">
+      <option name="closed" value="true" />
+      <created>1720510109034</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1720510109034</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+    <MESSAGE value="Add field clear action and initial .idea config files&#10;&#10;The commit introduces a section to app's &quot;Hinzufügen&quot; tab to clear field inputs. The `.idea` config files necessary for a Python project setup in JetBrains IDE are also generated and added in the commit. The new files manage project settings, module information, VCS mappings, and ignored files, amongst other configurations." />
+    <option name="LAST_COMMIT_MESSAGE" value="Add field clear action and initial .idea config files&#10;&#10;The commit introduces a section to app's &quot;Hinzufügen&quot; tab to clear field inputs. The `.idea` config files necessary for a Python project setup in JetBrains IDE are also generated and added in the commit. The new files manage project settings, module information, VCS mappings, and ignored files, amongst other configurations." />
+  </component>
+</project>
