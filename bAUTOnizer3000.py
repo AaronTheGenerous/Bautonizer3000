@@ -2,6 +2,7 @@ import datetime
 import json
 import os
 import sys
+
 from PyQt6 import QtCore
 from PyQt6.QtCore import Qt, QDate, QTime, QEasingCurve, QPropertyAnimation
 from PyQt6.QtGui import QIcon, QFont, QColor, QPainter, QPen
@@ -248,10 +249,10 @@ class App(QWidget):
 
     def add_image_and_link_fields(self, layout):
         fields = [
-            ("Bild 1 URL (Deutsch)", "img1_input"),
-            ("Bild 2 URL (Französisch)", "img2_input"),
-            ("Bild Höhe", "height_input"),
-            ("Bildbreite", "width_input"),
+            ("Bild 1 URL (Deutsch)", "self.img1_input"),
+            ("Bild 2 URL (Französisch)", "self.img2_input"),
+            ("Bild Höhe", "self.height_input"),
+            ("Bildbreite", "self.width_input"),
         ]
         for label_text, attr_name in fields:
             setattr(

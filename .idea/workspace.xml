@@ -7,10 +7,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ae7ff266-455f-41b7-8c50-a22fbd8e171f" name="Changes" comment="Add clear input checkbox and increase window height&#10;&#10;Re-ordered the imports in bAUTOnizer3000.py and increased the window height to better accommodate elements. Added a new clear input checkbox that when checked, clears all input fields. This gives the user the flexibility to clear or retain input field data. The change also includes some updates in .idea/workspace.xml.">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="ae7ff266-455f-41b7-8c50-a22fbd8e171f" name="Changes" comment="Add 'Clear Input' checkbox and modify UI elements&#10;&#10;This commit adds a 'Clear Input' checkbox to the interface and increases the window's height for better accommodation of elements. Also, some formatting adjustments have been made in the Python file, while new options have been added in the .idea config files.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bAUTOnizer3000.py" beforeDir="false" afterPath="$PROJECT_DIR$/bAUTOnizer3000.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,7 +53,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main",
     "run.code.analysis.last.selected.profile": "aDefault",
-    "settings.editor.selected.configurable": "Errors"
+    "settings.editor.selected.configurable": "reference.settingsdialog.IDE.editor.colors.Python"
   }
 }]]></component>
   <component name="PyConsoleOptionsProvider">
@@ -157,7 +155,15 @@
       <option name="project" value="LOCAL" />
       <updated>1720622679119</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Add 'Clear Input' checkbox and modify UI elements&#10;&#10;This commit adds a 'Clear Input' checkbox to the interface and increases the window's height for better accommodation of elements. Also, some formatting adjustments have been made in the Python file, while new options have been added in the .idea config files.">
+      <option name="closed" value="true" />
+      <created>1720625311526</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1720625311526</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -177,6 +183,7 @@
     <MESSAGE value="Coders Note: Hiding buttons finally fucking works! But now each button is added multiple times, working on that next.&#10;&#10;Add field clear action and initial .idea config files&#10;&#10;The commit introduces a section to app's &quot;Hinzufügen&quot; tab to clear field inputs. The `.idea` config files necessary for a Python project setup in JetBrains IDE are also generated and added in the commit. The new files manage project settings, module information, VCS mappings, and ignored files, amongst other configurations." />
     <MESSAGE value="gui is working as it should, try to reorder layout" />
     <MESSAGE value="Add clear input checkbox and increase window height&#10;&#10;Re-ordered the imports in bAUTOnizer3000.py and increased the window height to better accommodate elements. Added a new clear input checkbox that when checked, clears all input fields. This gives the user the flexibility to clear or retain input field data. The change also includes some updates in .idea/workspace.xml." />
-    <option name="LAST_COMMIT_MESSAGE" value="Add clear input checkbox and increase window height&#10;&#10;Re-ordered the imports in bAUTOnizer3000.py and increased the window height to better accommodate elements. Added a new clear input checkbox that when checked, clears all input fields. This gives the user the flexibility to clear or retain input field data. The change also includes some updates in .idea/workspace.xml." />
+    <MESSAGE value="Add 'Clear Input' checkbox and modify UI elements&#10;&#10;This commit adds a 'Clear Input' checkbox to the interface and increases the window's height for better accommodation of elements. Also, some formatting adjustments have been made in the Python file, while new options have been added in the .idea config files." />
+    <option name="LAST_COMMIT_MESSAGE" value="Add 'Clear Input' checkbox and modify UI elements&#10;&#10;This commit adds a 'Clear Input' checkbox to the interface and increases the window's height for better accommodation of elements. Also, some formatting adjustments have been made in the Python file, while new options have been added in the .idea config files." />
   </component>
 </project>
