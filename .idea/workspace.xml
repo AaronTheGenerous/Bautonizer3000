@@ -7,8 +7,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ae7ff266-455f-41b7-8c50-a22fbd8e171f" name="Changes" comment="Add 'Clear Input' checkbox and modify UI elements&#10;&#10;This commit adds a 'Clear Input' checkbox to the interface and increases the window's height for better accommodation of elements. Also, some formatting adjustments have been made in the Python file, while new options have been added in the .idea config files.">
+    <list default="true" id="ae7ff266-455f-41b7-8c50-a22fbd8e171f" name="Changes" comment="Refactor field attributes in bAUTOnizer3000.py&#10;&#10;This commit modifies the field attributes in the add_image_and_link_fields function in bAUTOnizer3000.py to use self references. It also brings minor updates to the .idea/workspace.xml configuration.">
+      <change afterPath="$PROJECT_DIR$/qodana.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bAUTOnizer3000.py" beforeDir="false" afterPath="$PROJECT_DIR$/bAUTOnizer3000.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,7 +34,7 @@
   }
 }</component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="QODANA_PROBLEMS_VIEW_TAB" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
@@ -53,7 +55,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main",
     "run.code.analysis.last.selected.profile": "aDefault",
-    "settings.editor.selected.configurable": "reference.settingsdialog.IDE.editor.colors.Python"
+    "settings.editor.selected.configurable": "reference.settingsdialog.IDE.editor.colors.Language Defaults"
   }
 }]]></component>
   <component name="PyConsoleOptionsProvider">
@@ -62,6 +64,23 @@
         <option name="myUseModuleSdk" value="true" />
         <option name="myModuleName" value="Bautonizer3000" />
       </console-settings>
+    </option>
+  </component>
+  <component name="QodanaHighlightedReportService">
+    <option name="localRunNotPublishedPersistedInfo">
+      <LocalReportPersistedInfo>
+        <option name="path" value="C:\Users\Hafner\AppData\Local\Temp\qodana_output\qodana.sarif.json" />
+        <option name="reportGuid" value="8d77d548-995a-45fe-ada3-8f152bfde3d5" />
+        <option name="reportName" value="Bautonizer3000/qodana/2024-07-15" />
+      </LocalReportPersistedInfo>
+    </option>
+  </component>
+  <component name="QodanaIsSelectedPersistenceService">
+    <option name="selectedOrLoading" value="true" />
+  </component>
+  <component name="QodanaReportsService">
+    <option name="descriptions">
+      <ReportDescription localRun="true" path="C:\Users\Hafner\AppData\Local\Temp\qodana_output\qodana.sarif.json" reportGuid="8d77d548-995a-45fe-ada3-8f152bfde3d5" reportId="Bautonizer3000/qodana/2024-07-15" />
     </option>
   </component>
   <component name="RunManager">
@@ -163,7 +182,15 @@
       <option name="project" value="LOCAL" />
       <updated>1720625311526</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Refactor field attributes in bAUTOnizer3000.py&#10;&#10;This commit modifies the field attributes in the add_image_and_link_fields function in bAUTOnizer3000.py to use self references. It also brings minor updates to the .idea/workspace.xml configuration.">
+      <option name="closed" value="true" />
+      <created>1720771363343</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1720771363343</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -184,6 +211,7 @@
     <MESSAGE value="gui is working as it should, try to reorder layout" />
     <MESSAGE value="Add clear input checkbox and increase window height&#10;&#10;Re-ordered the imports in bAUTOnizer3000.py and increased the window height to better accommodate elements. Added a new clear input checkbox that when checked, clears all input fields. This gives the user the flexibility to clear or retain input field data. The change also includes some updates in .idea/workspace.xml." />
     <MESSAGE value="Add 'Clear Input' checkbox and modify UI elements&#10;&#10;This commit adds a 'Clear Input' checkbox to the interface and increases the window's height for better accommodation of elements. Also, some formatting adjustments have been made in the Python file, while new options have been added in the .idea config files." />
-    <option name="LAST_COMMIT_MESSAGE" value="Add 'Clear Input' checkbox and modify UI elements&#10;&#10;This commit adds a 'Clear Input' checkbox to the interface and increases the window's height for better accommodation of elements. Also, some formatting adjustments have been made in the Python file, while new options have been added in the .idea config files." />
+    <MESSAGE value="Refactor field attributes in bAUTOnizer3000.py&#10;&#10;This commit modifies the field attributes in the add_image_and_link_fields function in bAUTOnizer3000.py to use self references. It also brings minor updates to the .idea/workspace.xml configuration." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor field attributes in bAUTOnizer3000.py&#10;&#10;This commit modifies the field attributes in the add_image_and_link_fields function in bAUTOnizer3000.py to use self references. It also brings minor updates to the .idea/workspace.xml configuration." />
   </component>
 </project>

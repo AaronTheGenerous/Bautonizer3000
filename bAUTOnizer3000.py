@@ -224,16 +224,16 @@ class App(QWidget):
 
     def add_datetime_fields(self, layout):
         if not self.datetime_fields_added:
-            self.dateTime_title_label = QLabel("<b>Datum & Uhrzeit planen</b>", self)
+            """self.dateTime_title_label = QLabel("<b>Datum & Uhrzeit planen</b>", self)
             self.dateTime_title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
             self.dateTime_title_label.setStyleSheet(
-                """
+                
                 QLabel{
                     font-weight: bold;
                 }
-            """
+            
             )
-            self.datetime_layout.addWidget(self.dateTime_title_label)
+            self.datetime_layout.addWidget(self.dateTime_title_label)"""
 
             buttons = [
                 ("Datum wählen", self.open_date_picker),
@@ -248,17 +248,15 @@ class App(QWidget):
             self.datetime_fields_added = True
 
     def add_image_and_link_fields(self, layout):
-        fields = [
-            ("Bild 1 URL (Deutsch)", "self.img1_input"),
-            ("Bild 2 URL (Französisch)", "self.img2_input"),
-            ("Bild Höhe", "self.height_input"),
-            ("Bildbreite", "self.width_input"),
-        ]
-        for label_text, attr_name in fields:
-            setattr(
-                self, attr_name, self.create_line_edit_with_label(label_text, layout)
-            )
-            layout.addWidget(getattr(self, attr_name))
+
+        self.img1_input = self.create_line_edit_with_label("Bild 1 URL (Deutsch)", layout)
+        layout.addWidget(self.img1_input)
+        self.img2_input = self.create_line_edit_with_label("Bild 2 URL (Französisch)", layout)
+        layout.addWidget(self.img2_input)
+        self.height_input = self.create_line_edit_with_label("Bild Höhe", layout)
+        layout.addWidget(self.height_input)
+        self.width_input = self.create_line_edit_with_label("Bildbreite", layout)
+        layout.addWidget(self.width_input)
 
         self.link_checkbox = QCheckBox("Link hinzufügen?", self)
         layout.addWidget(self.link_checkbox)
@@ -290,8 +288,8 @@ class App(QWidget):
         if clear_fields:
             self.marken_combobox.setCurrentIndex(0)
             self.categories_combobox.setCurrentIndex(0)
-            self.articles_input.clear()
-            if self.current_tab_name == "Hinzufügen":
+            if self.tab_widget.tabText(self.tab_widget.currentIndex()) == "Hinzufügen":
+                self.articles_input.clear()
                 self.img1_input.clear()
                 self.img2_input.clear()
                 self.width_input.clear()
@@ -354,6 +352,7 @@ class App(QWidget):
         layout = QVBoxLayout()
 
         self.current_tab_name = tab_name
+        print(f"current_tab_name in create_tab is: {self.current_tab_name}")
         marken_label, marken_combobox = self.create_label_and_combobox(
             "Marke", self.category_data["Kamerasysteme + Objektive"].keys()
         )
@@ -368,12 +367,11 @@ class App(QWidget):
         layout.addWidget(categories_combobox)
         self.categories_combobox = categories_combobox
 
-        layout.addStretch()
-        articles_input = self.create_line_edit_with_label(
+        #layout.addStretch()
+        self.articles_input = self.create_line_edit_with_label(
             "Artikelnummern (getrennt mit Kommas)", layout
         )
-        layout.addWidget(articles_input)
-        self.articles_input = articles_input
+        layout.addWidget(self.articles_input)
 
         self.current_tab_name = tab_name
 
@@ -398,9 +396,12 @@ class App(QWidget):
 
     def create_task(self):
         print("create_task called")
+        current_tab_name = self.tab_widget.tabText(self.tab_widget.currentIndex())
+        print(f"Current Tab Name is: {current_tab_name}")
+        print(f"articles_input field currently contains: >{self.articles_input.text()}<")
         task_type = (
             "process_articles"
-            if self.current_tab_name == "Hinzufügen"
+            if current_tab_name == "Hinzufügen"
             else "remove_articles_images"
         )
 
@@ -413,37 +414,37 @@ class App(QWidget):
                 "article_numbers": self.articles_input.text(),
                 "img1_url": (
                     self.img1_input.text()
-                    if self.current_tab_name == "Hinzufügen"
+                    if current_tab_name == "Hinzufügen"
                     else None
                 ),
                 "img2_url": (
                     self.img2_input.text()
-                    if self.current_tab_name == "Hinzufügen"
+                    if current_tab_name == "Hinzufügen"
                     else None
                 ),
                 "width": (
                     self.width_input.text()
-                    if self.current_tab_name == "Hinzufügen"
+                    if current_tab_name == "Hinzufügen"
                     else None
                 ),
                 "height": (
                     self.height_input.text()
-                    if self.current_tab_name == "Hinzufügen"
+                    if current_tab_name == "Hinzufügen"
                     else None
                 ),
                 "link_checkbox": (
                     self.link_checkbox.isChecked()
-                    if self.current_tab_name == "Hinzufügen"
+                    if current_tab_name == "Hinzufügen"
                     else None
                 ),
                 "link_input_de": (
                     self.link_input_de.text()
-                    if self.current_tab_name == "Hinzufügen"
+                    if current_tab_name == "Hinzufügen"
                     else None
                 ),
                 "link_input_fr": (
                     self.link_input_fr.text()
-                    if self.current_tab_name == "Hinzufügen"
+                    if current_tab_name == "Hinzufügen"
                     else None
                 ),
             },
@@ -467,7 +468,7 @@ class App(QWidget):
     def hide_datetime_fields(self):
         self.display_label_title.hide()
         self.datetime_label.hide()
-        self.dateTime_title_label.hide()
+        #self.dateTime_title_label.hide()
         for widget in self.datetime_widgets:
             widget.hide()
 
@@ -523,6 +524,7 @@ class App(QWidget):
         print(f"Added task to temp_tasks: {self.temp_tasks}")
         print(f"len(self.temp_tasks) = {len(self.temp_tasks)}")
         self.clear_input_fields()
+        print("Clear Input fields called")
         if len(self.temp_tasks) == 1:
             self.banner_label.setText(
                 "<b>Multi-Task Mode</b>" + "<br>" + "Nach dem ersten Task ausführen"
@@ -622,7 +624,7 @@ class App(QWidget):
 
     def show_datetime_fields(self):
         self.display_label_title.show()
-        self.dateTime_title_label.show()
+        #self.dateTime_title_label.show()
         self.datetime_label.show()
         for widget in self.datetime_widgets:
             widget.show()
