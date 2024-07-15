@@ -222,19 +222,11 @@ class App(QWidget):
         self.center_on_screen()
         self.show()
 
+        # Debug statements
+        print(f"Initialized UI with tab_widget: {self.tab_widget}")
+
     def add_datetime_fields(self, layout):
         if not self.datetime_fields_added:
-            """self.dateTime_title_label = QLabel("<b>Datum & Uhrzeit planen</b>", self)
-            self.dateTime_title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            self.dateTime_title_label.setStyleSheet(
-                
-                QLabel{
-                    font-weight: bold;
-                }
-            
-            )
-            self.datetime_layout.addWidget(self.dateTime_title_label)"""
-
             buttons = [
                 ("Datum wählen", self.open_date_picker),
                 ("Uhrzeit wählen", self.open_time_picker),
@@ -248,7 +240,6 @@ class App(QWidget):
             self.datetime_fields_added = True
 
     def add_image_and_link_fields(self, layout):
-
         self.img1_input = self.create_line_edit_with_label("Bild 1 URL (Deutsch)", layout)
         layout.addWidget(self.img1_input)
         self.img2_input = self.create_line_edit_with_label("Bild 2 URL (Französisch)", layout)
@@ -265,9 +256,7 @@ class App(QWidget):
         self.link_input_de.setDisabled(True)
         layout.addWidget(self.link_input_de)
 
-        self.link_input_fr = self.create_line_edit_with_label(
-            "Link (Französisch)", layout
-        )
+        self.link_input_fr = self.create_line_edit_with_label("Link (Französisch)", layout)
         self.link_input_fr.setDisabled(True)
         layout.addWidget(self.link_input_fr)
 
@@ -276,6 +265,44 @@ class App(QWidget):
                 state, self.link_input_de, self.link_input_fr
             )
         )
+
+    def add_articles_input(self, layout):
+        self.articles_input = self.create_line_edit_with_label(
+            "Artikelnummern (getrennt mit Kommas)", layout
+        )
+        layout.addWidget(self.articles_input)
+        self.articles_input.textChanged.connect(self.on_articles_input_changed)
+
+    def on_articles_input_changed(self, text):
+        print(f"articles_input changed: {text}")
+
+    def add_marken_and_categories(self, layout):
+        marken_label, marken_combobox = self.create_label_and_combobox(
+            "Marke", self.category_data["Kamerasysteme + Objektive"].keys()
+        )
+        layout.addWidget(marken_label)
+        layout.addWidget(marken_combobox)
+        self.marken_combobox = marken_combobox
+
+        categories_label, categories_combobox = self.create_label_and_combobox(
+            "Kategorie", []
+        )
+        layout.addWidget(categories_label)
+        layout.addWidget(categories_combobox)
+        self.categories_combobox = categories_combobox
+
+        self.update_subcategories(marken_combobox, categories_combobox)
+        marken_combobox.currentTextChanged.connect(
+            lambda: self.update_subcategories(marken_combobox, categories_combobox)
+        )
+        self.marken_combobox.currentTextChanged.connect(self.on_marken_combobox_changed)
+        self.categories_combobox.currentTextChanged.connect(self.on_categories_combobox_changed)
+
+    def on_marken_combobox_changed(self, text):
+        print(f"marken_combobox changed: {text}")
+
+    def on_categories_combobox_changed(self, text):
+        print(f"categories_combobox changed: {text}")
 
     def center_on_screen(self):
         resolution = QApplication.primaryScreen().geometry()
@@ -288,6 +315,7 @@ class App(QWidget):
         if clear_fields:
             self.marken_combobox.setCurrentIndex(0)
             self.categories_combobox.setCurrentIndex(0)
+            print(f"Before clearing: articles_input: {self.articles_input.text()}, img1_input: {self.img1_input.text()}, img2_input: {self.img2_input.text()}")
             if self.tab_widget.tabText(self.tab_widget.currentIndex()) == "Hinzufügen":
                 self.articles_input.clear()
                 self.img1_input.clear()
@@ -297,6 +325,7 @@ class App(QWidget):
                 self.link_checkbox.setChecked(False)
                 self.link_input_de.clear()
                 self.link_input_fr.clear()
+            print(f"After clearing: articles_input: {self.articles_input.text()}, img1_input: {self.img1_input.text()}, img2_input: {self.img2_input.text()}")
 
     def clear_layout(self, layout):
         while layout.count():
@@ -352,28 +381,10 @@ class App(QWidget):
         layout = QVBoxLayout()
 
         self.current_tab_name = tab_name
-        print(f"current_tab_name in create_tab is: {self.current_tab_name}")
-        marken_label, marken_combobox = self.create_label_and_combobox(
-            "Marke", self.category_data["Kamerasysteme + Objektive"].keys()
-        )
-        layout.addWidget(marken_label)
-        layout.addWidget(marken_combobox)
-        self.marken_combobox = marken_combobox
+        print(f"Creating tab: {tab_name}")
 
-        categories_label, categories_combobox = self.create_label_and_combobox(
-            "Kategorie", []
-        )
-        layout.addWidget(categories_label)
-        layout.addWidget(categories_combobox)
-        self.categories_combobox = categories_combobox
-
-        #layout.addStretch()
-        self.articles_input = self.create_line_edit_with_label(
-            "Artikelnummern (getrennt mit Kommas)", layout
-        )
-        layout.addWidget(self.articles_input)
-
-        self.current_tab_name = tab_name
+        self.add_marken_and_categories(layout)
+        self.add_articles_input(layout)
 
         if tab_name == "Hinzufügen":
             self.add_image_and_link_fields(layout)
@@ -385,12 +396,10 @@ class App(QWidget):
         self.update_buttons(tab_name)
         layout.addLayout(button_layout)
 
-        self.update_subcategories(marken_combobox, categories_combobox)
-        marken_combobox.currentTextChanged.connect(
-            lambda: self.update_subcategories(marken_combobox, categories_combobox)
-        )
-
         tab.setLayout(layout)
+
+        # Debug statements
+        print(f"Tab {tab_name} created with marken_combobox: {self.marken_combobox}, categories_combobox: {self.categories_combobox}, articles_input: {self.articles_input}")
 
         return tab
 
@@ -399,6 +408,8 @@ class App(QWidget):
         current_tab_name = self.tab_widget.tabText(self.tab_widget.currentIndex())
         print(f"Current Tab Name is: {current_tab_name}")
         print(f"articles_input field currently contains: >{self.articles_input.text()}<")
+        print(f"marken_combobox current text: {self.marken_combobox.currentText()}")
+        print(f"categories_combobox current text: {self.categories_combobox.currentText()}")
         task_type = (
             "process_articles"
             if current_tab_name == "Hinzufügen"
@@ -450,6 +461,7 @@ class App(QWidget):
             },
             "follow_up": self.multi_mode,
         }
+        print(f"Task created: {task}")
         return task
 
     def eventFilter(self, obj, event):
@@ -468,7 +480,6 @@ class App(QWidget):
     def hide_datetime_fields(self):
         self.display_label_title.hide()
         self.datetime_label.hide()
-        #self.dateTime_title_label.hide()
         for widget in self.datetime_widgets:
             widget.hide()
 
@@ -624,7 +635,6 @@ class App(QWidget):
 
     def show_datetime_fields(self):
         self.display_label_title.show()
-        #self.dateTime_title_label.show()
         self.datetime_label.show()
         for widget in self.datetime_widgets:
             widget.show()
