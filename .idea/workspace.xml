@@ -7,9 +7,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ae7ff266-455f-41b7-8c50-a22fbd8e171f" name="Changes" comment="Refactor field attributes in bAUTOnizer3000.py&#10;&#10;This commit modifies the field attributes in the add_image_and_link_fields function in bAUTOnizer3000.py to use self references. It also brings minor updates to the .idea/workspace.xml configuration.">
+    <list default="true" id="ae7ff266-455f-41b7-8c50-a22fbd8e171f" name="Changes" comment="Refactor code and add new features in bAUTOnizer3000.py&#10;&#10;last commit pre holiday&#10;&#10;This commit refactors existing code to make it more organized and readable, removing redundant lines and outdated comments. It also introduces new features such as specific inputs for articles, brands (marken) and categories, along with debug statements for tracking these changes. Minor updates to the .idea/workspace.xml configuration file are also included.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bAUTOnizer3000.py" beforeDir="false" afterPath="$PROJECT_DIR$/bAUTOnizer3000.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -197,7 +196,15 @@
       <option name="project" value="LOCAL" />
       <updated>1721049852690</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Refactor code and add new features in bAUTOnizer3000.py&#10;&#10;last commit pre holiday&#10;&#10;This commit refactors existing code to make it more organized and readable, removing redundant lines and outdated comments. It also introduces new features such as specific inputs for articles, brands (marken) and categories, along with debug statements for tracking these changes. Minor updates to the .idea/workspace.xml configuration file are also included.">
+      <option name="closed" value="true" />
+      <created>1721057342401</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1721057342401</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -219,6 +226,7 @@
     <MESSAGE value="Add clear input checkbox and increase window height&#10;&#10;Re-ordered the imports in bAUTOnizer3000.py and increased the window height to better accommodate elements. Added a new clear input checkbox that when checked, clears all input fields. This gives the user the flexibility to clear or retain input field data. The change also includes some updates in .idea/workspace.xml." />
     <MESSAGE value="Add 'Clear Input' checkbox and modify UI elements&#10;&#10;This commit adds a 'Clear Input' checkbox to the interface and increases the window's height for better accommodation of elements. Also, some formatting adjustments have been made in the Python file, while new options have been added in the .idea config files." />
     <MESSAGE value="Refactor field attributes in bAUTOnizer3000.py&#10;&#10;This commit modifies the field attributes in the add_image_and_link_fields function in bAUTOnizer3000.py to use self references. It also brings minor updates to the .idea/workspace.xml configuration." />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor field attributes in bAUTOnizer3000.py&#10;&#10;This commit modifies the field attributes in the add_image_and_link_fields function in bAUTOnizer3000.py to use self references. It also brings minor updates to the .idea/workspace.xml configuration." />
+    <MESSAGE value="Refactor code and add new features in bAUTOnizer3000.py&#10;&#10;last commit pre holiday&#10;&#10;This commit refactors existing code to make it more organized and readable, removing redundant lines and outdated comments. It also introduces new features such as specific inputs for articles, brands (marken) and categories, along with debug statements for tracking these changes. Minor updates to the .idea/workspace.xml configuration file are also included." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactor code and add new features in bAUTOnizer3000.py&#10;&#10;last commit pre holiday&#10;&#10;This commit refactors existing code to make it more organized and readable, removing redundant lines and outdated comments. It also introduces new features such as specific inputs for articles, brands (marken) and categories, along with debug statements for tracking these changes. Minor updates to the .idea/workspace.xml configuration file are also included." />
   </component>
 </project>
