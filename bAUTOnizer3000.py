@@ -239,6 +239,13 @@ class App(QWidget):
                 self.datetime_widgets.append(button)
             self.datetime_fields_added = True
 
+    def add_articles_input(self, layout):
+        self.articles_input = self.create_line_edit_with_label(
+            "Artikelnummern (getrennt mit Kommas)", layout
+        )
+        layout.addWidget(self.articles_input)
+        self.articles_input.textChanged.connect(self.on_articles_input_changed)
+
     def add_image_and_link_fields(self, layout):
         self.img1_input = self.create_line_edit_with_label("Bild 1 URL (Deutsch)", layout)
         layout.addWidget(self.img1_input)
@@ -265,13 +272,6 @@ class App(QWidget):
                 state, self.link_input_de, self.link_input_fr
             )
         )
-
-    def add_articles_input(self, layout):
-        self.articles_input = self.create_line_edit_with_label(
-            "Artikelnummern (getrennt mit Kommas)", layout
-        )
-        layout.addWidget(self.articles_input)
-        self.articles_input.textChanged.connect(self.on_articles_input_changed)
 
     def on_articles_input_changed(self, text):
         print(f"articles_input changed: {text}")
@@ -316,6 +316,7 @@ class App(QWidget):
             self.marken_combobox.setCurrentIndex(0)
             self.categories_combobox.setCurrentIndex(0)
             print(f"Before clearing: articles_input: {self.articles_input.text()}, img1_input: {self.img1_input.text()}, img2_input: {self.img2_input.text()}")
+            print(f"active tab right before clear is called is: {self.tab_widget.tabText(self.tab_widget.currentIndex())}")
             if self.tab_widget.tabText(self.tab_widget.currentIndex()) == "Hinzufügen":
                 self.articles_input.clear()
                 self.img1_input.clear()
