@@ -4,7 +4,7 @@ import os
 import sys
 
 from PyQt6 import QtCore
-from PyQt6.QtCore import Qt, QDate, QTime, QEasingCurve, QPropertyAnimation, QTimer
+from PyQt6.QtCore import Qt, QDate, QTime, QEasingCurve, QPropertyAnimation
 from PyQt6.QtGui import QIcon, QFont, QColor, QPainter, QPen
 from PyQt6.QtWidgets import (
     QApplication,

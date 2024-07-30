@@ -83,6 +83,7 @@ class App(QWidget):
     tasks_directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tasks")
     last_task_end_time_file = os.path.join(tasks_directory, "last_task_end_time.json")
     multi_mode = False  # Track if multi-mode is enabled
+    counter_added = False
 
     def __init__(self):
         super().__init__()
@@ -113,6 +114,8 @@ class App(QWidget):
         self.marken_combobox_remove = None
         self.categories_combobox_add = None
         self.categories_combobox_remove = None
+
+        self.task_counter_int = 0
 
         self.category_data = {
             "Kamerasysteme + Objektive": {
@@ -247,6 +250,7 @@ class App(QWidget):
                 button.clicked.connect(handler)
                 self.datetime_layout.addWidget(button)
                 self.datetime_widgets.append(button)
+
             self.datetime_fields_added = True
 
     def add_articles_input(self, layout, tab_type):
@@ -472,6 +476,20 @@ class App(QWidget):
 
         self.add_datetime_fields(layout)
 
+        # Add Counter for currently scheduled tasks
+        if not self.counter_added:
+            counter_layout = QHBoxLayout()
+            self.task_counter_title = self.create_label('<b>Erstellte Tasks: </b>', 10, Qt.AlignmentFlag.AlignCenter, True)
+            self.task_counter = self.create_label('<b>0</b>', 10, Qt.AlignmentFlag.AlignCenter, True)
+            counter_layout.addWidget(self.task_counter_title)
+            print(f'added counter title with id: {id(self.task_counter_title)}')
+            counter_layout.addWidget(self.task_counter)
+            print(f'added counter with id: {id(self.task_counter)}')
+            self.task_counter_title.setVisible(False)
+            self.task_counter.setVisible(False)
+            layout.addLayout(counter_layout)
+            self.counter_added = True
+
         button_layout = QVBoxLayout()
         self.button_layouts[tab_name] = button_layout  # Store the button layout
         self.update_buttons(tab_name)
@@ -626,6 +644,7 @@ class App(QWidget):
         self.schedule_in_task_scheduler(initial_task_filename, schedule_datetime)
 
         self.temp_tasks = []  # Clear the temporary tasks
+        self.task_counter_int = 0
         self.show_message()
 
     def save_task_temporarily(self):
@@ -640,6 +659,10 @@ class App(QWidget):
             self.banner_label.setText(
                 "<b>Multi-Task Mode</b>" + "<br>" + "Nach dem ersten Task ausführen"
             )
+        self.task_counter_int = self.task_counter_int + 1
+        print(f'current task counter is: {self.task_counter_int}')
+        self.task_counter.setText(str(self.task_counter_int))
+        self.task_counter.repaint()
         # Show the new top banner
         self.show_confirmation_banner()
         self.update_ui_elements()
@@ -770,6 +793,13 @@ class App(QWidget):
         )
         self.top_banner_label.hide()  # Hide the new top banner when switching modes
 
+        if self.multi_mode:
+            self.task_counter_title.setVisible(True)
+            self.task_counter.setVisible(True)
+        else:
+            self.task_counter_title.setVisible(False)
+            self.task_counter.setVisible(False)
+
         for tab_name in self.button_layouts:
             self.update_buttons(tab_name)
         self.update_ui_elements()
@@ -828,6 +858,15 @@ class App(QWidget):
             self.hide_datetime_fields()
         else:
             self.show_datetime_fields()
+
+    def update_layouts(self):
+        # Force update parent layouts
+        self.task_counter.updateGeometry()
+        self.task_counter_title.updateGeometry()
+        self.layout().update()
+        self.update()
+        self.repaint()
+        print("Layouts and widgets updated")
 
 
 if __name__ == "__main__":

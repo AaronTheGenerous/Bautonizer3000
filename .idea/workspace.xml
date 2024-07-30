@@ -2,20 +2,15 @@
 <project version="4">
   <component name="AnalysisUIOptions">
     <option name="ANALYZE_INJECTED_CODE" value="false" />
-    <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ae7ff266-455f-41b7-8c50-a22fbd8e171f" name="Changes" comment="Add task counters and tab-specific instances&#10;&#10;Introduced counters for currently scheduled tasks and separated instances for each tab, allowing for better management of add and remove functionalities. Ensured appropriate clearing of fields based on the active tab and updated debug statements accordingly.">
-      <change afterPath="$PROJECT_DIR$/.github/workflows/qodana_code_quality.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/temp.py" afterDir="false" />
+    <list default="true" id="ae7ff266-455f-41b7-8c50-a22fbd8e171f" name="Changes" comment="Remove Qodana config, add temp.py, large exe_tasks update&#10;&#10;Removed outdated Qodana configuration file. Added a new Python script (temp.py) for task counter implementation. Major refactoring of exe_tasks.py to enhance functionality, including task-specific processing and improved article handling.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bAUTOnizer3000.py" beforeDir="false" afterPath="$PROJECT_DIR$/bAUTOnizer3000.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bAUTOnizer3000_stable.py" beforeDir="false" afterPath="$PROJECT_DIR$/bAUTOnizer3000_stable.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/exe_tasks.py" beforeDir="false" afterPath="$PROJECT_DIR$/exe_tasks.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/qodana.yaml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,7 +62,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main",
     "run.code.analysis.last.selected.profile": "aDefault",
-    "settings.editor.selected.configurable": "preferences.lookFeel"
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
 }]]></component>
   <component name="PyConsoleOptionsProvider">
@@ -227,7 +222,15 @@
       <option name="project" value="LOCAL" />
       <updated>1721722563988</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Remove Qodana config, add temp.py, large exe_tasks update&#10;&#10;Removed outdated Qodana configuration file. Added a new Python script (temp.py) for task counter implementation. Major refactoring of exe_tasks.py to enhance functionality, including task-specific processing and improved article handling.">
+      <option name="closed" value="true" />
+      <created>1722346854527</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1722346854527</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -252,6 +255,8 @@
     <MESSAGE value="Refactor code and add new features in bAUTOnizer3000.py&#10;&#10;last commit pre holiday&#10;&#10;This commit refactors existing code to make it more organized and readable, removing redundant lines and outdated comments. It also introduces new features such as specific inputs for articles, brands (marken) and categories, along with debug statements for tracking these changes. Minor updates to the .idea/workspace.xml configuration file are also included." />
     <MESSAGE value="Refactor DatePickerDialog and task creation&#10;&#10;The DatePickerDialog class was refactored for better readability with layout creation broken down into individual methods. Task creation was also adjusted to make use of" />
     <MESSAGE value="Update the script with UI enhancements&#10;&#10;The script is now updated to efficiently manage tasks and improve user interaction. Main changes include reordering of imported modules, creation of DatePickerDialog and TimePickerDialog classes, addition of more fields on the UI for better task input, and inclusion of useful debugging statements. This also involves restructuring of methods for clearer code hierarchy and preventing repetitive code, and the addition of more helper functions for specific actions. The script also includes new features such as task creation confirmation banner and glowing border animation to improve user experience and provide immediate feedback." />
-    <option name="LAST_COMMIT_MESSAGE" value="Update the script with UI enhancements&#10;&#10;The script is now updated to efficiently manage tasks and improve user interaction. Main changes include reordering of imported modules, creation of DatePickerDialog and TimePickerDialog classes, addition of more fields on the UI for better task input, and inclusion of useful debugging statements. This also involves restructuring of methods for clearer code hierarchy and preventing repetitive code, and the addition of more helper functions for specific actions. The script also includes new features such as task creation confirmation banner and glowing border animation to improve user experience and provide immediate feedback." />
+    <MESSAGE value="Add task counters and tab-specific instances&#10;&#10;Introduced counters for currently scheduled tasks and separated instances for each tab, allowing for better management of add and remove functionalities. Ensured appropriate clearing of fields based on the active tab and updated debug statements accordingly." />
+    <MESSAGE value="Remove Qodana config, add temp.py, large exe_tasks update&#10;&#10;Removed outdated Qodana configuration file. Added a new Python script (temp.py) for task counter implementation. Major refactoring of exe_tasks.py to enhance functionality, including task-specific processing and improved article handling." />
+    <option name="LAST_COMMIT_MESSAGE" value="Remove Qodana config, add temp.py, large exe_tasks update&#10;&#10;Removed outdated Qodana configuration file. Added a new Python script (temp.py) for task counter implementation. Major refactoring of exe_tasks.py to enhance functionality, including task-specific processing and improved article handling." />
   </component>
 </project>

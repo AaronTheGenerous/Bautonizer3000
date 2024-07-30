@@ -62,8 +62,8 @@ def insert_image_text_editor(driver, img_url, img_width, img_height, link_url, l
         "url_input": '//input[contains(@class, "cke_dialog_ui_input_text") and @aria-labelledby="cke_549_label"]' if "DE" in img_url else '//input[contains(@class, "cke_dialog_ui_input_text") and @aria-labelledby="cke_688_label"]',
         "width_input": '//input[contains(@class, "cke_dialog_ui_input_text") and @aria-labelledby="cke_559_label"]' if "DE" in img_url else '//input[contains(@class, "cke_dialog_ui_input_text") and @aria-labelledby="cke_698_label"]',
         "height_input": '//input[contains(@class, "cke_dialog_ui_input_text") and @aria-labelledby="cke_562_label"]' if "DE" in img_url else '//input[contains(@class, "cke_dialog_ui_input_text") and @aria-labelledby="cke_701_label"]',
-        "ausrichtung_input": '//select[contains(@class, "cke_dialog_ui_input_select") and contains(@aria-labelledby, "_label") and normalize-space(@style) = "width:90px"]' if "DE" in img_url else '//body[1]/div[8]/table[1]/tbody[1]/tr[1]/td[1]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/div[1]/table[1]/tbody[1]/tr[3]/td[1]/table[1]/tbody[1]/tr[1]/td[1]/div[1]/table[1]/tbody[1]/tr[2]/td[1]/div[1]/table[1]/tbody[1]/tr[4]/td[1]/div[1]/div[1]/div[1]',
-        "ok_button": '//a[contains(@class, "cke_dialog_ui_button_ok") and @title="OK"]',
+        "ausrichtung_input": '//div[contains(@class, "cke_dialog_ui_input_select") and @role="presentation"]//select[contains(@class, "cke_dialog_ui_input_select")]',
+        "ok_button": '//a[contains(@class, "cke_dialog_ui_button") and @title="OK"]',
         "link_tab": '//*[@id="cke_Link_595"]' if "DE" in img_url else '//*[@id="cke_Link_734"]',
         "link_url_input": 'input.cke_dialog_ui_input_text[type="text"][aria-labelledby="cke_587_label"]' if "DE" in img_url else 'input.cke_dialog_ui_input_text[type="text"][aria-labelledby="cke_726_label"]',
         "zielseite_input": '//*[@id="cke_597_select"]' if "DE" in img_url else '//*[@id="cke_591_select"]',
@@ -88,9 +88,20 @@ def insert_image_text_editor(driver, img_url, img_width, img_height, link_url, l
     height_input.send_keys(img_height)
     time.sleep(0.5)
 
-    alignement_loc = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, xpaths["ausrichtung_input"])))
-    dropdown = Select(alignement_loc)
-    dropdown.select_by_visible_text("Rechts")
+    if "DE" in img_url:
+        alignement_loc = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, xpaths["ausrichtung_input"])))
+        dropdown = Select(alignement_loc)
+        dropdown.select_by_visible_text("Rechts")
+    else:
+        time.sleep(0.5)
+        actions = ActionChains(driver)
+        for i in range(6):
+            actions.send_keys(Keys.TAB)
+            actions.pause(0.1)
+        for i in range(2):
+            actions.send_keys(Keys.ARROW_DOWN)
+            actions.pause(0.1)
+        actions.perform()
 
     if link_checkbox and link_url:
         time.sleep(0.5)
@@ -108,8 +119,16 @@ def insert_image_text_editor(driver, img_url, img_width, img_height, link_url, l
 
     time.sleep(0.5)
 
-    ok_button = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, xpaths["ok_button"])))
-    driver.execute_script("arguments[0].click();", ok_button)
+    if "DE" in img_url:
+        ok_button = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, xpaths["ok_button"])))
+        driver.execute_script("arguments[0].click();", ok_button)
+    else:
+        actions = ActionChains(driver)
+        actions.pause(0.1)
+        actions.send_keys(Keys.TAB)
+        actions.pause(0.1)
+        actions.send_keys(Keys.ENTER)
+        actions.perform()
 
     try:
         WebDriverWait(driver, 10).until(EC.invisibility_of_element_located((By.XPATH, '//div[contains(@class, "cke_dialog_title") and text()="Bildeigenschaften"]')))
