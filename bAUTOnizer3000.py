@@ -29,24 +29,17 @@ from PyQt6.QtWidgets import (
 class DatePickerDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.layout = None
-        self.calendar = None
+        self.layout = QVBoxLayout(self)
         self.setWindowTitle("Datum wählen")
-        self.create_calendar_widget()
-        self.create_buttons()
-
-    def create_calendar_widget(self):
         self.calendar = QCalendarWidget(self)
         self.calendar.setGridVisible(True)
-        self.layout = QVBoxLayout(self)
         self.layout.addWidget(self.calendar)
+        self.create_buttons()
 
     def create_buttons(self):
         buttons = QHBoxLayout()
-        ok_button = self.create_button("OK", self.accept)
-        cancel_button = self.create_button("Abbrechen", self.reject)
-        buttons.addWidget(ok_button)
-        buttons.addWidget(cancel_button)
+        buttons.addWidget(self.create_button("OK", self.accept))
+        buttons.addWidget(self.create_button("Abbrechen", self.reject))
         self.layout.addLayout(buttons)
 
     def create_button(self, text, handler):
@@ -62,18 +55,22 @@ class TimePickerDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Uhrzeit wählen")
+        self.layout = QVBoxLayout(self)
         self.time_edit = QTimeEdit(self)
         self.time_edit.setDisplayFormat("HH:mm:ss")
-        layout = QVBoxLayout(self)
-        layout.addWidget(self.time_edit)
+        self.layout.addWidget(self.time_edit)
+        self.create_buttons()
+
+    def create_buttons(self):
         buttons = QHBoxLayout()
-        ok_button = QPushButton("OK", self)
-        ok_button.clicked.connect(self.accept)
-        cancel_button = QPushButton("Cancel", self)
-        cancel_button.clicked.connect(self.reject)
-        buttons.addWidget(ok_button)
-        buttons.addWidget(cancel_button)
-        layout.addLayout(buttons)
+        buttons.addWidget(self.create_button("OK", self.accept))
+        buttons.addWidget(self.create_button("Cancel", self.reject))
+        self.layout.addLayout(buttons)
+
+    def create_button(self, text, handler):
+        button = QPushButton(text, self)
+        button.clicked.connect(handler)
+        return button
 
     def get_time(self):
         return self.time_edit.time()
@@ -246,8 +243,7 @@ class App(QWidget):
             ]
             self.datetime_buttons = []
             for text, handler in buttons:
-                button = QPushButton(text, self)
-                button.clicked.connect(handler)
+                button = self.create_button(text, handler)
                 self.datetime_layout.addWidget(button)
                 self.datetime_widgets.append(button)
 
@@ -484,7 +480,6 @@ class App(QWidget):
             counter_layout.addWidget(self.task_counter_title)
             print(f'added counter title with id: {id(self.task_counter_title)}')
             counter_layout.addWidget(self.task_counter)
-            print(f'added counter with id: {id(self.task_counter)}')
             self.task_counter_title.setVisible(False)
             self.task_counter.setVisible(False)
             layout.addLayout(counter_layout)
@@ -741,7 +736,6 @@ class App(QWidget):
         self.border_animation.setEasingCurve(
             QEasingCurve.Type.InOutQuad
         )  # Smooth easing curve
-        self.border_animation.start()
         self.top_banner_label.setStyleSheet("color: rgb(60, 143, 64);")
         self.top_banner_label.setText(f"<b>{message}</b>")
         self.top_banner_label.show()
@@ -873,3 +867,4 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     ex = App()
     sys.exit(app.exec())
+

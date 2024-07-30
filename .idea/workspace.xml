@@ -7,11 +7,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ae7ff266-455f-41b7-8c50-a22fbd8e171f" name="Changes" comment="Remove Qodana config, add temp.py, large exe_tasks update&#10;&#10;Removed outdated Qodana configuration file. Added a new Python script (temp.py) for task counter implementation. Major refactoring of exe_tasks.py to enhance functionality, including task-specific processing and improved article handling.">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bAUTOnizer3000.py" beforeDir="false" afterPath="$PROJECT_DIR$/bAUTOnizer3000.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exe_tasks.py" beforeDir="false" afterPath="$PROJECT_DIR$/exe_tasks.py" afterDir="false" />
-    </list>
+    <list default="true" id="ae7ff266-455f-41b7-8c50-a22fbd8e171f" name="Changes" comment="WORKING AS EXPECTED!!&#10;&#10;Update task handling and UI elements&#10;&#10;Enhanced task alignment logic for DE and non-DE URLs in `exe_tasks.py` to include keyboard simulation. Added task counter feature in `bAUTOnizer3000_stable.py` to track and display the number of scheduled tasks dynamically. Removed unnecessary components and adjusted configurations in `.idea/workspace.xml`." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -230,7 +226,15 @@
       <option name="project" value="LOCAL" />
       <updated>1722346854527</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="WORKING AS EXPECTED!!&#10;&#10;Update task handling and UI elements&#10;&#10;Enhanced task alignment logic for DE and non-DE URLs in `exe_tasks.py` to include keyboard simulation. Added task counter feature in `bAUTOnizer3000_stable.py` to track and display the number of scheduled tasks dynamically. Removed unnecessary components and adjusted configurations in `.idea/workspace.xml`.">
+      <option name="closed" value="true" />
+      <created>1722352605065</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1722352605065</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -257,6 +261,7 @@
     <MESSAGE value="Update the script with UI enhancements&#10;&#10;The script is now updated to efficiently manage tasks and improve user interaction. Main changes include reordering of imported modules, creation of DatePickerDialog and TimePickerDialog classes, addition of more fields on the UI for better task input, and inclusion of useful debugging statements. This also involves restructuring of methods for clearer code hierarchy and preventing repetitive code, and the addition of more helper functions for specific actions. The script also includes new features such as task creation confirmation banner and glowing border animation to improve user experience and provide immediate feedback." />
     <MESSAGE value="Add task counters and tab-specific instances&#10;&#10;Introduced counters for currently scheduled tasks and separated instances for each tab, allowing for better management of add and remove functionalities. Ensured appropriate clearing of fields based on the active tab and updated debug statements accordingly." />
     <MESSAGE value="Remove Qodana config, add temp.py, large exe_tasks update&#10;&#10;Removed outdated Qodana configuration file. Added a new Python script (temp.py) for task counter implementation. Major refactoring of exe_tasks.py to enhance functionality, including task-specific processing and improved article handling." />
-    <option name="LAST_COMMIT_MESSAGE" value="Remove Qodana config, add temp.py, large exe_tasks update&#10;&#10;Removed outdated Qodana configuration file. Added a new Python script (temp.py) for task counter implementation. Major refactoring of exe_tasks.py to enhance functionality, including task-specific processing and improved article handling." />
+    <MESSAGE value="WORKING AS EXPECTED!!&#10;&#10;Update task handling and UI elements&#10;&#10;Enhanced task alignment logic for DE and non-DE URLs in `exe_tasks.py` to include keyboard simulation. Added task counter feature in `bAUTOnizer3000_stable.py` to track and display the number of scheduled tasks dynamically. Removed unnecessary components and adjusted configurations in `.idea/workspace.xml`." />
+    <option name="LAST_COMMIT_MESSAGE" value="WORKING AS EXPECTED!!&#10;&#10;Update task handling and UI elements&#10;&#10;Enhanced task alignment logic for DE and non-DE URLs in `exe_tasks.py` to include keyboard simulation. Added task counter feature in `bAUTOnizer3000_stable.py` to track and display the number of scheduled tasks dynamically. Removed unnecessary components and adjusted configurations in `.idea/workspace.xml`." />
   </component>
 </project>
