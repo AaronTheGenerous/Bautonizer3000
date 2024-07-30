@@ -2,20 +2,32 @@
 <project version="4">
   <component name="AnalysisUIOptions">
     <option name="ANALYZE_INJECTED_CODE" value="false" />
+    <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ae7ff266-455f-41b7-8c50-a22fbd8e171f" name="Changes" comment="Refactor DatePickerDialog and task creation&#10;&#10;The DatePickerDialog class was refactored for better readability with layout creation broken down into individual methods. Task creation was also adjusted to make use of">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Reset_at_10_07_2024_10_27__Changes_1.xml" beforeDir="false" />
+    <list default="true" id="ae7ff266-455f-41b7-8c50-a22fbd8e171f" name="Changes" comment="Add task counters and tab-specific instances&#10;&#10;Introduced counters for currently scheduled tasks and separated instances for each tab, allowing for better management of add and remove functionalities. Ensured appropriate clearing of fields based on the active tab and updated debug statements accordingly.">
+      <change afterPath="$PROJECT_DIR$/.github/workflows/qodana_code_quality.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/temp.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bAUTOnizer3000.py" beforeDir="false" afterPath="$PROJECT_DIR$/bAUTOnizer3000.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bAUTOnizer3000_stable.py" beforeDir="false" afterPath="$PROJECT_DIR$/bAUTOnizer3000_stable.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exe_tasks.py" beforeDir="false" afterPath="$PROJECT_DIR$/exe_tasks.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/qodana.yaml" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -34,7 +46,7 @@
   }
 }</component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="QODANA_PROBLEMS_VIEW_TAB" />
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
@@ -47,17 +59,17 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Python.bAUTOnizer3000.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.IDE.editor.colors.Language Defaults&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Python.bAUTOnizer3000.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "run.code.analysis.last.selected.profile": "aDefault",
+    "settings.editor.selected.configurable": "preferences.lookFeel"
   }
-}</component>
+}]]></component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
       <console-settings module-name="Bautonizer3000" is-module-sdk="true">
@@ -66,10 +78,15 @@
       </console-settings>
     </option>
   </component>
-  <component name="QodanaReportsService">
-    <option name="descriptions">
-      <ReportDescription localRun="true" path="C:\Users\Hafner\AppData\Local\Temp\qodana_output\qodana.sarif.json" reportGuid="8d77d548-995a-45fe-ada3-8f152bfde3d5" reportId="Bautonizer3000/qodana/2024-07-15" />
-    </option>
+  <component name="QodanaCIConfigService">
+    <option name="ciType" value="GITHUB" />
+    <option name="path" value="$PROJECT_DIR$/.github/workflows/qodana_code_quality.yml" />
+  </component>
+  <component name="QodanaCloudProjectLink">
+    <option name="linkedProjectId" value="AOy64" />
+    <option name="linkedProjectName" value="Bautonizer3000" />
+    <option name="organizationId" value="3wXmJ" />
+    <option name="userId" value="neb4L" />
   </component>
   <component name="RunManager">
     <configuration name="bAUTOnizer3000" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
@@ -202,7 +219,15 @@
       <option name="project" value="LOCAL" />
       <updated>1721630251319</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Update the script with UI enhancements&#10;&#10;The script is now updated to efficiently manage tasks and improve user interaction. Main changes include reordering of imported modules, creation of DatePickerDialog and TimePickerDialog classes, addition of more fields on the UI for better task input, and inclusion of useful debugging statements. This also involves restructuring of methods for clearer code hierarchy and preventing repetitive code, and the addition of more helper functions for specific actions. The script also includes new features such as task creation confirmation banner and glowing border animation to improve user experience and provide immediate feedback.">
+      <option name="closed" value="true" />
+      <created>1721722563988</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1721722563988</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -226,6 +251,7 @@
     <MESSAGE value="Refactor field attributes in bAUTOnizer3000.py&#10;&#10;This commit modifies the field attributes in the add_image_and_link_fields function in bAUTOnizer3000.py to use self references. It also brings minor updates to the .idea/workspace.xml configuration." />
     <MESSAGE value="Refactor code and add new features in bAUTOnizer3000.py&#10;&#10;last commit pre holiday&#10;&#10;This commit refactors existing code to make it more organized and readable, removing redundant lines and outdated comments. It also introduces new features such as specific inputs for articles, brands (marken) and categories, along with debug statements for tracking these changes. Minor updates to the .idea/workspace.xml configuration file are also included." />
     <MESSAGE value="Refactor DatePickerDialog and task creation&#10;&#10;The DatePickerDialog class was refactored for better readability with layout creation broken down into individual methods. Task creation was also adjusted to make use of" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor DatePickerDialog and task creation&#10;&#10;The DatePickerDialog class was refactored for better readability with layout creation broken down into individual methods. Task creation was also adjusted to make use of" />
+    <MESSAGE value="Update the script with UI enhancements&#10;&#10;The script is now updated to efficiently manage tasks and improve user interaction. Main changes include reordering of imported modules, creation of DatePickerDialog and TimePickerDialog classes, addition of more fields on the UI for better task input, and inclusion of useful debugging statements. This also involves restructuring of methods for clearer code hierarchy and preventing repetitive code, and the addition of more helper functions for specific actions. The script also includes new features such as task creation confirmation banner and glowing border animation to improve user experience and provide immediate feedback." />
+    <option name="LAST_COMMIT_MESSAGE" value="Update the script with UI enhancements&#10;&#10;The script is now updated to efficiently manage tasks and improve user interaction. Main changes include reordering of imported modules, creation of DatePickerDialog and TimePickerDialog classes, addition of more fields on the UI for better task input, and inclusion of useful debugging statements. This also involves restructuring of methods for clearer code hierarchy and preventing repetitive code, and the addition of more helper functions for specific actions. The script also includes new features such as task creation confirmation banner and glowing border animation to improve user experience and provide immediate feedback." />
   </component>
 </project>
