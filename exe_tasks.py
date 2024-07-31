@@ -56,7 +56,6 @@ def remove_image_from_editor(driver, editor_id):
     driver.switch_to.default_content()
 
 def insert_image_text_editor(driver, img_url, img_width, img_height, link_url, link_checkbox):
-    editor_id = "cke_products_short_description_2" if "DE" in img_url else "cke_products_short_description_5"
     xpaths = {
         "img_button": '//*[@id="cke_135"]' if "DE" in img_url else '//*[@id="cke_357"]',
         "url_input": '//input[contains(@class, "cke_dialog_ui_input_text") and @aria-labelledby="cke_549_label"]' if "DE" in img_url else '//input[contains(@class, "cke_dialog_ui_input_text") and @aria-labelledby="cke_688_label"]',

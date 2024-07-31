@@ -89,7 +89,7 @@ class App(QWidget):
         self.top = 100
         self.window_width = 260
         self.height = 880  # Increased height to accommodate the switch and banner
-        self.borderColor = QColor(
+        self.border_color = QColor(
             255, 221, 0, 0
         )  # Initial border color (transparent yellow)
 
@@ -204,10 +204,10 @@ class App(QWidget):
         self.tab_widget = QTabWidget()
         self.tab_widget.setStyleSheet("QTabWidget::pane { border: 2px solid #ffffff; }")
         self.tab_widget.addTab(
-            self.create_tab("Hinzufügen", self.schedule_task, "add"), "Hinzufügen"
+            self.create_tab("Hinzufügen", "add"), "Hinzufügen"
         )
         self.tab_widget.addTab(
-            self.create_tab("Entfernen", self.schedule_task, "remove"), "Entfernen"
+            self.create_tab("Entfernen", "remove"), "Entfernen"
         )
         self.main_layout.addWidget(self.tab_widget)
 
@@ -235,7 +235,7 @@ class App(QWidget):
             f"Initialized UI with tab_widget: {self.tab_widget}, id: {id(self.tab_widget)}"
         )
 
-    def add_datetime_fields(self, layout):
+    def add_datetime_fields(self):
         if not self.datetime_fields_added:
             buttons = [
                 ("Datum wählen", self.open_date_picker),
@@ -457,7 +457,7 @@ class App(QWidget):
         switch_layout.addWidget(self.multi_task_radio)
         layout.addLayout(switch_layout)
 
-    def create_tab(self, tab_name, submit_action, tab_type):
+    def create_tab(self, tab_name, tab_type):
         tab = QWidget()
         layout = QVBoxLayout()
 
@@ -470,7 +470,7 @@ class App(QWidget):
         if tab_type == "add":
             self.add_image_and_link_fields(layout)
 
-        self.add_datetime_fields(layout)
+        self.add_datetime_fields()
 
         # Add Counter for currently scheduled tasks
         if not self.counter_added:
@@ -673,7 +673,7 @@ class App(QWidget):
         except subprocess.CalledProcessError as e:
             print(f"Failed to schedule task: {e}")
 
-    def schedule_task(self, marken_box, categories_box, articles_input, tab_name):
+    def schedule_task(self):
         task = self.create_task()
 
         task_filename = os.path.join(
@@ -711,7 +711,7 @@ class App(QWidget):
         super().paintEvent(event)
         painter = QPainter(self)
         painter.setPen(
-            QPen(self.borderColor, 15)
+            QPen(self._borderColor, 15)
         )  # Set pen with the current border color and width
         painter.drawRect(self.rect())  # Draw the border around the window
 
@@ -812,22 +812,6 @@ class App(QWidget):
             submit_button = self.create_button(
                 "Bestätigen",
                 lambda: self.schedule_task(
-                    (
-                        self.marken_combobox_add
-                        if tab_name == "Hinzufügen"
-                        else self.marken_combobox_remove
-                    ),
-                    (
-                        self.categories_combobox_add
-                        if tab_name == "Hinzufügen"
-                        else self.categories_combobox_remove
-                    ),
-                    (
-                        self.articles_input_add
-                        if tab_name == "Hinzufügen"
-                        else self.articles_input_remove
-                    ),
-                    tab_name,
                 ),
             )
             button_layout.addWidget(submit_button)
