@@ -1,3 +1,12 @@
+"""
+bAUTOnizer3000
+Script for automatic processing of promotional banner images on Webshop
+
+©Aaron Hafner
+GraphicArt AG
+31.07.2024
+"""
+
 import datetime
 import json
 import os
@@ -27,6 +36,26 @@ from PyQt6.QtWidgets import (
 
 
 class DatePickerDialog(QDialog):
+    """
+
+    :class: DatePickerDialog
+
+    QDialog subclass that provides a dialog for selecting a date using a QCalendarWidget.
+
+    Constructor: :meth: __init__(parent=None) Initializes the DatePickerDialog with an optional parent widget.
+    Creates the layout and sets the window title. Creates a QCalendarWidget and adds it to the layout. Calls the
+    create_buttons method.
+
+    Methods: :meth: create_buttons() Creates and adds OK and Abbrechen buttons to the layout, each with a
+    corresponding click handler (accept/reject).
+
+        :meth: create_button(text, handler)
+            Creates a QPushButton with the given text and click handler. Returns the created button.
+
+        :meth: get_date()
+            Returns the currently selected date from the QCalendarWidget.
+
+    """
     def __init__(self, parent=None):
         super().__init__(parent)
         self.layout = QVBoxLayout(self)
@@ -37,21 +66,70 @@ class DatePickerDialog(QDialog):
         self.create_buttons()
 
     def create_buttons(self):
+        """
+        Create buttons and add them to the layout.
+
+        :return: None
+        """
         buttons = QHBoxLayout()
         buttons.addWidget(self.create_button("OK", self.accept))
         buttons.addWidget(self.create_button("Abbrechen", self.reject))
         self.layout.addLayout(buttons)
 
+    # noinspection PyUnresolvedReferences
     def create_button(self, text, handler):
+        """
+        Create and return a QPushButton with the given text and click handler.
+
+        :param text: The text to display on the button.
+        :param handler: The function to be called when the button is clicked.
+        :return: The created QPushButton object.
+
+        """
         button = QPushButton(text, self)
         button.clicked.connect(handler)
         return button
 
     def get_date(self):
+        """
+        :return: the selected date from the calendar
+        """
         return self.calendar.selectedDate()
 
 
 class TimePickerDialog(QDialog):
+    """
+    Class TimePickerDialog
+
+    Dialog window for selecting time.
+
+    Methods:
+        __init__(self, parent=None)
+            Initializes the TimePickerDialog object.
+
+        create_buttons(self)
+            Creates the buttons in the dialog.
+
+        create_button(self, text, handler)
+            Creates a button with the given text and handler function.
+
+        get_time(self)
+            Retrieves the selected time from the time edit widget.
+
+    Attributes:
+        layout : QVBoxLayout
+            The layout of the dialog window.
+
+        time_edit : QTimeEdit
+            The widget for selecting the time.
+
+    Example usage:
+
+    dialog = TimePickerDialog()
+    if dialog.exec_() == QDialog.Accepted:
+        selected_time = dialog.get_time()
+        print("Selected time:", selected_time)
+    """
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Uhrzeit wählen")
@@ -62,21 +140,54 @@ class TimePickerDialog(QDialog):
         self.create_buttons()
 
     def create_buttons(self):
+        """
+        Create buttons for OK and Cancel actions and add them to the layout.
+
+        :return: None
+        """
         buttons = QHBoxLayout()
         buttons.addWidget(self.create_button("OK", self.accept))
         buttons.addWidget(self.create_button("Cancel", self.reject))
         self.layout.addLayout(buttons)
 
     def create_button(self, text, handler):
+        """
+        Create a button with the given text and connect it to the provided handler.
+
+        :param text: The text to display on the button.
+        :param handler: The function to handle the button click event.
+        :return: The created QPushButton instance.
+        """
         button = QPushButton(text, self)
         button.clicked.connect(handler)
         return button
 
     def get_time(self):
+        """
+        Get the current time.
+
+        :return: The current time.
+        """
         return self.time_edit.time()
 
 
 class App(QWidget):
+    """
+    This class represents an application window for the Buttonizer3000 program.
+
+    Attributes:
+        tasks_directory (str): The directory path for storing tasks.
+        last_task_end_time_file (str): The file path for storing the last task end time.
+        multi_mode (bool): A flag indicating if multi-mode is enabled.
+        counter_added (bool): A flag indicating if the counter is added.
+
+    Methods:
+        __init__: Initializes the App object.
+        initUI: Initializes the user interface of the application.
+        add_datetime_fields: Adds the date and time selection fields to the UI.
+        add_articles_input: Adds the articles input fields to the specified layout.
+        add_image_and_link_fields: Adds the image and link input fields to the specified layout.
+    """
     tasks_directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tasks")
     last_task_end_time_file = os.path.join(tasks_directory, "last_task_end_time.json")
     multi_mode = False  # Track if multi-mode is enabled
@@ -89,7 +200,7 @@ class App(QWidget):
         self.top = 100
         self.window_width = 260
         self.height = 880  # Increased height to accommodate the switch and banner
-        self.border_color = QColor(
+        self._borderColor = QColor(
             255, 221, 0, 0
         )  # Initial border color (transparent yellow)
 
@@ -176,6 +287,11 @@ class App(QWidget):
         self.initUI()
 
     def initUI(self):
+        """
+        Initializes the UI by setting the window title, geometry, window icon, and layout.
+
+        :return: None
+        """
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.window_width, self.height)
         self.setFixedSize(self.window_width, self.height)
@@ -236,6 +352,11 @@ class App(QWidget):
         )
 
     def add_datetime_fields(self):
+        """
+        Adds the datetime fields to the widget.
+
+        :return: None
+        """
         if not self.datetime_fields_added:
             buttons = [
                 ("Datum wählen", self.open_date_picker),
@@ -250,6 +371,15 @@ class App(QWidget):
             self.datetime_fields_added = True
 
     def add_articles_input(self, layout, tab_type):
+        """
+        Add articles input widget to the given layout based on the tab type.
+
+        :param layout: The layout to add the articles input widget to.
+        :type layout: QLayout
+        :param tab_type: The type of tab. Can be "add" or "remove".
+        :type tab_type: str
+        :return: None
+        """
         if tab_type == "add":
             self.articles_input_add = self.create_line_edit_with_label(
                 "Artikelnummern (getrennt mit Kommas)", layout
@@ -272,6 +402,20 @@ class App(QWidget):
             )  # Debug line
 
     def add_image_and_link_fields(self, layout):
+        """
+        :param layout: The layout in which the image and link input fields will be added.
+        :return: None
+
+        Adds image and link input fields to the given layout. The method creates several line edit fields and
+        checkboxes for the user to input image URLs, image height and width, and links in both German and French
+        languages. The link input fields are initially disabled and will be enabled based on the state of the link
+        checkbox.
+
+        Example usage:
+            layout = QVBoxLayout()
+            add_image_and_link_fields(self, layout)
+            QWidget.setLayout(layout)
+        """
         self.img1_input = self.create_line_edit_with_label(
             "Bild 1 URL (Deutsch)", layout
         )
@@ -286,6 +430,11 @@ class App(QWidget):
         layout.addWidget(self.width_input)
 
         self.link_checkbox = QCheckBox("Link hinzufügen?", self)
+        self.link_checkbox.stateChanged.connect(
+            lambda state: self.toggle_link_input(
+                state, self.link_input_de, self.link_input_fr
+            )
+        )
         layout.addWidget(self.link_checkbox)
 
         self.link_input_de = self.create_line_edit_with_label("Link (Deutsch)", layout)
@@ -298,16 +447,24 @@ class App(QWidget):
         self.link_input_fr.setDisabled(True)
         layout.addWidget(self.link_input_fr)
 
-        self.link_checkbox.stateChanged.connect(
-            lambda state: self.toggle_link_input(
-                state, self.link_input_de, self.link_input_fr
-            )
-        )
-
     def on_articles_input_changed(self, text):
+        """
+        :param text: The updated text input for articles.
+        :return: None
+        """
         print(f"articles_input changed: {text}")
 
     def add_marken_and_categories(self, layout, tab_type):
+        """
+        :param layout: The layout to which the labels and comboboxes will be added.
+        :param tab_type: The type of tab (add or remove) for which the method is being called.
+        :return: None
+
+        This method creates and adds labels and comboboxes to the given layout based on the specified tab type.
+        If the tab type is "add", it creates and adds labels and comboboxes for adding marken and categories.
+        If the tab type is "remove", it creates and adds labels and comboboxes for removing marken and categories.
+        It also connects the necessary signals to the appropriate slots to handle changes in the comboboxes.
+        """
         if tab_type == "add":
             marken_label, self.marken_combobox_add = self.create_label_and_combobox(
                 "Marke", self.category_data["Kamerasysteme + Objektive"].keys()
@@ -365,18 +522,39 @@ class App(QWidget):
             )
 
     def on_marken_combobox_changed(self, text):
+        """
+        Handle the event when the marken_combobox is changed.
+
+        :param text: The new value selected in the marken_combobox.
+        :type text: str
+        :return: None
+        """
         print(f"marken_combobox changed: {text}")
 
     def on_categories_combobox_changed(self, text):
+        """
+        :param text: The new text value in the categories_combobox.
+        :return: None
+        """
         print(f"categories_combobox changed: {text}")
 
     def center_on_screen(self):
+        """
+        Centers the window on the screen based on the dimensions of the window.
+
+        :return: None
+        """
         resolution = QApplication.primaryScreen().geometry()
         x = (resolution.width() - self.window_width) // 2
         y = (resolution.height() - self.height) // 2
         self.move(x, y)
 
     def clear_input_fields(self):
+        """
+        Clears the input fields based on the current tab.
+
+        :return: None
+        """
         clear_fields = self.clear_checkbox.isChecked()
         if clear_fields:
             current_tab_name = self.tab_widget.tabText(self.tab_widget.currentIndex())
@@ -409,17 +587,38 @@ class App(QWidget):
                 )
 
     def clear_layout(self, layout):
+        """
+        Clears all the widgets in the layout.
+
+        :param layout: The layout to be cleared.
+        :type layout: QLayout
+        """
         while layout.count():
             child = layout.takeAt(0)
             if child.widget():
                 child.widget().deleteLater()
 
     def create_button(self, text, click_handler):
+        """
+        :param text: The text to be displayed on the button.
+        :param click_handler: The function to be called when the button is clicked.
+        :return: The created button.
+        """
         button = QPushButton(text, self)
         button.clicked.connect(click_handler)
         return button
 
     def create_label(self, text, font_size, alignment, with_border=False):
+        """
+
+        :param text: The text to be displayed on the label.
+        :param font_size: The size of the font to be used for the text.
+        :param alignment: The alignment of the text within the label.
+        :param with_border: Optional parameter indicating whether to add a border to the label. Defaults to False.
+
+        :return: A QLabel object with the specified text, font size, alignment, and border style (if applicable).
+
+        """
         label = QLabel(text, self)
         font = QFont()
         font.setPointSize(font_size)
@@ -430,17 +629,46 @@ class App(QWidget):
         return label
 
     def create_label_and_combobox(self, label_text, items):
+        """
+        Creates a QLabel and a QComboBox with the specified label text and items.
+
+        :param label_text: The text to be displayed on the label.
+        :param items: The list of items to be added to the combo box.
+        :return: A tuple containing the created QLabel and QComboBox.
+        """
         label = QLabel(label_text, self)
         combobox = QComboBox(self)
         combobox.addItems(items)
         return label, combobox
 
     def create_line_edit_with_label(self, label_text, layout):
+        """
+        :param label_text: The text to be displayed on the label.
+        :param layout: The layout on which the label and line edit will be added.
+        :return: The line edit widget that is created.
+        """
         label = QLabel(label_text, self)
         layout.addWidget(label)
         return QLineEdit(self)
 
     def create_mode_switch(self, layout):
+        """
+        :param layout: The layout in which the mode switch buttons will be added.
+        :return: None
+
+        Creates a mode switch widget with two radio buttons: "Single-Task Mode" and "Multi-Task Mode".
+        The widget is added to the layout specified by the 'layout' parameter.
+
+        The mode switch buttons are part of a QButtonGroup to ensure exclusive selection.
+        By default, the "Single-Task Mode" radio button is checked.
+
+        When the mode switch buttons are toggled, the toggle_multi_mode method is called.
+
+        Example usage:
+            layout = QVBoxLayout()
+            create_mode_switch(layout)
+            widget.setLayout(layout)
+        """
         self.single_task_radio = QRadioButton("Single-Task Mode")
         self.multi_task_radio = QRadioButton("Multi-Task Mode")
 
@@ -458,6 +686,11 @@ class App(QWidget):
         layout.addLayout(switch_layout)
 
     def create_tab(self, tab_name, tab_type):
+        """
+        :param tab_name: The name of the tab to be created
+        :param tab_type: The type of the tab ("add" or "remove")
+        :return: The created tab widget
+        """
         tab = QWidget()
         layout = QVBoxLayout()
 
@@ -474,17 +707,7 @@ class App(QWidget):
 
         # Add Counter for currently scheduled tasks
         if not self.counter_added:
-            counter_layout = QHBoxLayout()
-            self.task_counter_title = self.create_label('<b>Erstellte Tasks: </b>', 10, Qt.AlignmentFlag.AlignCenter, True)
-            self.task_counter = self.create_label('<b>0</b>', 10, Qt.AlignmentFlag.AlignCenter, True)
-            counter_layout.addWidget(self.task_counter_title)
-            print(f'added counter title with id: {id(self.task_counter_title)}')
-            counter_layout.addWidget(self.task_counter)
-            self.task_counter_title.setVisible(False)
-            self.task_counter.setVisible(False)
-            layout.addLayout(counter_layout)
-            self.counter_added = True
-
+            self.add_task_counter(layout)
         button_layout = QVBoxLayout()
         self.button_layouts[tab_name] = button_layout  # Store the button layout
         self.update_buttons(tab_name)
@@ -499,7 +722,35 @@ class App(QWidget):
 
         return tab
 
+    def add_task_counter(self, layout):
+        """
+        :param layout: The layout in which the task counter will be added.
+        :return: None
+
+        This method is used to add a task counter to the given layout. The task counter consists of a title label and a counter label.
+
+        The `layout` parameter is the layout in which the task counter will be added.
+
+        Example usage:
+            add_task_counter(layout)
+        """
+        counter_layout = QHBoxLayout()
+        self.task_counter_title = self.create_label('<b>Erstellte Tasks: </b>', 10, Qt.AlignmentFlag.AlignCenter, True)
+        self.task_counter = self.create_label('<b>0</b>', 10, Qt.AlignmentFlag.AlignCenter, True)
+        counter_layout.addWidget(self.task_counter_title)
+        print(f'added counter title with id: {id(self.task_counter_title)}')
+        counter_layout.addWidget(self.task_counter)
+        self.task_counter_title.setVisible(False)
+        self.task_counter.setVisible(False)
+        layout.addLayout(counter_layout)
+        self.counter_added = True
+
     def create_task(self):
+        """
+        Method to create a task based on the current state of the GUI.
+
+        :return: The created task as a dictionary.
+        """
         print("create_task called")
         current_tab_name = self.tab_widget.tabText(self.tab_widget.currentIndex())
         articles_input = (
@@ -578,6 +829,15 @@ class App(QWidget):
         return task
 
     def eventFilter(self, obj, event):
+        """
+        Filters events for a given object and responds to specific events.
+
+        :param obj: The object being filtered.
+        :param event: The event to be filtered.
+
+        :return: True if the event has been handled, False otherwise.
+
+        """
         if event.type() == QtCore.QEvent.Type.KeyPress and event.key() in [
             Qt.Key.Key_Enter,
             Qt.Key.Key_Return,
@@ -591,24 +851,45 @@ class App(QWidget):
         return super().eventFilter(obj, event)
 
     def hide_datetime_fields(self):
+        """
+        Hides the datetime fields.
+
+        :return: None
+        """
         self.display_label_title.hide()
         self.datetime_label.hide()
         for widget in self.datetime_widgets:
             widget.hide()
 
     def open_date_picker(self):
+        """
+        Opens a date picker dialog and stores the selected date in self.selected_date.
+        The method also updates the datetime label.
+
+        :return: None
+        """
         dialog = DatePickerDialog(self)
         if dialog.exec():
             self.selected_date = dialog.get_date()
             self.update_datetime_label()
 
     def open_time_picker(self):
+        """
+        Opens a time picker dialog and retrieves the selected time.
+
+        :return: None
+        """
         dialog = TimePickerDialog(self)
         if dialog.exec():
             self.selected_time = dialog.get_time()
             self.update_datetime_label()
 
     def save_all_tasks(self):
+        """
+        Save all tasks to the specified tasks directory.
+
+        :return: None
+        """
         task_directory = self.tasks_directory
         os.makedirs(task_directory, exist_ok=True)
 
@@ -643,6 +924,11 @@ class App(QWidget):
         self.show_message()
 
     def save_task_temporarily(self):
+        """
+        Save a task temporarily.
+
+        :return: None
+        """
         print("save_task_temporarily called")
         task = self.create_task()
         self.temp_tasks.append(task)
@@ -663,6 +949,22 @@ class App(QWidget):
         self.update_ui_elements()
 
     def schedule_in_task_scheduler(self, task_filename, schedule_datetime):
+        """
+        :param task_filename: The filename of the task to be scheduled in the Task Scheduler.
+        :param schedule_datetime: The datetime object representing the date and time when the task should be scheduled.
+        :return: None
+
+        This method schedules a task in the Task Scheduler by using the `SchTasks` command line tool. It creates a
+        one-time scheduled task with a specified task name, task file, and schedule date and time.
+
+        The `task_filename` parameter should be the filename of the task that needs to be scheduled in the Task
+        Scheduler.
+
+        The `schedule_datetime` parameter should be a datetime object representing the date and time when the task
+        should be scheduled.
+
+        This method does not return any value.
+        """
         import subprocess
 
         date_str = schedule_datetime.strftime("%d/%m/%Y")
@@ -674,6 +976,11 @@ class App(QWidget):
             print(f"Failed to schedule task: {e}")
 
     def schedule_task(self):
+        """
+        Schedule a task.
+
+        :return: None
+        """
         task = self.create_task()
 
         task_filename = os.path.join(
@@ -700,6 +1007,12 @@ class App(QWidget):
 
     @QtCore.pyqtProperty(QColor)
     def borderColor(self):
+        """
+        Retrieves the value of the `borderColor` property.
+
+        :return: The color of the border.
+        :rtype: QColor
+        """
         return self._borderColor
 
     @borderColor.setter
@@ -708,14 +1021,31 @@ class App(QWidget):
         self.update()  # Trigger a repaint
 
     def paintEvent(self, event):
+        """
+        Handles the paint event for the window.
+
+        :param event: the paint event object containing event details
+        :type event: QPaintEvent
+        :return: None
+        """
         super().paintEvent(event)
         painter = QPainter(self)
         painter.setPen(
-            QPen(self._borderColor, 15)
+            QPen(self.borderColor, 15)
         )  # Set pen with the current border color and width
         painter.drawRect(self.rect())  # Draw the border around the window
 
     def show_confirmation_banner(self, message="TASK ERSTELLT"):
+        """
+        :param message: Optional message for the confirmation banner. Default value is "TASK ERSTELLT".
+        :return: None
+
+        This method displays a confirmation banner with an optional message. The banner contains an animated border
+        that fades in and out, and a label with the specified message.
+
+        Example usage:
+            show_confirmation_banner("Task created successfully")
+        """
         # Create the animation for the border
         self.border_animation = QPropertyAnimation(self, b"borderColor")
         self.border_animation.setDuration(
@@ -741,6 +1071,12 @@ class App(QWidget):
         self.top_banner_label.show()
 
     def get_scheduled_time(self):
+        """
+        Returns the scheduled time based on the selected date and time.
+
+        :return: The scheduled time.
+        :rtype: datetime.datetime
+        """
         return datetime.datetime(
             self.selected_date.year(),
             self.selected_date.month(),
@@ -751,12 +1087,22 @@ class App(QWidget):
         )
 
     def show_datetime_fields(self):
+        """
+        Shows the datetime fields.
+
+        :return: None
+        """
         self.display_label_title.show()
         self.datetime_label.show()
         for widget in self.datetime_widgets:
             widget.show()
 
     def show_message(self):
+        """
+        Shows a message box with a success message and an information icon.
+
+        :return: None
+        """
         msg_box = QMessageBox(self)
         msg_box.setWindowTitle("Geschafft")
         msg_box.setText(
@@ -766,6 +1112,17 @@ class App(QWidget):
         msg_box.exec()
 
     def toggle_link_input(self, state, link_input_de, link_input_fr):
+        """
+        Enables or disables the given link inputs based on the given state.
+
+        :param state: The state to check. Should be one of Qt.CheckState.Checked or Qt.CheckState.Unchecked.
+        :type state: int
+        :param link_input_de: The link input for the German language.
+        :type link_input_de: QtWidgets.QLineEdit
+        :param link_input_fr: The link input for the French language.
+        :type link_input_fr: QtWidgets.QLineEdit
+        :return: None
+        """
         if state == Qt.CheckState.Checked:
             link_input_de.setDisabled(False)
             link_input_fr.setDisabled(False)
@@ -774,6 +1131,11 @@ class App(QWidget):
             link_input_fr.setDisabled(True)
 
     def toggle_multi_mode(self):
+        """
+        Toggles the multi mode of the application.
+
+        :return: None
+        """
         self.multi_mode = self.multi_task_radio.isChecked()
         self.tab_widget.setStyleSheet(
             "QTabWidget::pane { border: 2px solid #ffdd00; }"
@@ -799,6 +1161,12 @@ class App(QWidget):
         self.update_ui_elements()
 
     def update_buttons(self, tab_name):
+        """
+        Updates the buttons in the specified tab.
+
+        :param tab_name: The name of the tab.
+        :return: None
+        """
         button_layout = self.button_layouts[tab_name]
         self.clear_layout(button_layout)
         if self.multi_mode:
@@ -817,11 +1185,26 @@ class App(QWidget):
             button_layout.addWidget(submit_button)
 
     def update_datetime_label(self):
+        """
+        Update the datetime label with selected date and time.
+
+        :return: None
+        """
         selected_date = self.selected_date.toString("dd/MM/yyyy")
         selected_time = self.selected_time.toString("HH:mm:ss")
         self.datetime_label.setText(f"{selected_date} \n{selected_time}")
 
     def update_subcategories(self, marken_combobox, categories_combobox):
+        """
+        Updates the subcategories in the categories_combobox based on the selected_marke in marken_combobox.
+
+        :param marken_combobox: The combobox representing the selected brand.
+        :type marken_combobox: QComboBox
+        :param categories_combobox: The combobox to be updated with subcategories.
+        :type categories_combobox: QComboBox
+        :return: None
+        :rtype: None
+        """
         selected_marke = marken_combobox.currentText()
         categories_combobox.clear()
         if selected_marke in self.category_data["Kamerasysteme + Objektive"]:
@@ -830,6 +1213,11 @@ class App(QWidget):
             )
 
     def update_ui_elements(self):
+        """
+        Update the UI elements based on the current state.
+
+        :return: None
+        """
         if self.multi_mode and len(self.temp_tasks) == 0:
             self.show_datetime_fields()
         elif self.multi_mode and len(self.temp_tasks) > 0:
@@ -838,6 +1226,11 @@ class App(QWidget):
             self.show_datetime_fields()
 
     def update_layouts(self):
+        """
+        Update layouts and widgets.
+
+        :return: None
+        """
         # Force update parent layouts
         self.task_counter.updateGeometry()
         self.task_counter_title.updateGeometry()
