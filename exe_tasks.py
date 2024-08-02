@@ -1,11 +1,78 @@
 """
-execute_task.py
+### execute_task.py
+
+---
+
+### function: login
+
+This method performs the login operation by locating and interacting with the necessary elements on the login page.
+
+#### Args:
+- driver: Web driver instance used for browsing.
+- email: Email address for login.
+- password: Password for login.
+
+---
+
+### function: remove_image_from_editor
+
+This method removes all images from a specific editor on a web page using the provided WebDriver instance.
+
+#### Args:
+- driver: The WebDriver instance used to interact with the web page.
+- editor_id: The ID of the editor element.
+
+---
+
+### function: insert_image_text_editor
+
+This method inserts an image into a text editor using the given WebDriver object. The image URL, width, and height are specified. If a link URL is provided and the link_checkbox flag is True, a link is added to the image.
+
+---
+
+### function: process_articles
+
+This method processes articles on the Graphicart website. It takes a WebDriver instance and task data as parameters. The task data should be a dictionary containing specific keys.
+
+#### Args:
+- driver: The Selenium WebDriver instance.
+- task_data: A dictionary containing the task data.
+
+---
+
+### function: remove_articles_images
+
+This method removes images from articles on the Graphicart website. It takes a WebDriver instance and task data as parameters.
+
+#### Args:
+- driver: The Selenium WebDriver instance.
+- task_data: A dictionary containing task data.
+
+---
+
+### function: execute_task
+
+Execute a task from a given task file.
+
+#### Args:
+- task_filename: The path to the task file.
+
+---
+
+### function: main
+
+Execute a task specified by the given filename.
+
+#### Args:
+- task_filename: The name of the file containing the task.
+
+#### Returns:
+- None
 """
 
 import json
 import os
 import sys
-import time
 import traceback
 
 from selenium import webdriver
@@ -20,20 +87,20 @@ from selenium.webdriver.support.ui import Select, WebDriverWait
 
 def login(driver, email, password):
     """
-    :param driver: The WebDriver object used to interact with the browser.
-    :param email: The email used for login.
-    :param password: The password used for login.
+    :param driver: Web driver instance used for browsing.
+    :param email: Email address for login.
+    :param password: Password for login.
     :return: None
 
-    This method performs the login functionality on a web page. It takes the WebDriver object, email, and password as
-    parameters. The method locates the login button, email field, password field, and login button elements on the
-    page using various selectors. It then performs the following steps: 1. Clicks on the login button, which triggers
-    the login form to appear. 2. Inputs the provided email into the email field. 3. Inputs the provided password into
-    the password field. 4. Clicks on the login button to submit the form.
+    This method performs the login operation by locating and interacting with the necessary elements on the login page.
 
-    Note: This method assumes that the login form elements are present on the page and can be located using the
-    specified selectors. It also assumes that the login process is successful and does not handle any potential
-    errors or validations.
+    The `driver` parameter should be an instance of a web driver, such as Selenium WebDriver, used for browsing the web.
+
+    The `email` parameter should be a string representing the email address associated with the account.
+
+    The `password` parameter should be a string representing the password for the account.
+
+    The method does not return anything.
     """
     kundenlogin_button = WebDriverWait(driver, 30).until(
         EC.presence_of_element_located((By.CSS_SELECTOR, 'a.dropdown-toggle[title="Anmeldung"]'))
@@ -58,13 +125,23 @@ def login(driver, email, password):
 
 def remove_image_from_editor(driver, editor_id):
     """
-    Remove all images from the specified editor.
+    :param driver: The WebDriver instance used to interact with the web page.
+    :param editor_id: The ID of the editor element.
+    :return: None
 
-    :param driver: The WebDriver object.
-    :param editor_id: The id of the editor.
-    :return: None.
+    This method removes all images from a specific editor on a web page using the provided WebDriver instance.
+
+    The method first waits for the presence of the editor iframe by locating it using its CSS selector with the given editor_id. Once the iframe is found, the WebDriver switches to it.
+
+    Then, a JavaScript script is executed inside the iframe context. This script finds the `<ul>` element within the editor's body and iterates over its child `<li>` elements. For each `<li>`, it checks if there is an `<img>` element within it, and if so, removes it.
+
+    After removing all the images, the WebDriver switches back to the default content.
+
+    Please note that this method relies on the following imports:
+    - `WebDriverWait` from `selenium.webdriver.support.ui`
+    - `EC` (Expected Conditions) from `selenium.webdriver.support.expected_conditions`
+    - `By` from `selenium.webdriver.common.by`
     """
-    time.sleep(1)
     iframe = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, f'#{editor_id} iframe')))
     driver.switch_to.frame(iframe)
     script = '''
@@ -85,22 +162,18 @@ def remove_image_from_editor(driver, editor_id):
 
 def insert_image_text_editor(driver, img_url, img_width, img_height, link_url, link_checkbox):
     """
-    :param driver: The WebDriver instance.
+    :param driver: The WebDriver object used to interact with the browser.
     :param img_url: The URL of the image to be inserted.
     :param img_width: The width of the image in pixels.
     :param img_height: The height of the image in pixels.
-    :param link_url: The URL to link the image to (optional).
-    :param link_checkbox: A flag indicating whether to include a link for the image (optional).
+    :param link_url: The URL the image should link to.
+    :param link_checkbox: A flag indicating whether a link should be added to the image.
     :return: None
 
-    This method inserts an image into a text editor using the given WebDriver instance. The image is specified by its
-    URL, width, and height. Optionally, a link URL can be provided to link the image to a webpage. If the
-    link_checkbox flag is set to True, a link input field will be displayed.
+    This method inserts an image into a text editor using the given WebDriver object. The image URL, width, and height are specified. If a link URL is provided and the link_checkbox flag is True, a link is added to the image.
 
-    The method finds the appropriate XPath expressions based on the language (DE or not DE). It waits for certain
-    elements to be clickable or visible before interacting with them.
-
-    Note: The WebDriverWait class is used to wait for elements to be present or visible before interacting with them.
+    Example usage:
+    insert_image_text_editor(driver, "https://example.com/image.jpg", 800, 600, "https://example.com", True)
     """
     xpaths = {
         "img_button": '//*[@id="cke_135"]' if "DE" in img_url else '//*[@id="cke_357"]',
@@ -119,21 +192,17 @@ def insert_image_text_editor(driver, img_url, img_width, img_height, link_url, l
 
     img_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, xpaths["img_button"])))
     driver.execute_script("arguments[0].click();", img_button)
-    time.sleep(0.5)
 
     url_input = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.XPATH, xpaths["url_input"])))
     url_input.send_keys(img_url)
-    time.sleep(0.5)
 
     width_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, xpaths["width_input"])))
     width_input.clear()
     width_input.send_keys(img_width)
-    time.sleep(0.5)
 
     height_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, xpaths["height_input"])))
     height_input.clear()
     height_input.send_keys(img_height)
-    time.sleep(0.5)
 
     if "DE" in img_url:
         alignement_loc = WebDriverWait(driver, 10).until(
@@ -141,18 +210,14 @@ def insert_image_text_editor(driver, img_url, img_width, img_height, link_url, l
         dropdown = Select(alignement_loc)
         dropdown.select_by_visible_text("Rechts")
     else:
-        time.sleep(0.5)
         actions = ActionChains(driver)
-        for i in range(6):
+        for _ in range(6):
             actions.send_keys(Keys.TAB)
-            actions.pause(0.1)
-        for i in range(2):
+        for _ in range(2):
             actions.send_keys(Keys.ARROW_DOWN)
-            actions.pause(0.1)
         actions.perform()
 
     if link_checkbox and link_url:
-        time.sleep(0.5)
         link_tab = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, xpaths["link_tab"])))
         driver.execute_script("arguments[0].click();", link_tab)
 
@@ -166,16 +231,12 @@ def insert_image_text_editor(driver, img_url, img_width, img_height, link_url, l
         actions.send_keys(Keys.ARROW_DOWN)
         actions.perform()
 
-    time.sleep(0.5)
-
     if "DE" in img_url:
         ok_button = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, xpaths["ok_button"])))
         driver.execute_script("arguments[0].click();", ok_button)
     else:
         actions = ActionChains(driver)
-        actions.pause(0.1)
         actions.send_keys(Keys.TAB)
-        actions.pause(0.1)
         actions.send_keys(Keys.ENTER)
         actions.perform()
 
@@ -191,40 +252,38 @@ def insert_image_text_editor(driver, img_url, img_width, img_height, link_url, l
 
 def process_articles(driver, task_data):
     """
-    :param driver: The Selenium WebDriver object.
-    :param task_data: A dictionary containing the task data.
-    :return: None.
 
-    This method processes articles based on the provided task data using a Selenium WebDriver object.
+    :param driver: The Selenium WebDriver instance.
+    :param task_data: A dictionary containing the task data, including article numbers, image URLs, image dimensions, and other inputs.
 
-    The task data dictionary should have the following keys:
-    - "article_numbers": a string containing comma-separated article numbers.
-    - "img1_url": a string representing the URL for the first image.
-    - "img2_url": a string representing the URL for the second image.
-    - "width": an integer representing the width of the images.
-    - "height": an integer representing the height of the images.
-    - "link_checkbox": a boolean value indicating whether a link should be added to the images.
-    - "link_input_de": a string representing the link input for the German version.
-    - "link_input_fr": a string representing the link input for the French version.
-    - "marke": a string representing the brand of the articles.
-    - "kategorie": a string representing the category of the articles.
+    :return: None
 
-    The method follows these steps:
-    1. Extracts the article numbers from the task data.
-    2. Logs in to the website using the provided credentials.
-    3. Navigates to the categories page.
-    4. Selects the brand and category if they are specified.
-    5. Processes each article number:
-       - Finds the corresponding product link.
-       - Inserts the first and second images into the text editor.
-       - Submits the changes.
-    6. Prints a message indicating the successful processing of each article number.
-    7. Quits the WebDriver.
+    This method processes articles on the Graphicart website. It takes a WebDriver instance and task data as parameters. The task data should be a dictionary containing the following keys:
+    - "article_numbers": A string of comma-separated article numbers to process.
+    - "img1_url": The URL of the first image.
+    - "img2_url": The URL of the second image.
+    - "width": The width of the images.
+    - "height": The height of the images.
+    - "link_checkbox": A boolean indicating whether to include a link with the images.
+    - "link_input_de": The input for the German link (optional).
+    - "link_input_fr": The input for the French link (optional).
 
-    If an exception occurs during the processing of an article number, an error message is printed.
+    The method starts by logging in to the website using the provided email and password.
 
-    Note: The method assumes that the necessary imports (e.g., time, traceback, WebDriverWait, EC, By) have been done
-    prior to calling it.
+    Then, it navigates to the appropriate category page based on the brand and category provided in the task data, if they are not set to their default values.
+
+    It waits for the category page to load, then iterates through the provided article numbers.
+
+    For each article number, it searches for a matching row in the table of articles. Once found, it clicks on the product link for that article.
+
+    It calls the "insert_image_text_editor" method twice, passing the URLs, dimensions, link inputs, and checkbox value. This method inserts the images and optional links into the text editor on the product page.
+
+    After that, it clicks the "Speichern" (Save) button, waits for the page to reload, and prints a message to indicate that the article has been processed.
+
+    Any exceptions that occur during the processing of articles are caught, and error messages are printed.
+
+    Finally, the WebDriver instance is closed.
+
     """
     article_numbers = [num.strip() for num in task_data["article_numbers"].split(',')]
     img1_url = task_data["img1_url"]
@@ -238,7 +297,6 @@ def process_articles(driver, task_data):
     login(driver, 'feigelluck@gmail.com', 'Graphicart#1')
 
     driver.get("https://www.graphicart.ch/shop/admin/categories.php?cPath=7")
-    time.sleep(0.5)
 
     brand = task_data["marke"]
     if brand != 'Kamerasysteme + Objektive':
@@ -263,10 +321,8 @@ def process_articles(driver, task_data):
             continue
 
         try:
-            time.sleep(1)
             rows = WebDriverWait(driver, 10).until(
                 EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'tr.dataTableRow')))
-            time.sleep(1)
 
             for row in rows:
                 number_element = row.find_element(By.CSS_SELECTOR, 'td:nth-child(4)')
@@ -280,8 +336,6 @@ def process_articles(driver, task_data):
 
             insert_image_text_editor(driver, img1_url, img_width, img_height, link_input_de, link_checkbox)
             insert_image_text_editor(driver, img2_url, img_width, img_height, link_input_fr, link_checkbox)
-
-            time.sleep(0.5)
 
             submit_button_locator = (By.XPATH, '//button[@title="Speichern" and @type="submit"]')
             submit_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable(submit_button_locator))
@@ -300,31 +354,13 @@ def process_articles(driver, task_data):
 
 def remove_articles_images(driver, task_data):
     """
-    :param driver: The WebDriver instance for controlling the browser.
-    :param task_data: A dictionary containing task-specific data, including "article_numbers", "marke", and "kategorie".
-    :return: None
 
-    This method removes images from the specified articles in a web application.
-
-    The method performs the following steps:
-    1. Extracts the article numbers from the task_data dictionary.
-    2. Logs into the web application using the provided credentials.
-    3. Navigates to the categories page in the application.
-    4. Finds and selects the specified brand and category if they are not the default values.
-    5. Waits for table elements to load on the page.
-    6. Iterates over the article numbers.
-        a. Skips empty article numbers.
-        b. Searches for the row containing the article number.
-        c. Removes images from specified editors.
-        d. Clicks the submit button to save the changes.
-        e. Waits for table elements to load again.
-        f. Catches and prints any exceptions raised during the loop.
-    7. Quits the WebDriver.
-
-    Note: The error handling in this code is minimal and should be enhanced for production use.
-
-    Example usage:
-        remove_articles_images(driver, task_data)
+        :param driver: The Selenium WebDriver instance.
+        :param task_data: A dictionary containing task data, with the following keys:
+                          - "article_numbers": A string of comma-separated article numbers to be processed.
+                          - "marke": The brand name.
+                          - "kategorie": The category name.
+        :return: None
     """
     article_numbers = [num.strip() for num in task_data["article_numbers"].split(',')]
 
@@ -355,7 +391,6 @@ def remove_articles_images(driver, task_data):
             continue
 
         try:
-            time.sleep(1)
             rows = WebDriverWait(driver, 10).until(
                 EC.presence_of_all_elements_located((By.CSS_SELECTOR, 'tr.dataTableRow')))
 
@@ -387,9 +422,9 @@ def remove_articles_images(driver, task_data):
 
 def execute_task(task_filename):
     """
-    Execute a task by reading a task file, setting up the necessary dependencies, and executing the task.
+    Execute a task from a given task file.
 
-    :param task_filename: The filename of the task file to execute.
+    :param task_filename: The path to the task file.
     :return: None
     """
     if not os.path.exists(task_filename):
@@ -399,7 +434,6 @@ def execute_task(task_filename):
     with open(task_filename, 'r') as file:
         task = json.load(file)
 
-    # Check if we are running as a packaged executable
     if getattr(sys, 'frozen', False):
         base_path = sys._MEIPASS
     else:
@@ -429,7 +463,6 @@ def execute_task(task_filename):
     finally:
         driver.quit()
 
-    # Handle follow-up tasks
     if task.get("follow_up", False):
         for next_task in task["subsequent_tasks"]:
             execute_task(next_task)
@@ -437,7 +470,10 @@ def execute_task(task_filename):
 
 def main(task_filename):
     """
-    :param task_filename: The filename of the task to execute.
+    Execute a task specified by the given filename.
+
+    :param task_filename: The name of the file containing the task.
+    :type task_filename: str
     :return: None
     """
     execute_task(task_filename)

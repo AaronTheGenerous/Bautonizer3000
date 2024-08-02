@@ -2,18 +2,21 @@
 <project version="4">
   <component name="AnalysisUIOptions">
     <option name="ANALYZE_INJECTED_CODE" value="false" />
-    <option name="SCOPE_TYPE" value="8" />
+    <option name="SCOPE_TYPE" value="3" />
     <option name="CUSTOM_SCOPE_NAME" value="main" />
   </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ae7ff266-455f-41b7-8c50-a22fbd8e171f" name="Changes" comment="Refactor UI components and remove redundant code&#10;&#10;Streamlined UI component initialization and eliminated redundant parameters in `bAUTOnizer3000.py`. Removed unnecessary debug messages and updated configurations in `.idea/workspace.xml`. Updated `exe_tasks.py` by removing unused editor ID reference.">
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+    <list default="true" id="ae7ff266-455f-41b7-8c50-a22fbd8e171f" name="Changes" comment="Add detailed docstrings and reformat code for clarity&#10;&#10;This commit introduces detailed docstrings to various functions and methods in `exe_tasks.py` and `bAUTOnizer3000.py` for better code understanding and documentation. Additionally, the code has been reformatted for consistency and readability. The docstrings provide insights into the parameters, return values, and functionality of the methods, which will aid future development and maintenance.">
+      <change afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Bautonizer3000.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Bautonizer3000.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bAUTOnizer3000.py" beforeDir="false" afterPath="$PROJECT_DIR$/bAUTOnizer3000.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/exe_tasks.py" beforeDir="false" afterPath="$PROJECT_DIR$/exe_tasks.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,7 +50,7 @@
     <scope name="main" pattern="file:bAUTOnizer3000.py||file:exe_tasks.py" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="QODANA_PROBLEMS_VIEW_TAB" />
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
@@ -60,17 +63,18 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Python.bAUTOnizer3000.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "run.code.analysis.last.selected.profile": "aInspectorAaron",
-    "settings.editor.selected.configurable": "preferences.sourceCode.Python"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Python.bAUTOnizer3000.executor&quot;: &quot;Run&quot;,
+    &quot;Python.test.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
       <console-settings module-name="Bautonizer3000" is-module-sdk="true">
@@ -90,30 +94,13 @@
     <option name="organizationId" value="3wXmJ" />
     <option name="userId" value="neb4L" />
   </component>
-  <component name="QodanaHighlightedReportService">
-    <option name="localRunNotPublishedPersistedInfo">
-      <LocalReportPersistedInfo>
-        <option name="path" value="C:\Users\Hafner\AppData\Local\Temp\qodana_output\qodana.sarif.json" />
-        <option name="reportGuid" value="b8dd4d7a-74f3-4b07-95d4-839742b07743" />
-        <option name="reportName" value="Bautonizer3000/qodana/2024-07-31" />
-      </LocalReportPersistedInfo>
-    </option>
-  </component>
-  <component name="QodanaIsSelectedPersistenceService">
-    <option name="selectedOrLoading" value="true" />
-  </component>
-  <component name="QodanaReportsService">
-    <option name="descriptions">
-      <ReportDescription localRun="true" path="C:\Users\Hafner\AppData\Local\Temp\qodana_output\qodana.sarif.json" reportGuid="b8dd4d7a-74f3-4b07-95d4-839742b07743" reportId="Bautonizer3000/qodana/2024-07-31" />
-    </option>
-  </component>
   <component name="RunManager">
     <configuration name="bAUTOnizer3000" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <option name="SDK_HOME" value="" />
-      <option name="SDK_NAME" value="Python 3.11 (Bautonizer3000)" />
+      <option name="SDK_NAME" value="Python 3.9 (Bautonizer3000)" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -128,9 +115,33 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="Bautonizer3000" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="true" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.bAUTOnizer3000" />
+      <item itemvalue="Python.test" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.bAUTOnizer3000" />
+        <item itemvalue="Python.test" />
       </list>
     </recent_temporary>
   </component>
@@ -278,7 +289,15 @@
       <option name="project" value="LOCAL" />
       <updated>1722408609591</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Add detailed docstrings and reformat code for clarity&#10;&#10;This commit introduces detailed docstrings to various functions and methods in `exe_tasks.py` and `bAUTOnizer3000.py` for better code understanding and documentation. Additionally, the code has been reformatted for consistency and readability. The docstrings provide insights into the parameters, return values, and functionality of the methods, which will aid future development and maintenance.">
+      <option name="closed" value="true" />
+      <created>1722435009281</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1722435009281</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -308,6 +327,7 @@
     <MESSAGE value="WORKING AS EXPECTED!!&#10;&#10;Update task handling and UI elements&#10;&#10;Enhanced task alignment logic for DE and non-DE URLs in `exe_tasks.py` to include keyboard simulation. Added task counter feature in `bAUTOnizer3000_stable.py` to track and display the number of scheduled tasks dynamically. Removed unnecessary components and adjusted configurations in `.idea/workspace.xml`." />
     <MESSAGE value="Refactor UI components and cleanup redundant elements&#10;&#10;Reorganized UI component initialization to streamline the design of both `DatePickerDialog` and `TimePickerDialog`. Consolidated button creation logic into a helper method to reduce redundancy. Removed unnecessary debug prints and simplified the configuration in `.idea/workspace.xml`." />
     <MESSAGE value="Refactor UI components and remove redundant code&#10;&#10;Streamlined UI component initialization and eliminated redundant parameters in `bAUTOnizer3000.py`. Removed unnecessary debug messages and updated configurations in `.idea/workspace.xml`. Updated `exe_tasks.py` by removing unused editor ID reference." />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor UI components and remove redundant code&#10;&#10;Streamlined UI component initialization and eliminated redundant parameters in `bAUTOnizer3000.py`. Removed unnecessary debug messages and updated configurations in `.idea/workspace.xml`. Updated `exe_tasks.py` by removing unused editor ID reference." />
+    <MESSAGE value="Add detailed docstrings and reformat code for clarity&#10;&#10;This commit introduces detailed docstrings to various functions and methods in `exe_tasks.py` and `bAUTOnizer3000.py` for better code understanding and documentation. Additionally, the code has been reformatted for consistency and readability. The docstrings provide insights into the parameters, return values, and functionality of the methods, which will aid future development and maintenance." />
+    <option name="LAST_COMMIT_MESSAGE" value="Add detailed docstrings and reformat code for clarity&#10;&#10;This commit introduces detailed docstrings to various functions and methods in `exe_tasks.py` and `bAUTOnizer3000.py` for better code understanding and documentation. Additionally, the code has been reformatted for consistency and readability. The docstrings provide insights into the parameters, return values, and functionality of the methods, which will aid future development and maintenance." />
   </component>
 </project>

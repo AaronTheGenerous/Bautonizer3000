@@ -1,11 +1,138 @@
 """
-bAUTOnizer3000
+### bAUTOnizer3000
+
 Script for automatic processing of promotional banner images on Webshop
 
 ©Aaron Hafner
 GraphicArt AG
 31.07.2024
-"""
+
+---
+
+### class: DatePickerDialog
+
+QDialog subclass that provides a dialog for selecting a date using a QCalendarWidget.
+
+#### Methods:
+- __init__(parent=None)
+  Initializes the DatePickerDialog with an optional parent widget. Creates the layout and sets the window title. Creates a QCalendarWidget and adds it to the layout. Calls the create_buttons method.
+
+- create_buttons()
+  Creates and adds OK and Abbrechen buttons to the layout, each with a corresponding click handler (accept/reject).
+
+- create_button(text, handler)
+  Creates a QPushButton with the given text and click handler. Returns the created button.
+
+- get_date()
+  Returns the currently selected date from the QCalendarWidget.
+
+---
+
+### class: TimePickerDialog
+
+Dialog window for selecting time.
+
+#### Methods:
+- __init__(parent=None)
+  Initializes the TimePickerDialog object.
+
+- create_buttons()
+  Creates the buttons in the dialog.
+
+- create_button(text, handler)
+  Creates a button with the given text and handler function.
+
+- get_time()
+  Retrieves the selected time from the time edit widget.
+
+---
+
+### class: App
+
+This class represents an application window for the Buttonizer3000 program.
+
+#### Methods:
+- __init__
+  Initializes the App object.
+- initUI
+  Initializes the user interface of the application.
+- add_datetime_fields
+  Adds the date and time selection fields to the UI.
+- add_articles_input
+  Adds the articles input fields to the specified layout.
+- add_image_and_link_fields
+  Adds the image and link input fields to the specified layout.
+- on_articles_input_changed(text)
+  Handles the event when the articles input field is changed.
+- add_marken_and_categories(layout, tab_type)
+  Add marken and categories input fields to the given layout based on the tab type.
+- on_marken_combobox_changed(text)
+  Handle the event when the marken_combobox is changed.
+- on_categories_combobox_changed(text)
+  Handle the event when the categories_combobox is changed.
+- center_on_screen
+  Centers the window on the screen based on the dimensions of the window.
+- clear_input_fields
+  Clears the input fields based on the current tab.
+- clear_layout(layout)
+  Clears all the widgets in the layout.
+- create_button(text, click_handler)
+  Creates a button with the specified text and click handler.
+- create_label(text, font_size, alignment, with_border=False)
+  Creates a QLabel with the specified text, font size, alignment, and border style.
+- create_label_and_combobox(label_text, items)
+  Creates a QLabel and a QComboBox with the specified label text and items.
+- create_line_edit_with_label(label_text, layout)
+  Creates a line edit widget with the specified label text and adds it to the layout.
+- create_mode_switch(layout)
+  Creates a mode switch widget with two radio buttons: "Single-Task Mode" and "Multi-Task Mode".
+- create_tab(tab_name, tab_type)
+  Creates a tab widget with specified name and type.
+- add_task_counter(layout)
+  Adds a task counter to the given layout.
+- create_task
+  Creates a task based on the current state of the GUI.
+- eventFilter(obj, event)
+  Filters events for a given object and responds to specific events.
+- hide_datetime_fields
+  Hides the datetime fields.
+- open_date_picker
+  Opens a date picker dialog and stores the selected date in self.selected_date.
+- open_time_picker
+  Opens a time picker dialog and retrieves the selected time.
+- save_all_tasks
+  Save all tasks to the specified tasks directory.
+- save_task_temporarily
+  Save a task temporarily.
+- schedule_in_task_scheduler(task_filename, schedule_datetime)
+  Schedules a task in the Task Scheduler using the SchTasks command line tool.
+- schedule_task
+  Schedule a task.
+- paintEvent(event)
+  Handles the paint event for the window.
+- show_confirmation_banner(message="TASK ERSTELLT")
+  Displays a confirmation banner with an optional message.
+- get_scheduled_time
+  Returns the scheduled time based on the selected date and time.
+- show_datetime_fields
+  Shows the datetime fields.
+- show_message
+  Shows a message box with a success message and an information icon.
+- toggle_link_input(state, link_input_de, link_input_fr)
+  Enables or disables the given link inputs based on the given state.
+- toggle_multi_mode
+  Toggles the multi mode of the application.
+- update_buttons(tab_name)
+  Updates the buttons in the specified tab.
+- update_datetime_label
+  Update the datetime label with selected date and time.
+- update_subcategories(marken_combobox, categories_combobox)
+  Updates the subcategories in the categories_combobox based on the selected_marke in marken_combobox.
+- update_ui_elements
+  Update the UI elements based on the current state.
+- update_layouts
+  Update layouts and widgets.
+  """
 
 import datetime
 import json
@@ -56,6 +183,7 @@ class DatePickerDialog(QDialog):
             Returns the currently selected date from the QCalendarWidget.
 
     """
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.layout = QVBoxLayout(self)
@@ -130,6 +258,7 @@ class TimePickerDialog(QDialog):
         selected_time = dialog.get_time()
         print("Selected time:", selected_time)
     """
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Uhrzeit wählen")
@@ -191,7 +320,6 @@ class App(QWidget):
     tasks_directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tasks")
     last_task_end_time_file = os.path.join(tasks_directory, "last_task_end_time.json")
     multi_mode = False  # Track if multi-mode is enabled
-    counter_added = False
 
     def __init__(self):
         super().__init__()
@@ -224,62 +352,63 @@ class App(QWidget):
         self.categories_combobox_remove = None
 
         self.task_counter_int = 0
+        self.task_counters = {}
 
         self.category_data = {
             "Kamerasysteme + Objektive": {
-                "Nikon": {
-                    "Nikon Z": {},
+                "Nikon"    : {
+                    "Nikon Z"                 : {},
                     "Nikkor Z-Mount Objektive": {},
-                    "Nikon DSLR": {},
+                    "Nikon DSLR"              : {},
                     "Nikkor F-Mount Objektive": {},
-                    "Nikon Blitzgeräte": {},
-                    "Nikon Coolpix": {},
-                    "Nikon DSLR Zubehör": {},
-                    "Nikon Objektivzubehör": {},
+                    "Nikon Blitzgeräte"       : {},
+                    "Nikon Coolpix"           : {},
+                    "Nikon DSLR Zubehör"      : {},
+                    "Nikon Objektivzubehör"   : {},
                 },
-                "Sony": {
-                    "Sony E-Mount Kameras": {},
-                    "Sony E-Mount Objektive": {},
-                    "Sony E-Mount APS-C Kameras": {},
+                "Sony"     : {
+                    "Sony E-Mount Kameras"        : {},
+                    "Sony E-Mount Objektive"      : {},
+                    "Sony E-Mount APS-C Kameras"  : {},
                     "Sony E-Mount APS-C Objektive": {},
-                    "Sony E-Mount Zubehör": {},
-                    "Sony Blitzgeräte": {},
-                    "Sony Kompaktkameras": {},
-                    "Sony XPERIA Smartphones": {},
-                    "Sony A-Mount Kameras": {},
-                    "Sony A-Mount Objektive": {},
-                    "Sony A-Mount Zubehör": {},
+                    "Sony E-Mount Zubehör"        : {},
+                    "Sony Blitzgeräte"            : {},
+                    "Sony Kompaktkameras"         : {},
+                    "Sony XPERIA Smartphones"     : {},
+                    "Sony A-Mount Kameras"        : {},
+                    "Sony A-Mount Objektive"      : {},
+                    "Sony A-Mount Zubehör"        : {},
                 },
                 "Phase One": {
-                    "Phase One IQ Backs": {},
-                    "Phase One XF Camera System": {},
-                    "Phase One XT Camera System": {},
-                    "CPO Phase One IQ Backs für Phase One XF": {},
-                    "CPO Phase One XF Kamerasysteme": {},
-                    "CPO Phase One IQ Backs für Hasselblad": {},
-                    "Phase One XF Kamerasysteme": {},
-                    "Phase One XT Kamera und Objektive": {},
+                    "Phase One IQ Backs"                       : {},
+                    "Phase One XF Camera System"               : {},
+                    "Phase One XT Camera System"               : {},
+                    "CPO Phase One IQ Backs für Phase One XF"  : {},
+                    "CPO Phase One XF Kamerasysteme"           : {},
+                    "CPO Phase One IQ Backs für Hasselblad"    : {},
+                    "Phase One XF Kamerasysteme"               : {},
+                    "Phase One XT Kamera und Objektive"        : {},
                     "Schneider Kreuznach Objektive (Blue Ring)": {},
-                    "CPO Schneider Kreuznach Objektive": {},
-                    "Capture One": {},
+                    "CPO Schneider Kreuznach Objektive"        : {},
+                    "Capture One"                              : {},
                 },
-                "Cambo": {
-                    "Cambo Wide RS": {},
-                    "Cambo ACTUS": {},
+                "Cambo"    : {
+                    "Cambo Wide RS"                : {},
+                    "Cambo ACTUS"                  : {},
                     "Cambo Zubehör zu Phase One XT": {},
-                    "Cambo Adapter": {},
-                    "Cambo ACTUS DB": {},
-                    "Cambo ACTUS-XL": {},
+                    "Cambo Adapter"                : {},
+                    "Cambo ACTUS DB"               : {},
+                    "Cambo ACTUS-XL"               : {},
                 },
-                "Leica": {
-                    "Leica M & Objektive": {},
-                    "Leica Q": {},
-                    "Leica SL & Objektive": {},
-                    "Leica S & Objektive": {},
+                "Leica"    : {
+                    "Leica M & Objektive"      : {},
+                    "Leica Q"                  : {},
+                    "Leica SL & Objektive"     : {},
+                    "Leica S & Objektive"      : {},
                     "Leica TL / CL & Objektive": {},
-                    "Leica V": {},
-                    "Leica X": {},
-                    "Leica SOFORT": {},
+                    "Leica V"                  : {},
+                    "Leica X"                  : {},
+                    "Leica SOFORT"             : {},
                 },
             }
         }
@@ -371,6 +500,7 @@ class App(QWidget):
             self.datetime_fields_added = True
 
     def add_articles_input(self, layout, tab_type):
+        # sourcery skip: extract-duplicate-method
         """
         Add articles input widget to the given layout based on the tab type.
 
@@ -402,6 +532,7 @@ class App(QWidget):
             )  # Debug line
 
     def add_image_and_link_fields(self, layout):
+        # sourcery skip: extract-duplicate-method
         """
         :param layout: The layout in which the image and link input fields will be added.
         :return: None
@@ -430,6 +561,7 @@ class App(QWidget):
         layout.addWidget(self.width_input)
 
         self.link_checkbox = QCheckBox("Link hinzufügen?", self)
+        self.link_checkbox.setCheckState(Qt.CheckState.Unchecked)
         self.link_checkbox.stateChanged.connect(
             lambda state: self.toggle_link_input(
                 state, self.link_input_de, self.link_input_fr
@@ -438,14 +570,16 @@ class App(QWidget):
         layout.addWidget(self.link_checkbox)
 
         self.link_input_de = self.create_line_edit_with_label("Link (Deutsch)", layout)
-        self.link_input_de.setDisabled(True)
+        self.link_input_de.setEnabled(False)
         layout.addWidget(self.link_input_de)
+        print(f"added link_input_de: {self.link_input_de}")
 
         self.link_input_fr = self.create_line_edit_with_label(
             "Link (Französisch)", layout
         )
-        self.link_input_fr.setDisabled(True)
+        self.link_input_fr.setEnabled(False)
         layout.addWidget(self.link_input_fr)
+        print(f"added link_input_fr: {self.link_input_fr}")
 
     def on_articles_input_changed(self, text):
         """
@@ -555,36 +689,44 @@ class App(QWidget):
 
         :return: None
         """
-        clear_fields = self.clear_checkbox.isChecked()
-        if clear_fields:
-            current_tab_name = self.tab_widget.tabText(self.tab_widget.currentIndex())
-            if current_tab_name == "Hinzufügen":
-                self.marken_combobox_add.setCurrentIndex(0)
-                self.categories_combobox_add.setCurrentIndex(0)
-                print(
-                    f"Before clearing (Hinzufügen): articles_input: {self.articles_input_add.text()}, id: {id(self.articles_input_add)}, img1_input: {self.img1_input.text()}, img2_input: {self.img2_input.text()}"
-                )
-                self.articles_input_add.clear()
-                self.img1_input.clear()
-                self.img2_input.clear()
-                self.width_input.clear()
-                self.height_input.clear()
-                self.link_checkbox.setChecked(False)
-                self.link_input_de.clear()
-                self.link_input_fr.clear()
-                print(
-                    f"After clearing (Hinzufügen): articles_input: {self.articles_input_add.text()}, id: {id(self.articles_input_add)}"
-                )
-            elif current_tab_name == "Entfernen":
-                self.marken_combobox_remove.setCurrentIndex(0)
-                self.categories_combobox_remove.setCurrentIndex(0)
-                print(
-                    f"Before clearing (Entfernen): articles_input: {self.articles_input_remove.text()}, id: {id(self.articles_input_remove)}"
-                )
-                self.articles_input_remove.clear()
-                print(
-                    f"After clearing (Entfernen): articles_input: {self.articles_input_remove.text()}, id: {id(self.articles_input_remove)}"
-                )
+        if not (clear_fields := self.clear_checkbox.isChecked()):
+            return
+        current_tab_name = self.tab_widget.tabText(self.tab_widget.currentIndex())
+        if current_tab_name == "Hinzufügen":
+            self.clear_add_fields()
+        elif current_tab_name == "Entfernen":
+            self.marken_combobox_remove.setCurrentIndex(0)
+            self.categories_combobox_remove.setCurrentIndex(0)
+            print(
+                f"Before clearing (Entfernen): articles_input: {self.articles_input_remove.text()}, id: {id(self.articles_input_remove)}"
+            )
+            self.articles_input_remove.clear()
+            print(
+                f"After clearing (Entfernen): articles_input: {self.articles_input_remove.text()}, id: {id(self.articles_input_remove)}"
+            )
+
+    def clear_add_fields(self):
+        """
+        Clears all input fields in the 'add' section of the UI.
+
+        :return: None
+        """
+        self.marken_combobox_add.setCurrentIndex(0)
+        self.categories_combobox_add.setCurrentIndex(0)
+        print(
+            f"Before clearing (Hinzufügen): articles_input: {self.articles_input_add.text()}, id: {id(self.articles_input_add)}, img1_input: {self.img1_input.text()}, img2_input: {self.img2_input.text()}"
+        )
+        self.articles_input_add.clear()
+        self.img1_input.clear()
+        self.img2_input.clear()
+        self.width_input.clear()
+        self.height_input.clear()
+        self.link_checkbox.setChecked(False)
+        self.link_input_de.clear()
+        self.link_input_fr.clear()
+        print(
+            f"After clearing (Hinzufügen): articles_input: {self.articles_input_add.text()}, id: {id(self.articles_input_add)}"
+        )
 
     def clear_layout(self, layout):
         """
@@ -705,9 +847,11 @@ class App(QWidget):
 
         self.add_datetime_fields()
 
+        layout.addStretch(1)
+
         # Add Counter for currently scheduled tasks
-        if not self.counter_added:
-            self.add_task_counter(layout)
+        self.add_task_counter(layout, tab_name)
+
         button_layout = QVBoxLayout()
         self.button_layouts[tab_name] = button_layout  # Store the button layout
         self.update_buttons(tab_name)
@@ -722,28 +866,27 @@ class App(QWidget):
 
         return tab
 
-    def add_task_counter(self, layout):
+    def add_task_counter(self, layout, tab_name):
         """
-        :param layout: The layout in which the task counter will be added.
+        :param layout: The layout for which the task counter will be added.
+        :param tab_name: The name of the tab.
         :return: None
 
-        This method is used to add a task counter to the given layout. The task counter consists of a title label and a counter label.
-
-        The `layout` parameter is the layout in which the task counter will be added.
-
-        Example usage:
-            add_task_counter(layout)
+        This method is used to add a task counter to the given layout.
         """
         counter_layout = QHBoxLayout()
-        self.task_counter_title = self.create_label('<b>Erstellte Tasks: </b>', 10, Qt.AlignmentFlag.AlignCenter, True)
-        self.task_counter = self.create_label('<b>0</b>', 10, Qt.AlignmentFlag.AlignCenter, True)
-        counter_layout.addWidget(self.task_counter_title)
-        print(f'added counter title with id: {id(self.task_counter_title)}')
-        counter_layout.addWidget(self.task_counter)
-        self.task_counter_title.setVisible(False)
-        self.task_counter.setVisible(False)
+        task_counter_title = self.create_label(
+            "<b>Erstellte Tasks: </b>", 10, Qt.AlignmentFlag.AlignCenter, True
+        )
+        task_counter = self.create_label("<b>0</b>", 10, Qt.AlignmentFlag.AlignCenter, True)
+
+        counter_layout.addWidget(task_counter_title)
+        counter_layout.addWidget(task_counter)
+        task_counter_title.setVisible(False)
+        task_counter.setVisible(False)
         layout.addLayout(counter_layout)
-        self.counter_added = True
+
+        self.task_counters[tab_name] = (task_counter_title, task_counter)
 
     def create_task(self):
         """
@@ -785,45 +928,45 @@ class App(QWidget):
         )
 
         task = {
-            "task_type": task_type,
+            "task_type"        : task_type,
             "schedule_datetime": self.get_scheduled_time().isoformat(),
-            "data": {
-                "marke": marken_combobox.currentText(),
-                "kategorie": categories_combobox.currentText(),
+            "data"             : {
+                "marke"          : marken_combobox.currentText(),
+                "kategorie"      : categories_combobox.currentText(),
                 "article_numbers": articles_input.text(),
-                "img1_url": (
+                "img1_url"       : (
                     self.img1_input.text() if current_tab_name == "Hinzufügen" else None
                 ),
-                "img2_url": (
+                "img2_url"       : (
                     self.img2_input.text() if current_tab_name == "Hinzufügen" else None
                 ),
-                "width": (
+                "width"          : (
                     self.width_input.text()
                     if current_tab_name == "Hinzufügen"
                     else None
                 ),
-                "height": (
+                "height"         : (
                     self.height_input.text()
                     if current_tab_name == "Hinzufügen"
                     else None
                 ),
-                "link_checkbox": (
+                "link_checkbox"  : (
                     self.link_checkbox.isChecked()
                     if current_tab_name == "Hinzufügen"
                     else None
                 ),
-                "link_input_de": (
+                "link_input_de"  : (
                     self.link_input_de.text()
                     if current_tab_name == "Hinzufügen"
                     else None
                 ),
-                "link_input_fr": (
+                "link_input_fr"  : (
                     self.link_input_fr.text()
                     if current_tab_name == "Hinzufügen"
                     else None
                 ),
             },
-            "follow_up": self.multi_mode,
+            "follow_up"        : self.multi_mode,
         }
         print(f"Task created: {task}")
         return task
@@ -940,10 +1083,10 @@ class App(QWidget):
             self.banner_label.setText(
                 "<b>Multi-Task Mode</b>" + "<br>" + "Nach dem ersten Task ausführen"
             )
-        self.task_counter_int = self.task_counter_int + 1
-        print(f'current task counter is: {self.task_counter_int}')
-        self.task_counter.setText(str(self.task_counter_int))
-        self.task_counter.repaint()
+        self.task_counter_int += 1
+        for task_counter_title, task_counter in self.task_counters.values():
+            task_counter.setText(str(self.task_counter_int))
+
         # Show the new top banner
         self.show_confirmation_banner()
         self.update_ui_elements()
@@ -1112,6 +1255,7 @@ class App(QWidget):
         msg_box.exec()
 
     def toggle_link_input(self, state, link_input_de, link_input_fr):
+
         """
         Enables or disables the given link inputs based on the given state.
 
@@ -1123,12 +1267,29 @@ class App(QWidget):
         :type link_input_fr: QtWidgets.QLineEdit
         :return: None
         """
+        print(f"toggle_link_input called with parameters: \n- State: {state} \n- link_input_de: {link_input_de} \n- "
+              f"link_input_fr: {link_input_fr}")
         if state == Qt.CheckState.Checked:
-            link_input_de.setDisabled(False)
-            link_input_fr.setDisabled(False)
+            link_input_de.setEnabled(True)
+            print(f"enabled link_input_de: {link_input_de}")
+            print(f"link_input_de enabled status: {link_input_de.isEnabled()}")
+            print(link_input_de.parent().isEnabled())
+            link_input_fr.setEnabled(True)
+            print(f"link_input_fr enabled status: {link_input_fr.isEnabled()}")
+            print(link_input_fr.parent().isEnabled())
         else:
-            link_input_de.setDisabled(True)
-            link_input_fr.setDisabled(True)
+            link_input_de.setEnabled(False)
+            print(f"link_input_de enabled status: {link_input_de.isEnabled()}")
+            print(link_input_de.parent().isEnabled())
+            link_input_fr.setEnabled(False)
+            print(f"link_input_fr enabled status: {link_input_fr.isEnabled()}")
+            print(link_input_fr.parent().isEnabled())
+
+        # force update elements
+        link_input_de.update()
+        link_input_fr.update()
+
+        QApplication.processEvents()
 
     def toggle_multi_mode(self):
         """
@@ -1149,12 +1310,10 @@ class App(QWidget):
         )
         self.top_banner_label.hide()  # Hide the new top banner when switching modes
 
-        if self.multi_mode:
-            self.task_counter_title.setVisible(True)
-            self.task_counter.setVisible(True)
-        else:
-            self.task_counter_title.setVisible(False)
-            self.task_counter.setVisible(False)
+        show_counters = self.multi_mode
+        for task_counter_title, task_counter in self.task_counters.values():
+            task_counter_title.setVisible(show_counters)
+            task_counter.setVisible(show_counters)
 
         for tab_name in self.button_layouts:
             self.update_buttons(tab_name)
@@ -1244,4 +1403,3 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     ex = App()
     sys.exit(app.exec())
-
