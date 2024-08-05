@@ -7,4 +7,7 @@
     <orderEntry type="jdk" jdkName="Python 3.9 (Bautonizer3000)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
+  <component name="ReSTService">
+    <option name="DOC_DIR" value="C:\Users\Hafner\Desktop\Aaron_C\Files_Software\Buttonizer3000\Bautonizer3000\docs" />
+  </component>
 </module>

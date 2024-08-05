@@ -464,7 +464,9 @@ def execute_task(task_filename):
         driver.quit()
 
     if task.get("follow_up", False):
-        for next_task in task["subsequent_tasks"]:
+        subsequent_tasks = task.get("subsequent_tasks", [])
+        # if "subsequent_tasks" doesn't exist in task, an empty list is returned.
+        for next_task in subsequent_tasks:
             execute_task(next_task)
 
 

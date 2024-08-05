@@ -15,7 +15,8 @@ QDialog subclass that provides a dialog for selecting a date using a QCalendarWi
 
 #### Methods:
 - __init__(parent=None)
-  Initializes the DatePickerDialog with an optional parent widget. Creates the layout and sets the window title. Creates a QCalendarWidget and adds it to the layout. Calls the create_buttons method.
+  Initializes the DatePickerDialog with an optional parent widget. Creates the layout and sets the window title.
+  Creates a QCalendarWidget and adds it to the layout. Calls the create_buttons method.
 
 - create_buttons()
   Creates and adds OK and Abbrechen buttons to the layout, each with a corresponding click handler (accept/reject).
@@ -517,7 +518,8 @@ class App(QWidget):
             layout.addWidget(self.articles_input_add)
             self.articles_input_add.textChanged.connect(self.on_articles_input_changed)
             print(
-                f"Initialized articles_input_add: {self.articles_input_add}, id: {id(self.articles_input_add)}, text: {self.articles_input_add.text()}"
+                f"Initialized articles_input_add: {self.articles_input_add}, id: {id(self.articles_input_add)}, "
+                f"text: {self.articles_input_add.text()}"
             )  # Debug line
         elif tab_type == "remove":
             self.articles_input_remove = self.create_line_edit_with_label(
@@ -528,7 +530,8 @@ class App(QWidget):
                 self.on_articles_input_changed
             )
             print(
-                f"Initialized articles_input_remove: {self.articles_input_remove}, id: {id(self.articles_input_remove)}, text: {self.articles_input_remove.text()}"
+                f"Initialized articles_input_remove: {self.articles_input_remove}, "
+                f"id: {id(self.articles_input_remove)}, text: {self.articles_input_remove.text()}"
             )  # Debug line
 
     def add_image_and_link_fields(self, layout):
@@ -563,9 +566,7 @@ class App(QWidget):
         self.link_checkbox = QCheckBox("Link hinzufügen?", self)
         self.link_checkbox.setCheckState(Qt.CheckState.Unchecked)
         self.link_checkbox.stateChanged.connect(
-            lambda state: self.toggle_link_input(
-                state, self.link_input_de, self.link_input_fr
-            )
+            lambda _: self.toggle_link_input(self.link_checkbox.checkState(), self.link_input_de, self.link_input_fr)
         )
         layout.addWidget(self.link_checkbox)
 
@@ -698,11 +699,13 @@ class App(QWidget):
             self.marken_combobox_remove.setCurrentIndex(0)
             self.categories_combobox_remove.setCurrentIndex(0)
             print(
-                f"Before clearing (Entfernen): articles_input: {self.articles_input_remove.text()}, id: {id(self.articles_input_remove)}"
+                f"Before clearing (Entfernen): articles_input: {self.articles_input_remove.text()}, "
+                f"id: {id(self.articles_input_remove)}"
             )
             self.articles_input_remove.clear()
             print(
-                f"After clearing (Entfernen): articles_input: {self.articles_input_remove.text()}, id: {id(self.articles_input_remove)}"
+                f"After clearing (Entfernen): articles_input: {self.articles_input_remove.text()}, "
+                f"id: {id(self.articles_input_remove)}"
             )
 
     def clear_add_fields(self):
@@ -714,7 +717,9 @@ class App(QWidget):
         self.marken_combobox_add.setCurrentIndex(0)
         self.categories_combobox_add.setCurrentIndex(0)
         print(
-            f"Before clearing (Hinzufügen): articles_input: {self.articles_input_add.text()}, id: {id(self.articles_input_add)}, img1_input: {self.img1_input.text()}, img2_input: {self.img2_input.text()}"
+            f"Before clearing (Hinzufügen): articles_input: {self.articles_input_add.text()}, "
+            f"id: {id(self.articles_input_add)}, img1_input: {self.img1_input.text()}, img2_input: "
+            f"{self.img2_input.text()}"
         )
         self.articles_input_add.clear()
         self.img1_input.clear()
@@ -725,7 +730,8 @@ class App(QWidget):
         self.link_input_de.clear()
         self.link_input_fr.clear()
         print(
-            f"After clearing (Hinzufügen): articles_input: {self.articles_input_add.text()}, id: {id(self.articles_input_add)}"
+            f"After clearing (Hinzufügen): articles_input: {self.articles_input_add.text()}, "
+            f"id: {id(self.articles_input_add)}"
         )
 
     def clear_layout(self, layout):
@@ -861,7 +867,14 @@ class App(QWidget):
 
         # Debug statements
         print(
-            f"Tab {tab_name} created with marken_combobox: {self.marken_combobox_add if tab_type == 'add' else self.marken_combobox_remove}, id: {id(self.marken_combobox_add if tab_type == 'add' else self.marken_combobox_remove)}, categories_combobox: {self.categories_combobox_add if tab_type == 'add' else self.categories_combobox_remove}, id: {id(self.categories_combobox_add if tab_type == 'add' else self.categories_combobox_remove)}, articles_input: {self.articles_input_add if tab_type == 'add' else self.articles_input_remove}, id: {id(self.articles_input_add if tab_type == 'add' else self.articles_input_remove)}"
+            f"Tab {tab_name} created with marken_combobox: "
+            f"{self.marken_combobox_add if tab_type == 'add' else self.marken_combobox_remove}, "
+            f"id: {id(self.marken_combobox_add if tab_type == 'add' else self.marken_combobox_remove)}, "
+            f"categories_combobox: "
+            f"{self.categories_combobox_add if tab_type == 'add' else self.categories_combobox_remove}, "
+            f"id: {id(self.categories_combobox_add if tab_type == 'add' else self.categories_combobox_remove)}, "
+            f"articles_input: {self.articles_input_add if tab_type == 'add' else self.articles_input_remove}, "
+            f"id: {id(self.articles_input_add if tab_type == 'add' else self.articles_input_remove)}"
         )
 
         return tab
@@ -1112,7 +1125,9 @@ class App(QWidget):
 
         date_str = schedule_datetime.strftime("%d/%m/%Y")
         time_str = schedule_datetime.strftime("%H:%M")
-        command = f'SchTasks /Create /SC ONCE /TN "ButtonizerTask_{os.path.basename(task_filename)}" /TR "python {os.path.abspath(__file__).replace("bAUTOnizer3000.py", "exe_tasks.py")} {task_filename}" /ST {time_str} /SD {date_str} /F'
+        command = (f'SchTasks /Create /SC ONCE /TN "ButtonizerTask_{os.path.basename(task_filename)}" /TR "python '
+                   f'{os.path.abspath(__file__).replace("bAUTOnizer3000.py", "exe_tasks.py")} {task_filename}" /ST '
+                   f'{time_str} /SD {date_str} /F')
         try:
             subprocess.run(command, check=True, shell=True)
         except subprocess.CalledProcessError as e:
@@ -1272,17 +1287,17 @@ class App(QWidget):
         if state == Qt.CheckState.Checked:
             link_input_de.setEnabled(True)
             print(f"enabled link_input_de: {link_input_de}")
-            print(f"link_input_de enabled status: {link_input_de.isEnabled()}")
+            print(f"link_input_de enabled status should be true: {link_input_de.isEnabled()}")
             print(link_input_de.parent().isEnabled())
             link_input_fr.setEnabled(True)
-            print(f"link_input_fr enabled status: {link_input_fr.isEnabled()}")
+            print(f"link_input_fr enabled status should be true: {link_input_fr.isEnabled()}")
             print(link_input_fr.parent().isEnabled())
         else:
             link_input_de.setEnabled(False)
-            print(f"link_input_de enabled status: {link_input_de.isEnabled()}")
+            print(f"link_input_de enabled status should be false: {link_input_de.isEnabled()}")
             print(link_input_de.parent().isEnabled())
             link_input_fr.setEnabled(False)
-            print(f"link_input_fr enabled status: {link_input_fr.isEnabled()}")
+            print(f"link_input_fr enabled status should be false: {link_input_fr.isEnabled()}")
             print(link_input_fr.parent().isEnabled())
 
         # force update elements
