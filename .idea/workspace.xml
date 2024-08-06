@@ -8,10 +8,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ae7ff266-455f-41b7-8c50-a22fbd8e171f" name="Changes" comment="everything working as expected. working on getting the task deleted a day after execution.&#10;&#10;Moved `exe_tasks.py` file to tasks folder and improve task scheduling.&#10;&#10;Removed the `exe_tasks.py` file to streamline the codebase. Updated the task scheduler to utilize a temporary batch file for better compatibility and enhanced the UI elements for task management.">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="ae7ff266-455f-41b7-8c50-a22fbd8e171f" name="Changes" comment="Allow tracking of exe_tasks.py in tasks directory.&#10;&#10;This change modifies .gitignore to exclude `exe_tasks.py` from being ignored. This will allow the file to be tracked and committed in the repository, aiding in better version control for important task scripts." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -147,7 +144,23 @@
       <option name="project" value="LOCAL" />
       <updated>1722928249478</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Exclude chrome and tasks folders, and update workspace.&#10;&#10;Excluded `chrome` and `tasks` folders from indexing to streamline the project. Updated the workspace configurations to include environment variables and improved task management for better project organization. Additionally, modified the `.gitignore` file to maintain consistency with the current directory structure.">
+      <option name="closed" value="true" />
+      <created>1722929634351</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1722929634351</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Allow tracking of exe_tasks.py in tasks directory.&#10;&#10;This change modifies .gitignore to exclude `exe_tasks.py` from being ignored. This will allow the file to be tracked and committed in the repository, aiding in better version control for important task scripts.">
+      <option name="closed" value="true" />
+      <created>1722929686025</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1722929686025</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -165,6 +178,8 @@
     <MESSAGE value="Simplify dependencies and refactor code documentation&#10;&#10;Removed redundant libraries in `requirements.txt` and documented code methods.&#10;&#10;Cleaned up unused dependencies to streamline the project setup. Additionally, added detailed docstrings to functions and methods in `exe_tasks.py` and `bAUTOnizer3000.py` for better code maintenance and readability. Adjusted configurations for Python SDK version in `.idea` files." />
     <MESSAGE value="Update temp.py and exe_tasks.py; enhance readability&#10;&#10;Removed the task counter layout from temp.py and added OpenAI import. Improved handling of missing subsequent tasks in exe_tasks.py. Reformatted strings and debug statements in bAUTOnizer3000.py for clarity. Enhanced README.md structure, added badges and links, and updated contributing and installation guidelines for better documentation." />
     <MESSAGE value="everything working as expected. working on getting the task deleted a day after execution.&#10;&#10;Moved `exe_tasks.py` file to tasks folder and improve task scheduling.&#10;&#10;Removed the `exe_tasks.py` file to streamline the codebase. Updated the task scheduler to utilize a temporary batch file for better compatibility and enhanced the UI elements for task management." />
-    <option name="LAST_COMMIT_MESSAGE" value="everything working as expected. working on getting the task deleted a day after execution.&#10;&#10;Moved `exe_tasks.py` file to tasks folder and improve task scheduling.&#10;&#10;Removed the `exe_tasks.py` file to streamline the codebase. Updated the task scheduler to utilize a temporary batch file for better compatibility and enhanced the UI elements for task management." />
+    <MESSAGE value="Exclude chrome and tasks folders, and update workspace.&#10;&#10;Excluded `chrome` and `tasks` folders from indexing to streamline the project. Updated the workspace configurations to include environment variables and improved task management for better project organization. Additionally, modified the `.gitignore` file to maintain consistency with the current directory structure." />
+    <MESSAGE value="Allow tracking of exe_tasks.py in tasks directory.&#10;&#10;This change modifies .gitignore to exclude `exe_tasks.py` from being ignored. This will allow the file to be tracked and committed in the repository, aiding in better version control for important task scripts." />
+    <option name="LAST_COMMIT_MESSAGE" value="Allow tracking of exe_tasks.py in tasks directory.&#10;&#10;This change modifies .gitignore to exclude `exe_tasks.py` from being ignored. This will allow the file to be tracked and committed in the repository, aiding in better version control for important task scripts." />
   </component>
 </project>

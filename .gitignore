@@ -25,7 +25,6 @@ share/python-wheels/
 .installed.cfg
 *.egg
 chrome/
-tasks/
 Puff/
 venv/
 
@@ -71,8 +70,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-Bautonizer/chrome/
-Bautonizer/tasks/
 Puff/
 build/
 /.vscode/
@@ -83,4 +80,6 @@ build/
 /qodana.yaml
 /temp.py
 /test.py
+tasks/*
+!tasks/
 !/tasks/exe_tasks.py
