@@ -79,7 +79,7 @@ a future date and time. Task scheduling uses a secondary script to periodically 
 
 Ensure you have the following dependencies installed on your system:
 
-* **Python**: `version x.y.z`
+* **Python**: `version 3.9.x`
 
 ### Installation
 
@@ -106,7 +106,7 @@ pip install -r requirements.txt
 Use the following command to run Bautonizer3000:
 
 ```sh
-python main.py
+python bAUTOnizer3000.py
 ```
 
 ---
