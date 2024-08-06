@@ -83,3 +83,4 @@ build/
 /qodana.yaml
 /temp.py
 /test.py
+!/tasks/exe_tasks.py
