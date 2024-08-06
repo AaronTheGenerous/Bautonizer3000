@@ -4,9 +4,7 @@
 <p align="center">
     <h1 align="center">BAUTONIZER3000</h1>
 </p>
-<p align="center">
-    <em>HTTP error 404 for prompt `slogan`</em>
-</p>
+
 <p align="center">
 	<img src="https://img.shields.io/github/license/AaronTheGenerous/Bautonizer3000.git?style=flat&color=0080ff" alt="license">
 	<img src="https://img.shields.io/github/last-commit/AaronTheGenerous/Bautonizer3000.git?style=flat&logo=git&logoColor=white&color=0080ff" alt="last-commit">
