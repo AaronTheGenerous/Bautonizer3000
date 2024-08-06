@@ -83,8 +83,7 @@ dmypy.json
 /qodana.yaml
 /temp.py
 /test.py
-/chrome/
-/chrome/*
+chrome/
 
 # GitHub Actions workflows
 .github/
