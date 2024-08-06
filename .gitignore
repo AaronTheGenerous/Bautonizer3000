@@ -27,7 +27,7 @@ share/python-wheels/
 chrome/
 tasks/
 Puff/
-
+venv/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -74,6 +74,12 @@ dmypy.json
 Bautonizer/chrome/
 Bautonizer/tasks/
 Puff/
-Puff/
-Bautonizer/chrome/
 build/
+/.vscode/
+/.github/
+/__init__.py
+/bAUTOnizer3000_stable.py
+/bAUTOnizer3000_temp.py
+/qodana.yaml
+/temp.py
+/test.py
