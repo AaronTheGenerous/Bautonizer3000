@@ -139,6 +139,7 @@ import datetime
 import json
 import os
 import sys
+import tempfile
 
 from PyQt6 import QtCore
 from PyQt6.QtCore import Qt, QDate, QTime, QEasingCurve, QPropertyAnimation
@@ -328,7 +329,7 @@ class App(QWidget):
         self.left = 100
         self.top = 100
         self.window_width = 260
-        self.height = 880  # Increased height to accommodate the switch and banner
+        self.height = 900  # Increased height to accommodate the switch and banner
         self._borderColor = QColor(
             255, 221, 0, 0
         )  # Initial border color (transparent yellow)
@@ -1077,6 +1078,13 @@ class App(QWidget):
 
         self.temp_tasks = []  # Clear the temporary tasks
         self.task_counter_int = 0
+        for task_counter_title, task_counter in self.task_counters.values():
+            task_counter.setText(str(self.task_counter_int))
+        self.banner_label.setText(
+            "<b>Multi-Task Mode</b>" + "<br>" + "Startzeit und Datum Wählen"
+            if self.multi_mode
+            else ""
+        )
         self.show_message()
 
     def save_task_temporarily(self):
@@ -1105,29 +1113,27 @@ class App(QWidget):
         self.update_ui_elements()
 
     def schedule_in_task_scheduler(self, task_filename, schedule_datetime):
-        """
-        :param task_filename: The filename of the task to be scheduled in the Task Scheduler.
-        :param schedule_datetime: The datetime object representing the date and time when the task should be scheduled.
-        :return: None
-
-        This method schedules a task in the Task Scheduler by using the `SchTasks` command line tool. It creates a
-        one-time scheduled task with a specified task name, task file, and schedule date and time.
-
-        The `task_filename` parameter should be the filename of the task that needs to be scheduled in the Task
-        Scheduler.
-
-        The `schedule_datetime` parameter should be a datetime object representing the date and time when the task
-        should be scheduled.
-
-        This method does not return any value.
-        """
         import subprocess
+
+        script_path = f"{os.getcwd()}\\tasks\\exe_tasks.py"
+        task_path = f"{os.getcwd()}\\tasks\\{os.path.basename(task_filename)}"
 
         date_str = schedule_datetime.strftime("%d/%m/%Y")
         time_str = schedule_datetime.strftime("%H:%M")
-        command = (f'SchTasks /Create /SC ONCE /TN "ButtonizerTask_{os.path.basename(task_filename)}" /TR "python '
-                   f'{os.path.abspath(__file__).replace("bAUTOnizer3000.py", "exe_tasks.py")} {task_filename}" /ST '
-                   f'{time_str} /SD {date_str} /F')
+
+        # Get the venv python path
+        python_path = os.path.join(os.getcwd(), "venv", "Scripts", "python.exe")
+
+        with tempfile.NamedTemporaryFile('w', delete=False, suffix='.bat') as f:
+            # Write venv's python command to the batch file
+            f.write(f'"{python_path}" "{script_path}" "{task_path}"')
+
+        command = (
+            f'SchTasks /Create /SC ONCE /TN "ButtonizerTask_{os.path.basename(task_filename)}" '
+            f'/TR "{f.name}" '  # Here we use the batch file name instead of python command
+            f"/ST {time_str} /SD {date_str} /F"
+        )
+
         try:
             subprocess.run(command, check=True, shell=True)
         except subprocess.CalledProcessError as e:
@@ -1320,6 +1326,12 @@ class App(QWidget):
         )
         self.banner_label.setText(
             "<b>Multi-Task Mode</b>" + "<br>" + "Startzeit und Datum Wählen"
+            if self.multi_mode
+            else ""
+        )
+        self.banner_label.setStyleSheet(
+            "border: 3px solid #ffdd00;"
+            "padding: 8px;"
             if self.multi_mode
             else ""
         )

@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="AnalysisUIOptions">
+    <option name="ANALYZE_INJECTED_CODE" value="false" />
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ae7ff266-455f-41b7-8c50-a22fbd8e171f" name="Changes" comment="Simplify dependencies and refactor code documentation&#10;&#10;Removed redundant libraries in `requirements.txt` and documented code methods.&#10;&#10;Cleaned up unused dependencies to streamline the project setup. Additionally, added detailed docstrings to functions and methods in `exe_tasks.py` and `bAUTOnizer3000.py` for better code maintenance and readability. Adjusted configurations for Python SDK version in `.idea` files.">
-      <change beforePath="$PROJECT_DIR$/.idea/Bautonizer3000.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Bautonizer3000.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Reset_at_10_07_2024_10_27__Changes_.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Reset_at_10_07_2024_10_27__Changes_.xml" afterDir="false" />
+    <list default="true" id="ae7ff266-455f-41b7-8c50-a22fbd8e171f" name="Changes" comment="Update temp.py and exe_tasks.py; enhance readability&#10;&#10;Removed the task counter layout from temp.py and added OpenAI import. Improved handling of missing subsequent tasks in exe_tasks.py. Reformatted strings and debug statements in bAUTOnizer3000.py for clarity. Enhanced README.md structure, added badges and links, and updated contributing and installation guidelines for better documentation.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bAUTOnizer3000.py" beforeDir="false" afterPath="$PROJECT_DIR$/bAUTOnizer3000.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exe_tasks.py" beforeDir="false" afterPath="$PROJECT_DIR$/exe_tasks.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/temp.py" beforeDir="false" afterPath="$PROJECT_DIR$/temp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/exe_tasks.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,6 +33,9 @@
     &quot;accountId&quot;: &quot;5414c855-1642-4e3a-ab80-e1c4add36054&quot;
   }
 }</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
 }</component>
@@ -47,26 +47,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.bAUTOnizer3000.executor": "Run",
-    "Python.python exe_tasks.py [path-to-task.json].executor": "Run",
-    "Python.temp.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/Hafner/Desktop/Aaron_C/Files_Software/Buttonizer3000/Bautonizer3000/docs",
-    "run.code.analysis.last.selected.profile": "aDefault",
-    "settings.editor.selected.configurable": "preferences.pluginManager"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.bAUTOnizer3000.executor&quot;: &quot;Run&quot;,
+    &quot;Python.python exe_tasks.py [path-to-task.json].executor&quot;: &quot;Run&quot;,
+    &quot;Python.temp.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Hafner/Desktop/Aaron_C/Files_Software/Buttonizer3000/Bautonizer3000/docs&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aInspectorAaron&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
   }
-}]]></component>
-  <component name="RunManager" selected="Python.python exe_tasks.py [path-to-task.json]">
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Hafner\Desktop\Aaron_C\Files_Software\Buttonizer3000\Bautonizer3000\tasks" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.bAUTOnizer3000">
     <configuration name="bAUTOnizer3000" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <option name="ENV_FILES" value="" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
       <option name="SDK_HOME" value="" />
       <option name="SDK_NAME" value="Python 3.9 (Bautonizer3000)" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
@@ -127,6 +129,20 @@
       <option name="presentableId" value="Default" />
       <updated>1722838999147</updated>
     </task>
+    <task id="LOCAL-00001" summary="Update temp.py and exe_tasks.py; enhance readability&#10;&#10;Removed the task counter layout from temp.py and added OpenAI import. Improved handling of missing subsequent tasks in exe_tasks.py. Reformatted strings and debug statements in bAUTOnizer3000.py for clarity. Enhanced README.md structure, added badges and links, and updated contributing and installation guidelines for better documentation.">
+      <option name="closed" value="true" />
+      <created>1722851753810</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1722851753810</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Simplify dependencies and refactor code documentation&#10;&#10;Removed redundant libraries in `requirements.txt` and documented code methods.&#10;&#10;Cleaned up unused dependencies to streamline the project setup. Additionally, added detailed docstrings to functions and methods in `exe_tasks.py` and `bAUTOnizer3000.py` for better code maintenance and readability. Adjusted configurations for Python SDK version in `.idea` files." />
+    <MESSAGE value="Update temp.py and exe_tasks.py; enhance readability&#10;&#10;Removed the task counter layout from temp.py and added OpenAI import. Improved handling of missing subsequent tasks in exe_tasks.py. Reformatted strings and debug statements in bAUTOnizer3000.py for clarity. Enhanced README.md structure, added badges and links, and updated contributing and installation guidelines for better documentation." />
+    <option name="LAST_COMMIT_MESSAGE" value="Update temp.py and exe_tasks.py; enhance readability&#10;&#10;Removed the task counter layout from temp.py and added OpenAI import. Improved handling of missing subsequent tasks in exe_tasks.py. Reformatted strings and debug statements in bAUTOnizer3000.py for clarity. Enhanced README.md structure, added badges and links, and updated contributing and installation guidelines for better documentation." />
   </component>
 </project>
