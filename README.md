@@ -22,65 +22,58 @@
 </p>
 <hr>
 
-##  Quick Links
+## Quick Links
 
-> - [ Overview](#-overview)
-> - [ Features](#-features)
-> - [ Repository Structure](#-repository-structure)
-> - [ Modules](#-modules)
-> - [ Getting Started](#-getting-started)
->   - [ Installation](#-installation)
->   - [ Running Bautonizer3000](#-running-Bautonizer3000)
->   - [ Tests](#-tests)
-> - [ Project Roadmap](#-project-roadmap)
-> - [ Contributing](#-contributing)
-> - [ License](#-license)
-> - [ Acknowledgments](#-acknowledgments)
+<!-- TOC -->
+  * [Quick Links](#quick-links)
+  * [Overview](#overview)
+  * [Features](#features)
+  * [Repository Structure](#repository-structure)
+  * [Getting Started](#getting-started)
+    * [Installation](#installation)
+    * [Running Bautonizer3000](#running-bautonizer3000)
+  * [Contributing](#contributing)
+  * [License](#license)
+  * [Acknowledgments](#acknowledgments)
+<!-- TOC -->
 
 ---
 
-##  Overview
+## Overview
 
-Buttonizer3000 is a Python-based automation tool for managing promotional buttons on articles on a webpage. 
+Buttonizer3000 is a Python-based automation tool for managing promotional buttons on articles on a webpage.
 It allows users to schedule tasks for adding or removing promotional images and links to articles at specified times.
 
 
 ---
 
-##  Features
+## Features
 
-Add promotional images and links to articles. Remove promotional images from articles. Schedule tasks to be executed at a future date and time. Task scheduling uses a secondary script to periodically check and execute pending tasks.
+Add promotional images and links to articles. Remove promotional images from articles. Schedule tasks to be executed at
+a future date and time. Task scheduling uses a secondary script to periodically check and execute pending tasks.
 
 ---
 
-##  Repository Structure
+## Repository Structure
 
 ```sh
 └── Bautonizer3000/
-    ├── .github
-    │   └── workflows
-    │       ├── code_quality.yml
-    │       └── qodana_code_quality.yml
+    ├── tasks
+    │   └── exe_tasks.py
+    ├── .gitignore
     ├── CODE_OF_CONDUCT.md
-    ├── LICENSE.txt
+    ├── LICENSE.txt    
     ├── NIK Buttons 10 CH.ico
     ├── README.md
-    ├── __init__.py
     ├── bAUTOnizer3000.py
-    ├── bAUTOnizer3000_stable.py
-    ├── bAUTOnizer3000_temp.py
     ├── chromedriver.exe
-    ├── exe_tasks.py
-    ├── qodana.yaml
     ├── requirements.txt
-    ├── temp.py
-    └── test.py
-```
 
+```
 
 ---
 
-##  Getting Started
+## Getting Started
 
 ***Requirements***
 
@@ -88,7 +81,7 @@ Ensure you have the following dependencies installed on your system:
 
 * **Python**: `version x.y.z`
 
-###  Installation
+### Installation
 
 1. Clone the Bautonizer3000 repository:
 
@@ -108,7 +101,7 @@ cd Bautonizer3000
 pip install -r requirements.txt
 ```
 
-###  Running Bautonizer3000
+### Running Bautonizer3000
 
 Use the following command to run Bautonizer3000:
 
@@ -116,16 +109,18 @@ Use the following command to run Bautonizer3000:
 python main.py
 ```
 
-
 ---
 
-##  Contributing
+## Contributing
 
 Contributions are welcome! Here are several ways you can contribute:
 
-- **[Submit Pull Requests](https://github.com/AaronTheGenerous/Bautonizer3000.git/blob/main/CONTRIBUTING.md)**: Review open PRs, and submit your own PRs.
-- **[Join the Discussions](https://github.com/AaronTheGenerous/Bautonizer3000.git/discussions)**: Share your insights, provide feedback, or ask questions.
-- **[Report Issues](https://github.com/AaronTheGenerous/Bautonizer3000.git/issues)**: Submit bugs found or log feature requests for Bautonizer3000.
+- **[Submit Pull Requests](https://github.com/AaronTheGenerous/Bautonizer3000.git/blob/main/CONTRIBUTING.md)**: Review
+  open PRs, and submit your own PRs.
+- **[Join the Discussions](https://github.com/AaronTheGenerous/Bautonizer3000.git/discussions)**: Share your insights,
+  provide feedback, or ask questions.
+- **[Report Issues](https://github.com/AaronTheGenerous/Bautonizer3000.git/issues)**: Submit bugs found or log feature
+  requests for Bautonizer3000.
 
 <details closed>
     <summary>Contributing Guidelines</summary>
@@ -148,7 +143,8 @@ Contributions are welcome! Here are several ways you can contribute:
    ```sh
    git push origin new-feature-x
    ```
-7. **Submit a Pull Request**: Create a PR against the original project repository. Clearly describe the changes and their motivations.
+7. **Submit a Pull Request**: Create a PR against the original project repository. Clearly describe the changes and
+   their motivations.
 
 Once your PR is reviewed and approved, it will be merged into the main branch.
 
@@ -156,15 +152,16 @@ Once your PR is reviewed and approved, it will be merged into the main branch.
 
 ---
 
-##  License
+## License
 
-This project is protected under the [GNU AGPLv3](https://choosealicense.com/licenses/agpl-3.0/) License. For more details, refer to the [LICENSE](https://choosealicense.com/licenses/) file.
+This project is protected under the [GNU AGPLv3](https://choosealicense.com/licenses/agpl-3.0/) License. For more
+details, refer to the [LICENSE](https://choosealicense.com/licenses/) file.
 
 ---
 
-##  Acknowledgments
+## Acknowledgments
 
-- Selenium 
+- Selenium
 - PyQt5
 
 [**Return**](#-quick-links)
