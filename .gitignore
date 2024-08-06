@@ -24,9 +24,10 @@ share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-chrome/
-Puff/
+
+# Virtual environments
 venv/
+Puff/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -70,16 +71,27 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-Puff/
-build/
-/.vscode/
-/.github/
+
+# Exclude editor directories
+.vscode/
+.idea/
+
+# Specific files and directories to ignore
 /__init__.py
 /bAUTOnizer3000_stable.py
 /bAUTOnizer3000_temp.py
 /qodana.yaml
 /temp.py
 /test.py
+
+# GitHub Actions workflows
+.github/workflows
+
+# Exclude everything in the tasks directory
 tasks/*
+
+# Ensure the tasks directory itself is not ignored
 !tasks/
-!/tasks/exe_tasks.py
+
+# Re-include the specific file
+!tasks/exe_tasks.py
