@@ -164,6 +164,17 @@ from PyQt6.QtWidgets import (
 )
 
 
+def resource_path(relative_path):
+    """
+    Get the absolute path to a resource file.
+
+    :param relative_path: a string specifying the relative path to the resource file.
+    :return: a string representing the absolute path to the resource file.
+    """
+    base_path = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
+
+
 class DatePickerDialog(QDialog):
     """
 
@@ -319,7 +330,14 @@ class App(QWidget):
         add_articles_input: Adds the articles input fields to the specified layout.
         add_image_and_link_fields: Adds the image and link input fields to the specified layout.
     """
-    tasks_directory = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tasks")
+
+    if getattr(sys, "frozen", False):
+        # If the application is run as a bundle (executable file)
+        application_path = sys._MEIPASS
+    else:
+        application_path = os.path.dirname(os.path.abspath(__file__))
+
+    tasks_directory = os.path.join(application_path, "tasks")
     last_task_end_time_file = os.path.join(tasks_directory, "last_task_end_time.json")
     multi_mode = False  # Track if multi-mode is enabled
 
@@ -329,7 +347,7 @@ class App(QWidget):
         self.left = 100
         self.top = 100
         self.window_width = 260
-        self.height = 900  # Increased height to accommodate the switch and banner
+        self.height = 950  # Increased height to accommodate the switch and banner
         self._borderColor = QColor(
             255, 221, 0, 0
         )  # Initial border color (transparent yellow)
@@ -358,59 +376,59 @@ class App(QWidget):
 
         self.category_data = {
             "Kamerasysteme + Objektive": {
-                "Nikon"    : {
-                    "Nikon Z"                 : {},
+                "Nikon": {
+                    "Nikon Z": {},
                     "Nikkor Z-Mount Objektive": {},
-                    "Nikon DSLR"              : {},
+                    "Nikon DSLR": {},
                     "Nikkor F-Mount Objektive": {},
-                    "Nikon Blitzgeräte"       : {},
-                    "Nikon Coolpix"           : {},
-                    "Nikon DSLR Zubehör"      : {},
-                    "Nikon Objektivzubehör"   : {},
+                    "Nikon Blitzgeräte": {},
+                    "Nikon Coolpix": {},
+                    "Nikon DSLR Zubehör": {},
+                    "Nikon Objektivzubehör": {},
                 },
-                "Sony"     : {
-                    "Sony E-Mount Kameras"        : {},
-                    "Sony E-Mount Objektive"      : {},
-                    "Sony E-Mount APS-C Kameras"  : {},
+                "Sony": {
+                    "Sony E-Mount Kameras": {},
+                    "Sony E-Mount Objektive": {},
+                    "Sony E-Mount APS-C Kameras": {},
                     "Sony E-Mount APS-C Objektive": {},
-                    "Sony E-Mount Zubehör"        : {},
-                    "Sony Blitzgeräte"            : {},
-                    "Sony Kompaktkameras"         : {},
-                    "Sony XPERIA Smartphones"     : {},
-                    "Sony A-Mount Kameras"        : {},
-                    "Sony A-Mount Objektive"      : {},
-                    "Sony A-Mount Zubehör"        : {},
+                    "Sony E-Mount Zubehör": {},
+                    "Sony Blitzgeräte": {},
+                    "Sony Kompaktkameras": {},
+                    "Sony XPERIA Smartphones": {},
+                    "Sony A-Mount Kameras": {},
+                    "Sony A-Mount Objektive": {},
+                    "Sony A-Mount Zubehör": {},
                 },
                 "Phase One": {
-                    "Phase One IQ Backs"                       : {},
-                    "Phase One XF Camera System"               : {},
-                    "Phase One XT Camera System"               : {},
-                    "CPO Phase One IQ Backs für Phase One XF"  : {},
-                    "CPO Phase One XF Kamerasysteme"           : {},
-                    "CPO Phase One IQ Backs für Hasselblad"    : {},
-                    "Phase One XF Kamerasysteme"               : {},
-                    "Phase One XT Kamera und Objektive"        : {},
+                    "Phase One IQ Backs": {},
+                    "Phase One XF Camera System": {},
+                    "Phase One XT Camera System": {},
+                    "CPO Phase One IQ Backs für Phase One XF": {},
+                    "CPO Phase One XF Kamerasysteme": {},
+                    "CPO Phase One IQ Backs für Hasselblad": {},
+                    "Phase One XF Kamerasysteme": {},
+                    "Phase One XT Kamera und Objektive": {},
                     "Schneider Kreuznach Objektive (Blue Ring)": {},
-                    "CPO Schneider Kreuznach Objektive"        : {},
-                    "Capture One"                              : {},
+                    "CPO Schneider Kreuznach Objektive": {},
+                    "Capture One": {},
                 },
-                "Cambo"    : {
-                    "Cambo Wide RS"                : {},
-                    "Cambo ACTUS"                  : {},
+                "Cambo": {
+                    "Cambo Wide RS": {},
+                    "Cambo ACTUS": {},
                     "Cambo Zubehör zu Phase One XT": {},
-                    "Cambo Adapter"                : {},
-                    "Cambo ACTUS DB"               : {},
-                    "Cambo ACTUS-XL"               : {},
+                    "Cambo Adapter": {},
+                    "Cambo ACTUS DB": {},
+                    "Cambo ACTUS-XL": {},
                 },
-                "Leica"    : {
-                    "Leica M & Objektive"      : {},
-                    "Leica Q"                  : {},
-                    "Leica SL & Objektive"     : {},
-                    "Leica S & Objektive"      : {},
+                "Leica": {
+                    "Leica M & Objektive": {},
+                    "Leica Q": {},
+                    "Leica SL & Objektive": {},
+                    "Leica S & Objektive": {},
                     "Leica TL / CL & Objektive": {},
-                    "Leica V"                  : {},
-                    "Leica X"                  : {},
-                    "Leica SOFORT"             : {},
+                    "Leica V": {},
+                    "Leica X": {},
+                    "Leica SOFORT": {},
                 },
             }
         }
@@ -450,23 +468,26 @@ class App(QWidget):
 
         self.tab_widget = QTabWidget()
         self.tab_widget.setStyleSheet("QTabWidget::pane { border: 2px solid #ffffff; }")
-        self.tab_widget.addTab(
-            self.create_tab("Hinzufügen", "add"), "Hinzufügen"
-        )
-        self.tab_widget.addTab(
-            self.create_tab("Entfernen", "remove"), "Entfernen"
-        )
+        self.tab_widget.addTab(self.create_tab("Hinzufügen", "add"), "Hinzufügen")
+        self.tab_widget.addTab(self.create_tab("Entfernen", "remove"), "Entfernen")
         self.main_layout.addWidget(self.tab_widget)
 
         self.display_label_title = self.create_label(
-            "<b>Geplantes Datum und Uhrzeit</b>", 10, Qt.AlignmentFlag.AlignCenter, True
+            "<b>Geplantes Datum und Uhrzeit</b>",
+            10,
+            Qt.AlignmentFlag.AlignCenter,
+            False,
+        )
+        self.display_label_title.setStyleSheet(
+            "padding: 8px;" "border: 2px solid #ffdd00;"
         )
         self.main_layout.addWidget(self.display_label_title)
 
         self.datetime_label = self.create_label(
-            "", 15, Qt.AlignmentFlag.AlignCenter, True
+            "", 15, Qt.AlignmentFlag.AlignCenter, False
         )
         self.update_datetime_label()
+        self.datetime_label.setStyleSheet("padding: 5px;" "border: 2px solid #ffdd00;")
         self.main_layout.addWidget(self.datetime_label)
 
         self.main_layout.addLayout(self.datetime_layout)
@@ -567,7 +588,9 @@ class App(QWidget):
         self.link_checkbox = QCheckBox("Link hinzufügen?", self)
         self.link_checkbox.setCheckState(Qt.CheckState.Unchecked)
         self.link_checkbox.stateChanged.connect(
-            lambda _: self.toggle_link_input(self.link_checkbox.checkState(), self.link_input_de, self.link_input_fr)
+            lambda _: self.toggle_link_input(
+                self.link_checkbox.checkState(), self.link_input_de, self.link_input_fr
+            )
         )
         layout.addWidget(self.link_checkbox)
 
@@ -892,7 +915,9 @@ class App(QWidget):
         task_counter_title = self.create_label(
             "<b>Erstellte Tasks: </b>", 10, Qt.AlignmentFlag.AlignCenter, True
         )
-        task_counter = self.create_label("<b>0</b>", 10, Qt.AlignmentFlag.AlignCenter, True)
+        task_counter = self.create_label(
+            "<b>0</b>", 10, Qt.AlignmentFlag.AlignCenter, True
+        )
 
         counter_layout.addWidget(task_counter_title)
         counter_layout.addWidget(task_counter)
@@ -942,45 +967,45 @@ class App(QWidget):
         )
 
         task = {
-            "task_type"        : task_type,
+            "task_type": task_type,
             "schedule_datetime": self.get_scheduled_time().isoformat(),
-            "data"             : {
-                "marke"          : marken_combobox.currentText(),
-                "kategorie"      : categories_combobox.currentText(),
+            "data": {
+                "marke": marken_combobox.currentText(),
+                "kategorie": categories_combobox.currentText(),
                 "article_numbers": articles_input.text(),
-                "img1_url"       : (
+                "img1_url": (
                     self.img1_input.text() if current_tab_name == "Hinzufügen" else None
                 ),
-                "img2_url"       : (
+                "img2_url": (
                     self.img2_input.text() if current_tab_name == "Hinzufügen" else None
                 ),
-                "width"          : (
+                "width": (
                     self.width_input.text()
                     if current_tab_name == "Hinzufügen"
                     else None
                 ),
-                "height"         : (
+                "height": (
                     self.height_input.text()
                     if current_tab_name == "Hinzufügen"
                     else None
                 ),
-                "link_checkbox"  : (
+                "link_checkbox": (
                     self.link_checkbox.isChecked()
                     if current_tab_name == "Hinzufügen"
                     else None
                 ),
-                "link_input_de"  : (
+                "link_input_de": (
                     self.link_input_de.text()
                     if current_tab_name == "Hinzufügen"
                     else None
                 ),
-                "link_input_fr"  : (
+                "link_input_fr": (
                     self.link_input_fr.text()
                     if current_tab_name == "Hinzufügen"
                     else None
                 ),
             },
-            "follow_up"        : self.multi_mode,
+            "follow_up": self.multi_mode,
         }
         print(f"Task created: {task}")
         return task
@@ -1058,15 +1083,19 @@ class App(QWidget):
                 task_directory,
                 f'task_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}_{idx}.json',
             )
+            task_filename_before = task_filename
+            task_filename = resource_path(task_filename)
             with open(task_filename, "w") as file:
                 json.dump(task, file)
             if idx > 0:
+                task_filename_before = resource_path(task_filename_before)
                 initial_task["subsequent_tasks"].append(task_filename)
 
         initial_task_filename = os.path.join(
             task_directory,
             f'task_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}_initial.json',
         )
+        initial_task_filename = resource_path(initial_task_filename)
         with open(initial_task_filename, "w") as file:
             json.dump(initial_task, file)
 
@@ -1113,24 +1142,39 @@ class App(QWidget):
         self.update_ui_elements()
 
     def schedule_in_task_scheduler(self, task_filename, schedule_datetime):
+        """
+        :param task_filename: The name of the task file to be scheduled.
+        :param schedule_datetime: The date and time at which the task should be scheduled.
+        :return: None
+
+        This method schedules a task in the Task Scheduler. It takes in the task filename and the schedule datetime as parameters. The task file is assumed to be located in the "tasks" subdirectory relative to the current directory.
+
+        The method first constructs the paths to the exe_tasks.exe file and the task file using the current directory path. It then formats the schedule datetime into date and time strings.
+
+        A temporary batch file is created using tempfile.NamedTemporaryFile() with the '.bat' suffix. The batch file is written with a command to execute the exe_tasks.exe file with the task file as an argument.
+
+        The command to create the scheduled task is constructed using the SchTasks command-line utility. It specifies that the task should run once at the specified schedule datetime. The task name is generated based on the task filename. The batch file is used as the task command instead of a direct Python command. The schedule datetime is set using the specified date and time. The /F option is used to overwrite any existing task with the same name.
+
+        Finally, the command is executed using subprocess.run(). If an error occurs during the execution of the command, a CalledProcessError exception is raised.
+
+        Note: This method assumes that the necessary dependencies and permissions are in place for scheduling tasks in the Task Scheduler.
+        """
         import subprocess
 
-        script_path = f"{os.getcwd()}\\tasks\\exe_tasks.py"
-        task_path = f"{os.getcwd()}\\tasks\\{os.path.basename(task_filename)}"
+        # Assuming exe_tasks.exe is found in the "tasks" subdirectory
+        current_dir_path = os.path.dirname(os.path.realpath(__file__))
+        exe_tasks_path = os.path.join(current_dir_path, "tasks", "exe_tasks.exe")
+        task_path = os.path.join(current_dir_path, "tasks", task_filename)
 
         date_str = schedule_datetime.strftime("%d/%m/%Y")
         time_str = schedule_datetime.strftime("%H:%M")
 
-        # Get the venv python path
-        python_path = os.path.join(os.getcwd(), "venv", "Scripts", "python.exe")
-
-        with tempfile.NamedTemporaryFile('w', delete=False, suffix='.bat') as f:
-            # Write venv's python command to the batch file
-            f.write(f'"{python_path}" "{script_path}" "{task_path}"')
+        with tempfile.NamedTemporaryFile("w", delete=False, suffix=".bat") as f:
+            f.write(f'"{exe_tasks_path}" "{task_path}"')
 
         command = (
-            f'SchTasks /Create /SC ONCE /TN "ButtonizerTask_{os.path.basename(task_filename)}" '
-            f'/TR "{f.name}" '  # Here we use the batch file name instead of python command
+            f'SchTasks /Create /SC ONCE /TN "ButtonizerTask_{os.path.splitext(task_filename)[0]}" '
+            f'/TR "{f.name}" '  # batch file name instead of python command
             f"/ST {time_str} /SD {date_str} /F"
         )
 
@@ -1151,7 +1195,6 @@ class App(QWidget):
             self.tasks_directory,
             f'task_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}.json',
         )
-
         os.makedirs(self.tasks_directory, exist_ok=True)
 
         with open(task_filename, "w") as file:
@@ -1276,7 +1319,6 @@ class App(QWidget):
         msg_box.exec()
 
     def toggle_link_input(self, state, link_input_de, link_input_fr):
-
         """
         Enables or disables the given link inputs based on the given state.
 
@@ -1288,22 +1330,32 @@ class App(QWidget):
         :type link_input_fr: QtWidgets.QLineEdit
         :return: None
         """
-        print(f"toggle_link_input called with parameters: \n- State: {state} \n- link_input_de: {link_input_de} \n- "
-              f"link_input_fr: {link_input_fr}")
+        print(
+            f"toggle_link_input called with parameters: \n- State: {state} \n- link_input_de: {link_input_de} \n- "
+            f"link_input_fr: {link_input_fr}"
+        )
         if state == Qt.CheckState.Checked:
             link_input_de.setEnabled(True)
             print(f"enabled link_input_de: {link_input_de}")
-            print(f"link_input_de enabled status should be true: {link_input_de.isEnabled()}")
+            print(
+                f"link_input_de enabled status should be true: {link_input_de.isEnabled()}"
+            )
             print(link_input_de.parent().isEnabled())
             link_input_fr.setEnabled(True)
-            print(f"link_input_fr enabled status should be true: {link_input_fr.isEnabled()}")
+            print(
+                f"link_input_fr enabled status should be true: {link_input_fr.isEnabled()}"
+            )
             print(link_input_fr.parent().isEnabled())
         else:
             link_input_de.setEnabled(False)
-            print(f"link_input_de enabled status should be false: {link_input_de.isEnabled()}")
+            print(
+                f"link_input_de enabled status should be false: {link_input_de.isEnabled()}"
+            )
             print(link_input_de.parent().isEnabled())
             link_input_fr.setEnabled(False)
-            print(f"link_input_fr enabled status should be false: {link_input_fr.isEnabled()}")
+            print(
+                f"link_input_fr enabled status should be false: {link_input_fr.isEnabled()}"
+            )
             print(link_input_fr.parent().isEnabled())
 
         # force update elements
@@ -1330,10 +1382,7 @@ class App(QWidget):
             else ""
         )
         self.banner_label.setStyleSheet(
-            "border: 3px solid #ffdd00;"
-            "padding: 8px;"
-            if self.multi_mode
-            else ""
+            "border: 3px solid #ffdd00;" "padding: 8px;" if self.multi_mode else ""
         )
         self.top_banner_label.hide()  # Hide the new top banner when switching modes
 
@@ -1365,8 +1414,7 @@ class App(QWidget):
         else:
             submit_button = self.create_button(
                 "Bestätigen",
-                lambda: self.schedule_task(
-                ),
+                lambda: self.schedule_task(),
             )
             button_layout.addWidget(submit_button)
 
