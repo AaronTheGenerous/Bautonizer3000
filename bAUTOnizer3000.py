@@ -343,7 +343,7 @@ class App(QWidget):
 
     def __init__(self):
         super().__init__()
-        self.title = "Buttonizer3000"
+        self.title = "bAUTOnizer3000"
         self.left = 100
         self.top = 100
         self.window_width = 260
